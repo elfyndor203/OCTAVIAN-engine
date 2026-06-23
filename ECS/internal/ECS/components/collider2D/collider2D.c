@@ -18,7 +18,7 @@ OCT_handle OCT_hitBox2D_add(OCT_handle entity, OCT_shape2 shape) { // copy of co
 	OCT_ID colliderID = iOCT_collider2D_add(context, entity.objectID, shape, true);
 
 	OCT_handle colliderHandle = {
-		.subsystem = OCT_subsystem_ECS,
+		.system = OCT_subsystem_ECS,
 		.containerID = context->contextID,
 		.objectID = colliderID,
 		.type = OCT_handle_collider2D
@@ -33,7 +33,7 @@ OCT_handle OCT_collider2D_add(OCT_handle entity, OCT_shape2 shape) {
 	OCT_ID colliderID = iOCT_collider2D_add(context, entity.objectID, shape, false);
 
 	OCT_handle colliderHandle = {
-		.subsystem = OCT_subsystem_ECS,
+		.system = OCT_subsystem_ECS,
 		.containerID = context->contextID,
 		.objectID = colliderID,
 		.type = OCT_handle_collider2D

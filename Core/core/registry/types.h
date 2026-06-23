@@ -1,0 +1,7 @@
+#pragma once
+typedef struct cOCT_systemDescription cOCT_systemDescription;
+typedef struct cOCT_fieldDescription cOCT_fieldDescription;
+typedef struct cOCT_fieldRequest cOCT_fieldRequest;
+typedef struct cOCT_componentDescription cOCT_componentDescription;
+
+typedef enum cOCT_fieldTypes cOCT_fieldTypes;

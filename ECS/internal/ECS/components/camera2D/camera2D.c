@@ -23,7 +23,7 @@ OCT_handle OCT_camera2D_add(OCT_handle entity, OCT_vec2 position, float zoom, fl
 	OCT_handle cameraHandle = {
 		.containerID = entity.containerID,
 		.objectID = cameraID,
-		.subsystem = OCT_subsystem_ECS,
+		.system = OCT_subsystem_ECS,
 		.type = OCT_handle_camera2D
 	};
 
@@ -56,7 +56,7 @@ void OCT_camera2D_setActive(OCT_handle entityHandle) {
 	OCT_handle cameraHandle = {
 		.containerID = entity->contextID,
 		.objectID = entity->cameraID,
-		.subsystem = OCT_subsystem_ECS,
+		.system = OCT_subsystem_ECS,
 		.type = OCT_handle_camera2D
 	};
 

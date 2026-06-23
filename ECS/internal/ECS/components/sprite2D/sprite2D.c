@@ -21,7 +21,7 @@ OCT_handle OCT_sprite2D_add(OCT_handle entity, OCT_handle layer, OCT_vec4 color,
 	OCT_ID spriteID = iOCT_sprite2D_add(context, entity.objectID, layer, color, uv, dimensions);
 
 	OCT_handle spriteHandle = {
-		.subsystem = OCT_subsystem_ECS,
+		.system = OCT_subsystem_ECS,
 		.containerID = context->contextID,
 		.objectID = spriteID,
 		.type = OCT_handle_sprite2D

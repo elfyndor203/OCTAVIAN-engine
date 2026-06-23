@@ -31,7 +31,7 @@ typedef enum {
 } OCT_handleType;
 
 struct OCT_handle {
-	OCT_ID subsystem;
+	OCT_ID system;
 	OCT_ID containerID;
 	OCT_ID objectID;
 	OCT_handleType type;

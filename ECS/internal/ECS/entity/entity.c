@@ -56,7 +56,7 @@ OCT_handle OCT_entity_new(OCT_handle parentHandle) {
 	iOCT_entityContext* context = iOCT_entityContext_get(contextID);
 	OCT_ID newEntityID = iOCT_entity_new(context, parentID);
 	OCT_handle newHandle = {
-		.subsystem = OCT_subsystem_ECS,
+		.system = OCT_subsystem_ECS,
 		.containerID = contextID,
 		.objectID = newEntityID,
 		.type = OCT_handle_entity

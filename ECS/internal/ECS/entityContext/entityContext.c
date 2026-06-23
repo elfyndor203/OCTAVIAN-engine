@@ -41,13 +41,13 @@ cOCT_pool* iOCT_pool_get(iOCT_entityContext* context, OCT_ECSTypes componentType
 /// <returns></returns>
 OCT_handle OCT_entityContext_open(OCT_handle* outRoot) {
 	OCT_handle contextHandle = {
-		.subsystem = OCT_subsystem_ECS,
+		.system = OCT_subsystem_ECS,
 		.containerID = OCT_subsystem_ECS,
 		.objectID = iOCT_entityContext_open(),
 		.type = OCT_handle_entityContext
 	};
 	OCT_handle root = {
-		.subsystem = OCT_subsystem_ECS,
+		.system = OCT_subsystem_ECS,
 		.containerID = contextHandle.objectID,
 		.objectID = iOCT_ROOT_ID,
 		.type = OCT_handle_entity

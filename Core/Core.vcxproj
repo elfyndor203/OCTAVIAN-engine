@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -19,35 +19,34 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <VCProjectVersion>17.0</VCProjectVersion>
+    <VCProjectVersion>18.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{958eae1d-799c-4029-8057-791886be38bf}</ProjectGuid>
-    <RootNamespace>ECSRENBridge</RootNamespace>
+    <ProjectGuid>{20ed3712-c186-436c-accf-f9ddd5ad8489}</ProjectGuid>
+    <RootNamespace>Core</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>EngineStructure</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v145</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v145</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -77,13 +76,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)internal;$(SolutionDir)Errors\include;$(ProjectDir)Core;$(SolutionDir)Math\include</AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Manifest>
+      <EnableSegmentHeap>true</EnableSegmentHeap>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -93,13 +94,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)internal;$(SolutionDir)Errors\include;$(ProjectDir)Core;$(SolutionDir)Math\include</AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Manifest>
+      <EnableSegmentHeap>true</EnableSegmentHeap>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -107,13 +110,16 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)internal;$(SolutionDir)Errors\include;$(ProjectDir)Core;$(SolutionDir)Math\include</AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)Core/core;$(SolutionDir)Core/include;$(SolutionDir)Core/internal;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Manifest>
+      <EnableSegmentHeap>true</EnableSegmentHeap>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -123,27 +129,57 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)internal;$(SolutionDir)Errors\include;$(ProjectDir)Core;$(SolutionDir)Math\include</AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Manifest>
+      <EnableSegmentHeap>true</EnableSegmentHeap>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="core\architecture\IDMap_core.h" />
-    <ClInclude Include="core\architecture\pools_core.h" />
-    <ClInclude Include="core\cOCT_EngineStructure.h" />
-    <ClInclude Include="include\layout\engineLayout.h" />
-    <ClInclude Include="include\OCT_EngineStructure.h" />
+    <ClInclude Include="core\OCT_Core_core.h" />
+    <ClInclude Include="include\errors\errors\errorCodes.h" />
+    <ClInclude Include="include\errors\errors\errorCodes_internal.h" />
+    <ClInclude Include="include\errors\errors\errorHandling.h" />
+    <ClInclude Include="include\errors\errors\errorHandling_internal.h" />
+    <ClInclude Include="include\errors\OCT_Errors.h" />
+    <ClInclude Include="include\math\definitions\aliases.h" />
+    <ClInclude Include="include\math\definitions\defaultValues.h" />
+    <ClInclude Include="include\math\definitions\operations.h" />
+    <ClInclude Include="include\math\matrices\mat3.h" />
+    <ClInclude Include="include\math\OCT_Math.h" />
+    <ClInclude Include="include\math\units\constants.h" />
+    <ClInclude Include="include\math\units\conversions.h" />
+    <ClInclude Include="include\math\vectors\vec2.h" />
+    <ClInclude Include="include\math\vectors\vec3.h" />
+    <ClInclude Include="include\math\vectors\vec4.h" />
+    <ClInclude Include="core\registry\types.h" />
+    <ClInclude Include="core\registry\registry.h" />
+    <ClInclude Include="core\utilities\types.h" />
+    <ClInclude Include="include\OCT_Core.h" />
+    <ClInclude Include="internal\registry\registry_internal.h" />
+    <ClInclude Include="internal\registry\types_internal.h" />
+    <ClInclude Include="registry\module\registration.h" />
+    <ClInclude Include="registry\module\registrationTypes.h" />
     <ClInclude Include="include\layout\types.h" />
-    <ClInclude Include="core\types_core.h" />
+    <ClInclude Include="include\layout\systems.h" />
+    <ClInclude Include="core\utilities\utilities_core.h" />
+    <ClInclude Include="core\utilities\structures\IDMap_core.h" />
+    <ClInclude Include="core\utilities\structures\pools_core.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="internal\core\architecture\IDMap.c" />
-    <ClCompile Include="internal\core\architecture\pools.c" />
-    <ClCompile Include="internal\layout\engineLayout.c" />
+    <ClCompile Include="include\errors\errors\errorHandling.c" />
+    <ClCompile Include="include\math\matrices\mat3.c" />
+    <ClCompile Include="include\math\units\constants.c" />
+    <ClCompile Include="include\math\units\conversions.c" />
+    <ClCompile Include="include\math\vectors\vec2.c" />
+    <ClCompile Include="internal\registry\registry.c" />
+    <ClCompile Include="internal\utilities\IDMap.c" />
+    <ClCompile Include="internal\utilities\pools.c" />
+    <ClCompile Include="testing\registryMain.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
