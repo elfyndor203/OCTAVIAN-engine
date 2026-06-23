@@ -1,5 +1,9 @@
 #pragma once
-#include "errors/OCT_Errors.h"
+#include "OCT_Errors.h"
+#include "OCT_Math.h"
+
 #include "layout/systems.h"
 #include "layout/types.h"
-#include "math/OCT_Math.h"
+
+void OCT_engine_init();
+void OCT_init_finish();

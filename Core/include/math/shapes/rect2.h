@@ -1,5 +1,5 @@
 #pragma once
-#include "vectors/vec2.h"
+#include "math/vectors/vec2.h"
 
 typedef struct {
 	OCT_vec2 origin;

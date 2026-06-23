@@ -1,24 +1,13 @@
+#pragma once
+#include "testSystem.h"
+
 #include "OCT_Core_eng.h"
-#include "registry/registry_int.h"
 
-typedef struct testPos {
-	float posA;
-	float posB;
-} testPos;
-
-typedef struct testVel {
-	float velA;
-	float velB;
-
-} testVel;;
-
-
-
-int main() {
+void testDesc_register() {
 	eOCT_fieldDescription posA = {
-		.name = "posA",
-		.type = OCT_FIELD_FLOAT,
-		.offset = offsetof(testPos, posA)
+	.name = "posA",
+	.type = OCT_FIELD_FLOAT,
+	.offset = offsetof(testPos, posA)
 	};
 
 	eOCT_fieldDescription posB = {
@@ -57,7 +46,7 @@ int main() {
 
 	eOCT_componentDescription posComponent2 = {
 		.name = "Position2",
-		.stride = sizeof(testPos),	
+		.stride = sizeof(testPos),
 		.providedFields = posFields,
 		.providedFieldsCount = 2
 	};
@@ -72,6 +61,5 @@ int main() {
 		.requestedFieldsCount = 0
 	};
 
-	OCT_engine_init();
-	return 0;
+	eOCT_registry_registerSystem(systemA);
 }

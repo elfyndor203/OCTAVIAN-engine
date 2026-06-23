@@ -1,7 +1,7 @@
 #pragma once
 #include "rect2.h"
 
-#include "vectors/vec2.h"
+#include "math/vectors/vec2.h"
 
 typedef enum {
 	OCT_shapeType_rect2,

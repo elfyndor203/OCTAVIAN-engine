@@ -111,7 +111,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Core/core;$(SolutionDir)Core/include;$(SolutionDir)Core/internal;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Core/engine;$(SolutionDir)Core/include;$(SolutionDir)Core/internal;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -140,35 +140,40 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="core\OCT_Core_core.h" />
+    <ClInclude Include="engine\OCT_Core_eng.h" />
+    <ClInclude Include="include\ECS\entityContext.h" />
     <ClInclude Include="include\errors\errors\errorCodes.h" />
     <ClInclude Include="include\errors\errors\errorCodes_internal.h" />
     <ClInclude Include="include\errors\errors\errorHandling.h" />
     <ClInclude Include="include\errors\errors\errorHandling_internal.h" />
-    <ClInclude Include="include\errors\OCT_Errors.h" />
+    <ClInclude Include="include\OCT_Errors.h" />
     <ClInclude Include="include\math\definitions\aliases.h" />
     <ClInclude Include="include\math\definitions\defaultValues.h" />
     <ClInclude Include="include\math\definitions\operations.h" />
     <ClInclude Include="include\math\matrices\mat3.h" />
-    <ClInclude Include="include\math\OCT_Math.h" />
+    <ClInclude Include="include\OCT_Math.h" />
     <ClInclude Include="include\math\units\constants.h" />
     <ClInclude Include="include\math\units\conversions.h" />
     <ClInclude Include="include\math\vectors\vec2.h" />
     <ClInclude Include="include\math\vectors\vec3.h" />
     <ClInclude Include="include\math\vectors\vec4.h" />
-    <ClInclude Include="core\registry\types.h" />
-    <ClInclude Include="core\registry\registry.h" />
-    <ClInclude Include="core\utilities\types.h" />
+    <ClInclude Include="engine\registry\types_eng.h" />
+    <ClInclude Include="engine\registry\registry_eng.h" />
+    <ClInclude Include="engine\utilities\types_eng.h" />
     <ClInclude Include="include\OCT_Core.h" />
-    <ClInclude Include="internal\registry\registry_internal.h" />
-    <ClInclude Include="internal\registry\types_internal.h" />
+    <ClInclude Include="internal\ECS\ECS_int.h" />
+    <ClInclude Include="internal\ECS\entity\entityContext_int.h" />
+    <ClInclude Include="internal\ECS\types_int.h" />
+    <ClInclude Include="internal\registry\registry_int.h" />
+    <ClInclude Include="internal\registry\types_int.h" />
     <ClInclude Include="registry\module\registration.h" />
     <ClInclude Include="registry\module\registrationTypes.h" />
     <ClInclude Include="include\layout\types.h" />
     <ClInclude Include="include\layout\systems.h" />
-    <ClInclude Include="core\utilities\utilities_core.h" />
-    <ClInclude Include="core\utilities\structures\IDMap_core.h" />
-    <ClInclude Include="core\utilities\structures\pools_core.h" />
+    <ClInclude Include="engine\utilities\utilities_eng.h" />
+    <ClInclude Include="engine\utilities\structures\IDMap_eng.h" />
+    <ClInclude Include="engine\utilities\structures\pools_eng.h" />
+    <ClInclude Include="testing\testSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="include\errors\errors\errorHandling.c" />
@@ -176,10 +181,14 @@
     <ClCompile Include="include\math\units\constants.c" />
     <ClCompile Include="include\math\units\conversions.c" />
     <ClCompile Include="include\math\vectors\vec2.c" />
+    <ClCompile Include="internal\core\build_manifest.c" />
+    <ClCompile Include="internal\core\core.c" />
+    <ClCompile Include="internal\ECS\ECS.c" />
     <ClCompile Include="internal\registry\registry.c" />
     <ClCompile Include="internal\utilities\IDMap.c" />
     <ClCompile Include="internal\utilities\pools.c" />
     <ClCompile Include="testing\registryMain.c" />
+    <ClCompile Include="testing\testSystem_description.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

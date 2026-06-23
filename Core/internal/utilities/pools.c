@@ -1,7 +1,7 @@
-#include "utilities/structures/pools_core.h"
-#include "utilities/types.h"
+#include "utilities/structures/pools_eng.h"
+#include "utilities/types_eng.h"
 
-#include "OCT_Core.h"
+#include "OCT_Core_eng.h"
 
 #include <stdlib.h>
 #include <assert.h>
@@ -12,8 +12,8 @@
 /// <summary>
 /// Allocates memory for a single pool. Allows creation of all pools without rewriting when new component types are added
 /// </summary>
-cOCT_pool cOCT_pool_init(OCT_ID ownerID, OCT_counter capacity, size_t elementSize) {
-	cOCT_pool pool = { 0 };
+eOCT_pool eOCT_pool_init(OCT_ID ownerID, OCT_counter capacity, size_t elementSize) {
+	eOCT_pool pool = { 0 };
 
 	pool.ownerID = ownerID;					// set default values
 	pool.count = 0;
@@ -28,7 +28,7 @@ cOCT_pool cOCT_pool_init(OCT_ID ownerID, OCT_counter capacity, size_t elementSiz
 	return pool;
 }
 
-void* cOCT_pool_addEntry(cOCT_pool* pool, OCT_index* outIndex) {
+void* eOCT_pool_addEntry(eOCT_pool* pool, OCT_index* outIndex) {
 	if (pool->count == pool->capacity) {
 		printf("Realloc pool of size %zu", pool->capacity * pool->elementSize);
 
@@ -44,7 +44,7 @@ void* cOCT_pool_addEntry(cOCT_pool* pool, OCT_index* outIndex) {
 		}
 	}
 
-	void* slot = cOCT_pool_access(pool, pool->count);
+	void* slot = eOCT_pool_access(pool, pool->count);
 
 	if (outIndex) {
 		*outIndex = pool->count;
@@ -54,13 +54,13 @@ void* cOCT_pool_addEntry(cOCT_pool* pool, OCT_index* outIndex) {
 	return slot;
 }
 
-OCT_ID cOCT_pool_deleteEntry(cOCT_pool* pool, OCT_index index, bool compact) {
-	void* entry = cOCT_pool_access(pool, index);
+OCT_ID eOCT_pool_deleteEntry(eOCT_pool* pool, OCT_index index, bool compact) {
+	void* entry = eOCT_pool_access(pool, index);
 	OCT_ID swappedID = OCT_ID_NULL;
 
 	// if shuffling is needed
 	if (index < pool->count - 1 && compact) {
-		void* finalEntry = cOCT_pool_access(pool, pool->count);
+		void* finalEntry = eOCT_pool_access(pool, pool->count);
 		memcpy(entry, finalEntry, pool->elementSize);
 		memset(finalEntry, 0, pool->elementSize);
 		swappedID = *(OCT_ID*)entry; // return the ID that got swapped to update the IDmap
@@ -72,12 +72,12 @@ OCT_ID cOCT_pool_deleteEntry(cOCT_pool* pool, OCT_index index, bool compact) {
 	return swappedID;
 }
 
-void cOCT_pool_free(cOCT_pool* pool) {
+void eOCT_pool_free(eOCT_pool* pool) {
 	free(pool->array);
 	pool->array = NULL;
 }
 
-void* cOCT_pool_access(cOCT_pool* pool, OCT_index index) {
+void* eOCT_pool_access(eOCT_pool* pool, OCT_index index) {
 	void* entry = (char*)pool->array + index * pool->elementSize;
 	return entry;
 }

@@ -1,16 +1,16 @@
-#include "utilities/structures/IDMap_core.h"
+#include "utilities/structures/IDMap_eng.h"
 
-#include "OCT_Core_core.h"
+#include "OCT_Core_eng.h"
 #include <stdlib.h>
 #include <string.h>
 #include <crtdbg.h>
 #include <stdio.h>
 
-#include "utilities/structures/pools_core.h"
+#include "utilities/structures/pools_eng.h"
 
 // Allocates initial memory for a single entityContext.
-cOCT_IDMap cOCT_IDMap_init(OCT_ID ownerID, OCT_counter capacity) {
-	cOCT_IDMap map = { 0 };
+eOCT_IDMap eOCT_IDMap_init(OCT_ID ownerID, OCT_counter capacity) {
+	eOCT_IDMap map = { 0 };
 
 	map.ownerID = ownerID;
 	map.count = 1; // null ID
@@ -24,7 +24,7 @@ cOCT_IDMap cOCT_IDMap_init(OCT_ID ownerID, OCT_counter capacity) {
 }
 
 // Registers the next available ID with the provided pool index for any new entity or component.
-OCT_ID cOCT_IDMap_register(cOCT_IDMap* map, OCT_index inIndex) {
+OCT_ID eOCT_IDMap_register(eOCT_IDMap* map, OCT_index inIndex) {
 	if (map->count == (map->capacity + 1)) {
 		printf("Realloc map of size %zu to size", map->capacity * sizeof(OCT_index));
 
@@ -55,7 +55,7 @@ OCT_ID cOCT_IDMap_register(cOCT_IDMap* map, OCT_index inIndex) {
 /// <param name="map"></param>
 /// <param name="ID"></param>
 /// <returns></returns>
-OCT_index cOCT_IDMap_deregister(cOCT_IDMap* map, OCT_ID ID) {
+OCT_index eOCT_IDMap_deregister(eOCT_IDMap* map, OCT_ID ID) {
 	OCT_index index;
 	OCT_index* slot = &map->array[ID];
 	index = *slot;
@@ -65,19 +65,19 @@ OCT_index cOCT_IDMap_deregister(cOCT_IDMap* map, OCT_ID ID) {
 }
 
 
-OCT_ID cOCT_IDMap_remap(cOCT_IDMap* map, OCT_ID ID, OCT_index newIndex) {
+OCT_ID eOCT_IDMap_remap(eOCT_IDMap* map, OCT_ID ID, OCT_index newIndex) {
 	map->array[ID] = newIndex;
 	return ID;
 }
 
-OCT_index cOCT_IDMap_getIndex(cOCT_IDMap* map, OCT_ID ID) {
+OCT_index eOCT_IDMap_getIndex(eOCT_IDMap* map, OCT_ID ID) {
 	if (ID == OCT_ID_NULL) {
 		return OCT_index_NULL;
 	}
 	return map->array[ID];
 }
 
-void cOCT_IDMap_free(cOCT_IDMap* map) {
+void eOCT_IDMap_free(eOCT_IDMap* map) {
 	free(map->array);
 	map->array = NULL;
 }
