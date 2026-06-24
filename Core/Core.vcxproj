@@ -181,14 +181,14 @@
     <ClCompile Include="include\math\units\constants.c" />
     <ClCompile Include="include\math\units\conversions.c" />
     <ClCompile Include="include\math\vectors\vec2.c" />
-    <ClCompile Include="internal\core\build_manifest.c" />
+    <ClCompile Include="build_manifest.c" />
     <ClCompile Include="internal\core\core.c" />
     <ClCompile Include="internal\ECS\ECS.c" />
     <ClCompile Include="internal\registry\registry.c" />
     <ClCompile Include="internal\utilities\IDMap.c" />
     <ClCompile Include="internal\utilities\pools.c" />
     <ClCompile Include="testing\registryMain.c" />
-    <ClCompile Include="testing\testSystem_description.c" />
+    <ClCompile Include="testing\systemDescriptions.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

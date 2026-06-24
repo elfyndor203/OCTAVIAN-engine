@@ -1,7 +1,9 @@
 #pragma once
-#include "layout/types.h"
+#include "utilities/types_eng.h"
 
-#include "OCT_Core_eng.h"
+#include "layout/types.h"
+#include "OCT_Math.h"
+
 #include <stdbool.h>
 
 #define eOCT_POOLSIZE_DEFAULT 4
@@ -28,6 +30,7 @@ eOCT_pool eOCT_pool_init(OCT_ID ownerID, OCT_counter capacity, size_t elementSiz
 /// <returns></returns>
 void* eOCT_pool_addEntry(eOCT_pool* pool, OCT_index* outIndex);
 void* eOCT_pool_access(eOCT_pool* pool, OCT_index index);
+bool eOCT_pool_combine(eOCT_pool* destination, eOCT_pool* source, bool freeSource);
 
 OCT_ID eOCT_pool_deleteEntry(eOCT_pool* pool, OCT_index index, bool compact);
 void eOCT_pool_free(eOCT_pool* pool);

@@ -3,6 +3,8 @@
 
 #include "OCT_Core_eng.h"
 
+#include "registry/registry_int.h"
+
 struct iOCT_ECS {
 	size_t entitySize;
 
@@ -13,3 +15,4 @@ struct iOCT_ECS {
 extern iOCT_ECS iOCT_ECS_inst;
 
 void iOCT_ECS_init();
+void iOCT_ECS_addComponent();

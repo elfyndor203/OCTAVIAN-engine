@@ -1,15 +1,5 @@
 #pragma once
-
-typedef struct testPos {
-	float posA;
-	float posB;
-} testPos;
-
-typedef struct testVel {
-	float velA;
-	float velB;
-
-} testVel;
-
 void testDesc_register();
-
+void systemB_register();
+void systemC_register_fails();
+void systemD_register_fails();

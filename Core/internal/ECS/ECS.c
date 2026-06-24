@@ -14,8 +14,8 @@ void iOCT_ECS_init() {
 	iOCT_ECS_inst.contextMap = eOCT_IDMap_init(OCT_ID_ECS, eOCT_POOLSIZE_DEFAULT);
 	iOCT_ECS_inst.contextPool = eOCT_pool_init(OCT_ID_ECS, eOCT_POOLSIZE_DEFAULT, sizeof(iOCT_entityContext));
 
-	printf("ECS initialized:\n");
-	printf("  Entity size: %zu\n", iOCT_ECS_inst.entitySize);
-	printf("  Contexts capacity: %zu\n", iOCT_ECS_inst.contextPool.capacity);
+	printf("\nECS initialized:\n");
+	printf("  | Entity size: %zu\n", iOCT_ECS_inst.entitySize);
+	printf("  | Contexts capacity: %zu\n", iOCT_ECS_inst.contextPool.capacity);
 	printf("\n");
 }

@@ -8,6 +8,9 @@
 #include <string.h>
 #include <crtdbg.h>
 #include <stdio.h>
+#include <stdbool.h>
+
+static bool eOCT_pool_expand(eOCT_pool* pool, unsigned int factor);
 
 /// <summary>
 /// Allocates memory for a single pool. Allows creation of all pools without rewriting when new component types are added
@@ -24,24 +27,13 @@ eOCT_pool eOCT_pool_init(OCT_ID ownerID, OCT_counter capacity, size_t elementSiz
 		OCT_logError(EXIT_FAILED_TO_ALLOCATE);
 	}
 
-	printf("Init pool of size: %zu\n", capacity * elementSize);
+	printf(">Init pool of size: %zu\n", capacity * elementSize);
 	return pool;
 }
 
 void* eOCT_pool_addEntry(eOCT_pool* pool, OCT_index* outIndex) {
 	if (pool->count == pool->capacity) {
-		printf("Realloc pool of size %zu", pool->capacity * pool->elementSize);
-
-		void* newArray = realloc(pool->array, pool->elementSize * pool->capacity * 2);
-		if (!newArray) {
-			OCT_logError(EXIT_FAILED_TO_ALLOCATE);
-			return NULL;
-		}
-		else {
-			pool->array = newArray;
-			pool->capacity *= 2;
-			printf("%zu\n", pool->capacity * pool->elementSize);
-		}
+		eOCT_pool_expand(pool, 2);
 	}
 
 	void* slot = eOCT_pool_access(pool, pool->count);
@@ -80,4 +72,43 @@ void eOCT_pool_free(eOCT_pool* pool) {
 void* eOCT_pool_access(eOCT_pool* pool, OCT_index index) {
 	void* entry = (char*)pool->array + index * pool->elementSize;
 	return entry;
+}
+
+bool eOCT_pool_combine(eOCT_pool* destination, eOCT_pool* source, bool freeSource) {
+	if (destination->elementSize != source->elementSize) {
+		return false;
+	}
+
+	size_t elementSize = source->elementSize;
+	size_t sourceDataSize = elementSize * source->count;
+	while (elementSize * (destination->capacity - destination->count) < sourceDataSize) {
+		if (!eOCT_pool_expand(destination, 2)) {
+			return false;
+		}
+	}
+	memcpy((char*)destination->array + (elementSize * destination->count), source->array, elementSize * source->count);
+	destination->count += source->count;
+
+	if (freeSource) {
+		eOCT_pool_free(source);
+	}
+	return true;
+}
+
+static bool eOCT_pool_expand(eOCT_pool* pool, unsigned int factor) {
+	if (factor * pool->capacity == 0) {
+		return false;
+	}
+
+	void* newArray = realloc(pool->array, pool->elementSize * pool->capacity * factor);
+	if (!newArray) {
+		OCT_logError(EXIT_FAILED_TO_ALLOCATE);
+		return false;
+	}
+	else {
+		pool->array = newArray;
+		pool->capacity *= factor;
+		//printf("%zu\n", pool->capacity * pool->elementSize);
+	}
+	return true;
 }
