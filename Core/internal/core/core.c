@@ -6,9 +6,9 @@
 
 void OCT_engine_init() {
 	iOCT_registry_init();
+	iOCT_ECS_init();
 
 	iOCT_registerAllSystems();
 
 	iOCT_registry_summary();
-	iOCT_ECS_init();
 }

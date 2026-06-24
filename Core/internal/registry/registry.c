@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <inttypes.h>
 
+#include "ECS/ECS_int.h"
 #include "utilities/utilities_eng.h"
 #include "layout/systems.h"
 
@@ -40,7 +41,6 @@ void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription) {
 	eOCT_componentDescription* componentArray = (eOCT_componentDescription*)systemDescription->providedComponents.array;
 	eOCT_componentDescription component;
 	eOCT_componentDescription* componentDestination;
-	eOCT_pool componentPool;
 	eOCT_fieldDescription* fieldArray;
 	eOCT_fieldDescription field;
 	eOCT_fieldDescription* fieldDestination;
@@ -74,10 +74,7 @@ void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription) {
 		printf("%13c Fields: %zu\n", ' ', component.providedFields.count);
 		iOCT_registry_inst.componentCount++;
 
-		// __NOTE__ do allocation here maybe	
-		//component.componentIndex_reg = iOCT_registry_inst.componentCount;	// assign position in ECS
-		componentPool = eOCT_pool_init(systemID, eOCT_POOLSIZE_DEFAULT, component.stride);
-		
+		component.componentIndex_reg = iOCT_ECS_addComponent(component); // tells the system the index of the component's pool
 	}
 	printf("--------------------------------]\n\n");
 	iOCT_registry_inst.systemCount++;

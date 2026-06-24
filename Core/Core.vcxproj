@@ -184,6 +184,7 @@
     <ClCompile Include="build_manifest.c" />
     <ClCompile Include="internal\core\core.c" />
     <ClCompile Include="internal\ECS\ECS.c" />
+    <ClCompile Include="internal\ECS\entity\entityContext.c" />
     <ClCompile Include="internal\registry\registry.c" />
     <ClCompile Include="internal\utilities\IDMap.c" />
     <ClCompile Include="internal\utilities\pools.c" />
