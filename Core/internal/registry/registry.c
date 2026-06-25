@@ -25,11 +25,7 @@ void iOCT_registry_init() {
 	iOCT_registry_inst.fields = fields;
 	iOCT_registry_inst.success = true;
 
-	printf("\nRegistry initialized:\n");
-	printf("  | Systems capacity: %zu\n", iOCT_registry_inst.systems.capacity);
-	printf("  | Components capacity: %zu\n", iOCT_registry_inst.components.capacity);
-	printf("  | Fields capacity: %zu\n", iOCT_registry_inst.fields.capacity);
-	printf("\n");
+	printf("| Registry initialized\n");
 }
 
 void iOCT_registry_distributeFields() {
@@ -53,11 +49,15 @@ void iOCT_registry_distributeFields() {
 			if (iOCT_registry_findField(request->name, &match)) {	// if there is a match
 				request->componentIndex_reg = match.componentIndex_reg;
 				request->fieldOffset_reg = match.offset;
-				printf("Fulfilled field '%s' for system '%s'\n", request->name, system->name);
+				request->fulfilled_reg = true;
+				//printf("Fulfilled field '%s' for system '%s'\n", request->name, system->name);
 			}
 			else {
-				printf("Failed to find existing field '%s'\n", request->name);
-				iOCT_registry_inst.success = false;
+				//printf("Failed to find existing field '%s'\n", request->name);
+				request->fulfilled_reg = false;
+				if (!request->optional) {
+					iOCT_registry_inst.success = false;
+				}
 			}
 		}
 	}
@@ -79,7 +79,7 @@ void iOCT_registry_check() {
 	eOCT_fieldRequest request;
 	int requestCtr = 0;
 
-	printf("\n--------SUMMARY--------[\n");
+	printf("\n--------SUMMARY--------\n");
 	printf("Systems:\n");
 	for (systemCtr = 0; systemCtr < systemPool.count; systemCtr++) {
 		system = *systemArray[systemCtr];
@@ -104,7 +104,16 @@ void iOCT_registry_check() {
 		requestArray = (eOCT_fieldRequest*)requestPool.array;
 		for (requestCtr = 0; requestCtr < requestPool.count; requestCtr++) {
 			request = requestArray[requestCtr];
-			printf("%02zu[%02zu] | %s\n", request.componentIndex_reg, request.fieldOffset_reg, request.name);
+			if (request.fulfilled_reg) {
+				printf("%02zu[%02zu]", request.componentIndex_reg, request.fieldOffset_reg);
+			}
+			else if (request.optional) {
+				printf("XX[XX]");
+			}
+			else {
+				printf("%7c| [FAIL]", ' ');
+			}
+			printf(" | %s\n", request.name);
 		}
 	}
 	printf("\nStatus: ");
@@ -114,7 +123,7 @@ void iOCT_registry_check() {
 	else {
 		printf("Failed\n");
 	}
-	printf("-----------------------]\n\n");
+	printf("-----------------------\n\n");
 
 }
 
@@ -170,7 +179,7 @@ void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription) {
 	eOCT_fieldDescription* fieldDestination;
 
 	systemDescription->systemID_reg = systemID;
-	printf("\n[--------------------------------\n");
+	printf("\n--------------------------------\n");
 	printf("%02"PRIu64".--.--| System '%s':\n", systemDescription->systemID_reg, systemDescription->name);
 	//printf("%11c Components: %zu\n", ' ', systemDescription->providedComponents.count);
 	for (componentCtr = 0; componentCtr < systemDescription->providedComponents.count; componentCtr++) {		// ensures that provided fields do not already exist, then adds them to the field pool
@@ -201,7 +210,7 @@ void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription) {
 		printf("%13c Fields: %zu\n", ' ', component->providedFields.count);
 
 	}
-	printf("--------------------------------]\n\n");
+	printf("--------------------------------\n\n");
 }
 
 #pragma endregion
@@ -211,14 +220,14 @@ static bool iOCT_registry_findField(const char* fieldName, eOCT_fieldDescription
 	eOCT_pool* fields = &iOCT_registry_inst.fields;
 	//printf("Number of fields in registry: %d\n", fields->count);
 	eOCT_fieldDescription* fieldArray = (eOCT_fieldDescription*)fields->array;
-	eOCT_fieldDescription field;
+	eOCT_fieldDescription targetField;
 	int fieldCtr = 0;
 
 	for (fieldCtr = 0; fieldCtr < fields->count; fieldCtr++) {		// check every field in the registry
-		field = fieldArray[fieldCtr];
-		if (strcmp(field.name, fieldName) == 0) {
+		targetField = fieldArray[fieldCtr];
+		if (strcmp(targetField.name, fieldName) == 0) {
 			if (fieldOut) {
-				*fieldOut = field;
+				*fieldOut = targetField;
 			}
 			return true;
 		}

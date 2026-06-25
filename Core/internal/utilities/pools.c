@@ -27,7 +27,7 @@ eOCT_pool eOCT_pool_init(OCT_ID ownerID, OCT_counter capacity, size_t elementSiz
 		OCT_logError(EXIT_FAILED_TO_ALLOCATE);
 	}
 
-	printf(">Init pool of size: %zu\n", capacity * elementSize);
+	//printf(">Init pool of size: %zu\n", capacity * elementSize);
 	return pool;
 }
 
@@ -36,7 +36,7 @@ void* eOCT_pool_addEntry(eOCT_pool* pool, OCT_index* outIndex) {
 		eOCT_pool_expand(pool, 2);
 	}
 
-	void* slot = eOCT_pool_access(pool, pool->count);
+	void* slot = eOCT_pool_access(pool, pool->count, 0);
 
 	if (outIndex) {
 		*outIndex = pool->count;
@@ -47,12 +47,12 @@ void* eOCT_pool_addEntry(eOCT_pool* pool, OCT_index* outIndex) {
 }
 
 OCT_ID eOCT_pool_deleteEntry(eOCT_pool* pool, OCT_index index, bool compact) {
-	void* entry = eOCT_pool_access(pool, index);
+	void* entry = eOCT_pool_access(pool, index, 0);
 	OCT_ID swappedID = OCT_ID_NULL;
 
 	// if shuffling is needed
 	if (index < pool->count - 1 && compact) {
-		void* finalEntry = eOCT_pool_access(pool, pool->count);
+		void* finalEntry = eOCT_pool_access(pool, pool->count, 0);
 		memcpy(entry, finalEntry, pool->elementSize);
 		memset(finalEntry, 0, pool->elementSize);
 		swappedID = *(OCT_ID*)entry; // return the ID that got swapped to update the IDmap
@@ -69,8 +69,8 @@ void eOCT_pool_free(eOCT_pool* pool) {
 	pool->array = NULL;
 }
 
-void* eOCT_pool_access(eOCT_pool* pool, OCT_index index) {
-	void* entry = (char*)pool->array + index * pool->elementSize;
+void* eOCT_pool_access(eOCT_pool* pool, OCT_index index, size_t offset) {
+	void* entry = (char*)pool->array + index * pool->elementSize + offset;
 	return entry;
 }
 

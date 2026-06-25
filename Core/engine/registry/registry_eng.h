@@ -52,14 +52,15 @@ struct eOCT_fieldRequest {
 
 	OCT_index componentIndex_reg;
 	size_t fieldOffset_reg;
+	bool fulfilled_reg;
 };
 
 struct eOCT_systemDescription {
-	OCT_ID systemID_reg; // provided by the registry
-
 	const char* name;
 	eOCT_pool providedComponents;
 	eOCT_pool requestedFields;
+
+	OCT_ID systemID_reg; // provided by the registry
 };
 
 void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription);

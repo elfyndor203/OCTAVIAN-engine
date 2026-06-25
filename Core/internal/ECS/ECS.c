@@ -14,8 +14,7 @@ void iOCT_ECS_init() {
 	iOCT_ECS_inst.contextPool = eOCT_pool_init(OCT_ID_ECS, eOCT_POOLSIZE_DEFAULT, sizeof(iOCT_entityContext));
 	iOCT_ECS_inst.componentList = eOCT_pool_init(OCT_ID_ECS, eOCT_POOLSIZE_DEFAULT, sizeof(size_t));
 
-	printf("\nECS initialized:\n");
-	printf("\n");
+	printf("| ECS initialized\n");
 }
 
 OCT_index iOCT_ECS_addComponentType(eOCT_componentDescription desc) {
@@ -28,11 +27,4 @@ OCT_index iOCT_ECS_addComponentType(eOCT_componentDescription desc) {
 
 	//printf("New entity size: %zu\n", iOCT_ECS_inst.entitySize);
 	return index;
-}
-
-eOCT_pool* eOCT_getComponentPool(OCT_ID contextID, OCT_index componentIndex) {
-	OCT_index contextIndex = eOCT_IDMap_getIndex(&iOCT_ECS_inst.contextMap, contextID);
-	iOCT_entityContext* context = eOCT_pool_access(&iOCT_ECS_inst.contextPool, contextIndex);
-	eOCT_pool* poolsArray = (eOCT_pool*)context->componentPools.array;
-	return &poolsArray[componentIndex];
 }

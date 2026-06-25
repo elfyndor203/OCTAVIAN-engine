@@ -19,7 +19,7 @@ eOCT_IDMap eOCT_IDMap_init(OCT_ID ownerID, OCT_counter capacity) {
 	if (!map.array) {
 		OCT_logError(EXIT_FAILED_TO_ALLOCATE);
 	}
-	printf(">Init map of size %zu\n", capacity * sizeof(OCT_index));
+	//printf(">Init map of size %zu\n", capacity * sizeof(OCT_index));
 	return map;
 }
 

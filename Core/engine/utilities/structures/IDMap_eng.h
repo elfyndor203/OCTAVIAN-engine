@@ -1,5 +1,8 @@
 #pragma once
-#include "OCT_Core_eng.h"
+#include "utilities/types_eng.h"
+
+#include "layout/types.h"
+#include "OCT_Math.h"
 
 /// <summary>
 /// Maps hold lists of pool array locations, indexed by ID
