@@ -140,6 +140,7 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="engine\ECS\ECS_eng.h" />
     <ClInclude Include="engine\OCT_Core_eng.h" />
     <ClInclude Include="include\ECS\entityContext.h" />
     <ClInclude Include="include\errors\errors\errorCodes.h" />
@@ -189,7 +190,7 @@
     <ClCompile Include="internal\utilities\IDMap.c" />
     <ClCompile Include="internal\utilities\pools.c" />
     <ClCompile Include="testing\registryMain.c" />
-    <ClCompile Include="testing\systemDescriptions.c" />
+    <ClCompile Include="testing\systems_succeed.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

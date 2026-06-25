@@ -1,6 +1,7 @@
 #include "OCT_Core_eng.h"
 #include "registry/registry_int.h"
 #include "ECS/entity/entityContext_int.h"
+#include "testSystem.h"
 
 typedef struct testPos {
 	float posA;

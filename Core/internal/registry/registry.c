@@ -11,18 +11,19 @@
 #include "utilities/utilities_eng.h"
 #include "layout/systems.h"
 
-static bool iOCT_registry_fieldExists(const char* fieldName);
+static bool iOCT_registry_findField(const char* fieldName, eOCT_fieldDescription* fieldOut);
 
 iOCT_registry iOCT_registry_inst = { 0 }; 
 
+#pragma region internal
 void iOCT_registry_init() {
-	eOCT_pool systems = eOCT_pool_init(OCT_ID_REGISTRY, eOCT_POOLSIZE_DEFAULT, sizeof(eOCT_systemDescription));
+	eOCT_pool systems = eOCT_pool_init(OCT_ID_REGISTRY, eOCT_POOLSIZE_DEFAULT, sizeof(eOCT_systemDescription*)); // store system pointers
 	eOCT_pool fields = eOCT_pool_init(OCT_ID_REGISTRY, eOCT_POOLSIZE_DEFAULT, sizeof(eOCT_fieldDescription));
 	eOCT_pool components = eOCT_pool_init(OCT_ID_REGISTRY, eOCT_POOLSIZE_DEFAULT, sizeof(eOCT_componentDescription));
 	iOCT_registry_inst.systems = systems;
 	iOCT_registry_inst.components = components;
 	iOCT_registry_inst.fields = fields;
-	iOCT_registry_inst.componentCount = 0;
+	iOCT_registry_inst.success = true;
 
 	printf("\nRegistry initialized:\n");
 	printf("  | Systems capacity: %zu\n", iOCT_registry_inst.systems.capacity);
@@ -31,77 +32,96 @@ void iOCT_registry_init() {
 	printf("\n");
 }
 
-void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription) {
-	eOCT_systemDescription* destination = (eOCT_systemDescription*)eOCT_pool_addEntry(&iOCT_registry_inst.systems, NULL);
-	*destination = *systemDescription;
+void iOCT_registry_distributeFields() {
+	eOCT_pool systemPool = iOCT_registry_inst.systems;
+	eOCT_systemDescription** systemArray = (eOCT_systemDescription**)systemPool.array;
+	eOCT_systemDescription* system;
 
-	OCT_ID systemID = iOCT_registry_inst.systemCount + 1; // start at 1 because 0 is null
-	int componentCtr = 0;
-	int fieldCtr = 0;
-	eOCT_componentDescription* componentArray = (eOCT_componentDescription*)systemDescription->providedComponents.array;
-	eOCT_componentDescription component;
-	eOCT_componentDescription* componentDestination;
-	eOCT_fieldDescription* fieldArray;
-	eOCT_fieldDescription field;
-	eOCT_fieldDescription* fieldDestination;
+	eOCT_pool requestPool;
+	eOCT_fieldRequest* requestArray;
+	eOCT_fieldRequest* request;
 
-	systemDescription->systemID_reg = systemID;
-	printf("\n[--------------------------------\n");
-	printf("%02"PRIu64".%02d.%02d| System '%s' summary:\n", systemDescription->systemID_reg, 0, 0, systemDescription->name);
-	printf("%11c Components: %zu\n", ' ', systemDescription->providedComponents.count);
-	for (componentCtr = 0; componentCtr < systemDescription->providedComponents.count; componentCtr++) {		// ensures that provided fields do not already exist, then adds them to the field pool
-		component = componentArray[componentCtr];
-		componentDestination = (eOCT_componentDescription*)eOCT_pool_addEntry(&iOCT_registry_inst.components, NULL);
-		*componentDestination = component;
-		printf("%02"PRIu64".%02d.%02d| %2cComponent: %-15s\n", systemID, componentCtr + 1, 0, ' ', component.name);
+	eOCT_fieldDescription match;
+	
+	for (int systemCtr = 0; systemCtr < systemPool.count; systemCtr++) {
+		system = systemArray[systemCtr];
+		requestPool = system->requestedFields;
+		requestArray = (eOCT_fieldRequest*)requestPool.array;
 
-		fieldArray = (eOCT_fieldDescription*)component.providedFields.array;
-		for (fieldCtr = 0; fieldCtr < component.providedFields.count; fieldCtr++) {
-			field = fieldArray[fieldCtr];
-			printf("%02"PRIu64".%02d.%02d| %4cField: %-15s | ", systemID, componentCtr + 1, fieldCtr + 1, ' ', field.name);
-
-			if (iOCT_registry_fieldExists(field.name)) {	// check for duplicates
-				printf("Failed: Field already exists");
+		for (int requestCtr = 0; requestCtr < requestPool.count; requestCtr++) {
+			request = &requestArray[requestCtr];
+			if (iOCT_registry_findField(request->name, &match)) {	// if there is a match
+				request->componentIndex_reg = match.componentIndex_reg;
+				request->fieldOffset_reg = match.offset;
+				printf("Fulfilled field '%s' for system '%s'\n", request->name, system->name);
 			}
 			else {
-				fieldDestination = (eOCT_fieldDescription*)eOCT_pool_addEntry(&iOCT_registry_inst.fields, NULL);	// add field to the registry
-				*fieldDestination = field;
-				printf("Success");
+				printf("Failed to find existing field '%s'\n", request->name);
+				iOCT_registry_inst.success = false;
 			}
-			printf("\n");
-			iOCT_registry_inst.fieldCount++;
 		}
-		printf("%13c Fields: %zu\n", ' ', component.providedFields.count);
-		iOCT_registry_inst.componentCount++;
-
-		component.componentIndex_reg = iOCT_ECS_addComponent(component); // tells the system the index of the component's pool
 	}
-	printf("--------------------------------]\n\n");
-	iOCT_registry_inst.systemCount++;
 }
 
-void iOCT_registry_summary() {
-	printf("Total systems in registry: %u\n", iOCT_registry_inst.systemCount);
-	printf("Total components in registry: %u\n", iOCT_registry_inst.componentCount);
-	printf("Total fields in registry: %u\n", iOCT_registry_inst.fieldCount);
-	printf("\n");
-}
+void iOCT_registry_check() {
+	eOCT_pool systemPool = iOCT_registry_inst.systems;
+	eOCT_systemDescription** systemArray = (eOCT_systemDescription**)systemPool.array;
+	eOCT_systemDescription system;
+	int systemCtr = 0;
 
-void eOCT_registry_allocateComponents() {
-	eOCT_systemDescription* systemArray = (eOCT_systemDescription*)iOCT_registry_inst.systems.array;
-	eOCT_systemDescription* system;
+	eOCT_pool componentPool;
 	eOCT_componentDescription* componentArray;
-	eOCT_componentDescription* component;
+	eOCT_componentDescription component;
+	int componentCtr = 0;
 
-	//for (int systemCtr = 0; systemCtr < iOCT_registry_inst.systemCount; systemCtr++) {
-	//	system = &systemArray[systemCtr];
-	//	system->systemID_reg = systemCtr;
-	//	
-	//	componentArray = system->providedComponents
-	//}
+	eOCT_pool requestPool;
+	eOCT_fieldRequest* requestArray;
+	eOCT_fieldRequest request;
+	int requestCtr = 0;
+
+	printf("\n--------SUMMARY--------[\n");
+	printf("Systems:\n");
+	for (systemCtr = 0; systemCtr < systemPool.count; systemCtr++) {
+		system = *systemArray[systemCtr];
+		printf("%02zu.    | %s\n", system.systemID_reg, system.name);
+	}
+
+	printf("\nComponents:\n");
+	for (systemCtr = 0; systemCtr < systemPool.count; systemCtr++) {
+		system = *systemArray[systemCtr];
+		componentPool = system.providedComponents;
+		componentArray = (eOCT_componentDescription*)componentPool.array;
+		for (componentCtr = 0; componentCtr < componentPool.count; componentCtr++) {
+			component = componentArray[componentCtr];
+			printf("%02zu.    | %s\n", component.componentIndex_reg, component.name);
+		}
+	}
+
+	printf("\nFields requested:\n");
+	for (systemCtr = 0; systemCtr < systemPool.count; systemCtr++) {
+		system = *systemArray[systemCtr];
+		requestPool = system.requestedFields;
+		requestArray = (eOCT_fieldRequest*)requestPool.array;
+		for (requestCtr = 0; requestCtr < requestPool.count; requestCtr++) {
+			request = requestArray[requestCtr];
+			printf("%02zu[%02zu] | %s\n", request.componentIndex_reg, request.fieldOffset_reg, request.name);
+		}
+	}
+	printf("\nStatus: ");
+	if (iOCT_registry_inst.success) {
+		printf("Success\n");
+	}
+	else {
+		printf("Failed\n");
+	}
+	printf("-----------------------]\n\n");
+
 }
 
-eOCT_pool eOCT_generateFieldDescriptionPool(eOCT_fieldDescription* array, unsigned int count) {
+#pragma endregion
+
+#pragma region engine
+eOCT_pool eOCT_generateFieldDescriptionPool(eOCT_fieldDescription* array, size_t count) {
 	eOCT_pool pool = eOCT_pool_init(OCT_ID_NULL, count, sizeof(eOCT_fieldDescription));
 
 	eOCT_fieldDescription* destination;
@@ -112,7 +132,7 @@ eOCT_pool eOCT_generateFieldDescriptionPool(eOCT_fieldDescription* array, unsign
 	return pool;
 }
 
-eOCT_pool eOCT_generateComponentDescriptionPool(eOCT_componentDescription* array, unsigned int count) {
+eOCT_pool eOCT_generateComponentDescriptionPool(eOCT_componentDescription* array, size_t count) {
 	eOCT_pool pool = eOCT_pool_init(OCT_ID_NULL, count, sizeof(eOCT_componentDescription));
 
 	eOCT_componentDescription* destination;
@@ -123,16 +143,86 @@ eOCT_pool eOCT_generateComponentDescriptionPool(eOCT_componentDescription* array
 	return pool;
 }
 
-static bool iOCT_registry_fieldExists(const char* fieldName) {
+eOCT_pool eOCT_generateFieldRequestPool(eOCT_fieldRequest* array, size_t count) {
+	eOCT_pool pool = eOCT_pool_init(OCT_ID_NULL, count, sizeof(eOCT_fieldRequest));
+
+	eOCT_fieldRequest* destination;
+	for (int ctr = 0; ctr < count; ctr++) {
+		destination = eOCT_pool_addEntry(&pool, NULL);
+		*destination = array[ctr];
+	}
+	return pool;
+}
+
+void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription) {
+	OCT_ID systemID = iOCT_registry_inst.systems.count + OCT_ID_SYSTEM_START;
+
+	eOCT_systemDescription** destination = (eOCT_systemDescription**)eOCT_pool_addEntry(&iOCT_registry_inst.systems, NULL);	// addEntry after so the ID starts at 3 instead of 3 + 1
+	*destination = systemDescription;
+
+	int componentCtr = 0;
+	int fieldCtr = 0;
+	eOCT_componentDescription* componentArray = (eOCT_componentDescription*)systemDescription->providedComponents.array;
+	eOCT_componentDescription* component;				// pointer to return index to
+	eOCT_componentDescription* componentDestination;
+	eOCT_fieldDescription* fieldArray;
+	eOCT_fieldDescription* field;						// return component index to fields too for linking
+	eOCT_fieldDescription* fieldDestination;
+
+	systemDescription->systemID_reg = systemID;
+	printf("\n[--------------------------------\n");
+	printf("%02"PRIu64".--.--| System '%s':\n", systemDescription->systemID_reg, systemDescription->name);
+	//printf("%11c Components: %zu\n", ' ', systemDescription->providedComponents.count);
+	for (componentCtr = 0; componentCtr < systemDescription->providedComponents.count; componentCtr++) {		// ensures that provided fields do not already exist, then adds them to the field pool
+		component = &componentArray[componentCtr];
+		componentDestination = (eOCT_componentDescription*)eOCT_pool_addEntry(&iOCT_registry_inst.components, NULL);
+		*componentDestination = *component;
+		component->componentIndex_reg = iOCT_ECS_addComponentType(*component); // tells the system the index of the component's pool
+		printf("%02"PRIu64".%02zu.--| %2cComponent %zu: %-15s\n", systemID, component->componentIndex_reg, ' ', component->componentIndex_reg, component->name);
+
+		fieldArray = (eOCT_fieldDescription*)component->providedFields.array;
+		for (fieldCtr = 0; fieldCtr < component->providedFields.count; fieldCtr++) {
+			field = &fieldArray[fieldCtr];
+			printf("%02"PRIu64".%02zu.%02d| %4cField: %-15s | ", systemID, component->componentIndex_reg, fieldCtr, ' ', field->name);
+
+			if (iOCT_registry_findField(field->name, NULL)) {	// check for duplicates
+				printf("Failed: Field already exists\n");
+				iOCT_registry_inst.success = false;
+			}
+
+			else {
+				field->componentIndex_reg = component->componentIndex_reg;
+
+				fieldDestination = (eOCT_fieldDescription*)eOCT_pool_addEntry(&iOCT_registry_inst.fields, NULL);	// add field to the registry
+				*fieldDestination = *field;
+				printf("Success\n");
+			}
+		}
+		printf("%13c Fields: %zu\n", ' ', component->providedFields.count);
+
+	}
+	printf("--------------------------------]\n\n");
+}
+
+#pragma endregion
+
+#pragma region static
+static bool iOCT_registry_findField(const char* fieldName, eOCT_fieldDescription* fieldOut) {
 	eOCT_pool* fields = &iOCT_registry_inst.fields;
 	//printf("Number of fields in registry: %d\n", fields->count);
 	eOCT_fieldDescription* fieldArray = (eOCT_fieldDescription*)fields->array;
+	eOCT_fieldDescription field;
 	int fieldCtr = 0;
 
 	for (fieldCtr = 0; fieldCtr < fields->count; fieldCtr++) {		// check every field in the registry
-		if (strcmp(fieldArray[fieldCtr].name, fieldName) == 0) {
+		field = fieldArray[fieldCtr];
+		if (strcmp(field.name, fieldName) == 0) {
+			if (fieldOut) {
+				*fieldOut = field;
+			}
 			return true;
 		}
 	}
 	return false;
 }
+#pragma endregion

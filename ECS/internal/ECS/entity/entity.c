@@ -69,7 +69,7 @@ OCT_ID iOCT_entity_new(iOCT_entityContext* context, OCT_ID parentID) {
 	OCT_index newIndex;
 
 	newEntity = (iOCT_entity*)cOCT_pool_addEntry(iOCT_pool_get(context, OCT_ECSType_entity), &newIndex);
-	newID = cOCT_IDMap_register(&context->IDMap, newIndex);		// Register an ID first to enable other functions
+	newID = cOCT_IDMap_register(&context->entityIDMap, newIndex);		// Register an ID first to enable other functions
 
 	memset(newEntity, 0, sizeof(iOCT_entity)); // fill with NULL IDs
 
@@ -88,8 +88,8 @@ void OCT_entity_delete(OCT_handle entityHandle) {
 	iOCT_entity_delete(context, entityHandle.objectID);
 }
 void iOCT_entity_delete(iOCT_entityContext* context, OCT_ID entityID) {
-	cOCT_pool* pools = context->pools;
-	cOCT_IDMap* map = &context->IDMap;
+	cOCT_pool* pools = context->componentPools;
+	cOCT_IDMap* map = &context->entityIDMap;
 	iOCT_entity* entity = iOCT_entity_get(context, entityID);
 	OCT_index entityIndex = cOCT_IDMap_getIndex(map, entityID);
 
@@ -103,7 +103,7 @@ void iOCT_entity_delete(iOCT_entityContext* context, OCT_ID entityID) {
 		}
 		if (iOCT_entity_hasComponent(context, entityID, comp)) {
 			compID = iOCT_entity_getCompID(context, entityID, comp);
-			compIndex = cOCT_IDMap_getIndex(&context->IDMap, compID);
+			compIndex = cOCT_IDMap_getIndex(&context->entityIDMap, compID);
 			swappedCompID = cOCT_pool_deleteEntry(&pools[comp], compIndex, true);
 			cOCT_IDMap_remap(map, swappedCompID, compIndex);
 			cOCT_IDMap_deregister(map, compID);
@@ -113,7 +113,7 @@ void iOCT_entity_delete(iOCT_entityContext* context, OCT_ID entityID) {
 	iOCT_transform2D_delete(context, entityID); // delete the transform
 	OCT_ID swappedID = cOCT_pool_deleteEntry(iOCT_pool_get(context, OCT_ECSType_entity), entityIndex, true); // delete the entity
 	cOCT_IDMap_remap(map, swappedID, entityIndex);
-	cOCT_IDMap_deregister(&context->IDMap, entityID); // deregister the ID
+	cOCT_IDMap_deregister(&context->entityIDMap, entityID); // deregister the ID
 }
 
 /// <summary>

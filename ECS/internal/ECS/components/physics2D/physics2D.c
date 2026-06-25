@@ -28,7 +28,7 @@ OCT_ID iOCT_physics2D_add(iOCT_entityContext* context, OCT_ID entityID, OCT_ID r
 
 	cOCT_pool* pool = iOCT_pool_get(context, OCT_ECSType_physics2D);
 	physics = (iOCT_physics2D*)cOCT_pool_addEntry(pool, &newIndex);
-	newID = cOCT_IDMap_register(&context->IDMap, newIndex);
+	newID = cOCT_IDMap_register(&context->entityIDMap, newIndex);
 
 	entity->physicsID = newID;	// must update before adding rbOriginID
 	iOCT_entity_updateMask(context, entityID, OCT_ECSType_physics2D);
@@ -168,7 +168,7 @@ _OCT_snapshot_physics* _OCT_physics2D_packSnapshot(OCT_index* outCount, OCT_ID* 
 		hitb = iOCT_collider2D_get(context, phys->hitBoxID);
 
 		dataSlot->physicsID = phys->physicsID;
-		dataSlot->rbOriginIndex = cOCT_IDMap_getIndex(&context->IDMap, phys->rbOriginID);
+		dataSlot->rbOriginIndex = cOCT_IDMap_getIndex(&context->entityIDMap, phys->rbOriginID);
 		dataSlot->mass = phys->mass;
 		dataSlot->lin_v = phys->lin_v;
 		dataSlot->forceNet = phys->forceNet;

@@ -36,7 +36,7 @@ OCT_ID iOCT_sprite2D_add(iOCT_entityContext* context, OCT_ID entityID, OCT_handl
 	iOCT_entity* entity = iOCT_entity_get(context, entityID);
 
 	newSprite = (iOCT_sprite2D*)cOCT_pool_addEntry(iOCT_pool_get(context, OCT_ECSType_sprite2D), &newIndex);
-	newID = cOCT_IDMap_register(&context->IDMap, newIndex);
+	newID = cOCT_IDMap_register(&context->entityIDMap, newIndex);
 
 	newSprite->spriteID = newID;
 	newSprite->uv = uv;

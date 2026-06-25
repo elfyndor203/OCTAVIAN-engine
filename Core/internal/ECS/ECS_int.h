@@ -20,4 +20,4 @@ void iOCT_ECS_init();
 /// </summary>
 /// <param name="desc"></param>
 /// <returns></returns>
-OCT_index iOCT_ECS_addComponent(eOCT_componentDescription desc);
+OCT_index iOCT_ECS_addComponentType(eOCT_componentDescription desc);

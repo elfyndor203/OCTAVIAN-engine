@@ -3,22 +3,22 @@
 
 #include "utilities/utilities_eng.h"
 
-
 enum eOCT_descriptionTypes {
 	eOCT_DESC_FIELD,
 	eOCT_DESC_COMPONENT,
-	eOCT_DESC_SYSTEM
+	eOCT_DESC_SYSTEM,
+	eOCT_DESC_REQUEST
 };
 
 enum eOCT_fieldTypes {
-	OCT_FIELD_NULL = 0,
-	OCT_FIELD_INT,
-	OCT_FIELD_UINT,
-	OCT_FIELD_FLOAT,
-	OCT_FIELD_DOUBLE,
-	OCT_FIELD_CHAR,
-	OCT_FIELD_PTR,
-	OCT_FIELD_STRING,
+	eOCT_FIELDTYPE_NULL = 0,
+	eOCT_FIELDTYPE_INT64,
+	eOCT_FIELDTYPE_UINT64,
+	eOCT_FIELDTYPE_FLOAT32,
+	eOCT_FIELDTYPE_DOUBLE64,
+	eOCT_FIELDTYPE_CHAR8,
+	eOCT_FIELDTYPE_PTR64,
+	eOCT_FIELDTYPE_STRING64,
 };
 
 enum eOCT_fieldAccess {
@@ -32,6 +32,8 @@ struct eOCT_fieldDescription {
 	const char* name;
 	eOCT_fieldTypes type;	// standard field types defined in fields.h
 	size_t offset;			// offset from the start of the component struct
+
+	OCT_index componentIndex_reg;
 };
 
 struct eOCT_componentDescription {
@@ -39,19 +41,17 @@ struct eOCT_componentDescription {
 	size_t stride;
 	eOCT_pool providedFields;
 
-	OCT_ID componentIndex_reg; // where the component is located in the ECS
-	eOCT_pool* poolIn_reg; // provided by the registry, where the system can access its own components
+	OCT_index componentIndex_reg; // where the component is located in the ECS
 };
 
 struct eOCT_fieldRequest {
 	const char* name;
 	eOCT_fieldTypes type;
+	//eOCT_fieldAccess access;
 	bool optional;
 
-	eOCT_pool* readPool_reg; // provided by the registry, systems can read and write to individual fields
-	size_t readOffset_reg;
-	eOCT_pool* writePool_reg;
-	size_t writeOffset_reg;
+	OCT_index componentIndex_reg;
+	size_t fieldOffset_reg;
 };
 
 struct eOCT_systemDescription {
@@ -62,7 +62,8 @@ struct eOCT_systemDescription {
 	eOCT_pool requestedFields;
 };
 
-void eOCT_registry_registerSystem(eOCT_systemDescription systemDescription);
+void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription);
 //void eOCT_registry_allocateComponents(eOCT_componentDescription* componentDescription);
-eOCT_pool eOCT_generateFieldDescriptionPool(eOCT_fieldDescription* array, unsigned int count);
-eOCT_pool eOCT_generateComponentDescriptionPool(eOCT_componentDescription* array, unsigned int count);
+eOCT_pool eOCT_generateFieldDescriptionPool(eOCT_fieldDescription* array, size_t count);
+eOCT_pool eOCT_generateComponentDescriptionPool(eOCT_componentDescription* array, size_t count);
+eOCT_pool eOCT_generateFieldRequestPool(eOCT_fieldRequest* array, size_t count);

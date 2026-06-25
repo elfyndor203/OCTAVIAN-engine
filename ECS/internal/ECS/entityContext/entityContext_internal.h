@@ -17,8 +17,8 @@
 struct iOCT_entityContext{
 	OCT_ID contextID;
 
-	cOCT_IDMap IDMap;
-	cOCT_pool pools[OCT_ECSTypes_total];
+	cOCT_IDMap entityIDMap;
+	cOCT_pool componentPools[OCT_ECSTypes_total];
 
 	// component utilities
 	int currentMaxDepth;

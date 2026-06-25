@@ -55,12 +55,12 @@ OCT_ID iOCT_transform2D_add(iOCT_entityContext* context, OCT_ID entityID) {
     else {
         parentTransform = iOCT_transform2D_get(context, iOCT_entity_get(context, iOCT_entity_get(context, entityID)->parentID)->transformID);
         parentDepth = parentTransform->depth;
-        parentIndex = cOCT_IDMap_getIndex(&context->IDMap, parentTransform->transformID);
+        parentIndex = cOCT_IDMap_getIndex(&context->entityIDMap, parentTransform->transformID);
         parentID = parentTransform->transformID;
     }
 
     newTransform = (iOCT_transform2D*)cOCT_pool_addEntry(iOCT_pool_get(context, OCT_ECSType_transform2D), &newIndex);
-    newID = cOCT_IDMap_register(&context->IDMap, newIndex);
+    newID = cOCT_IDMap_register(&context->entityIDMap, newIndex);
     memset(newTransform, 0, sizeof(iOCT_transform2D));
 
     // Set values
@@ -104,7 +104,7 @@ void iOCT_transform2D_propagate(iOCT_entityContext* context) {
     iOCT_transform2D* currentTransform;
     iOCT_transform2D* parentTransform;
 
-    OCT_index rootIndex = cOCT_IDMap_getIndex(&context->IDMap, iOCT_entity_get(context, iOCT_ROOT_ID)->transformID);
+    OCT_index rootIndex = cOCT_IDMap_getIndex(&context->entityIDMap, iOCT_entity_get(context, iOCT_ROOT_ID)->transformID);
     currentTransform = &array[rootIndex];
     currentTransform->localMatrix = iOCT_transform2D_generateMatrix(currentTransform);
     currentTransform->globalMatrix = currentTransform->localMatrix;
@@ -139,7 +139,7 @@ static void iOCT_transform2D_insert(iOCT_entityContext* context, iOCT_transform2
     if (newDepth == *currentMaxDepth) {  // insert at the end, nothing gets displaced, nothing needs resolving
         depthEnds[newDepth] += 1;
         poolArray[depthEnds[newDepth]] = newTransform;  // replace anyway
-        cOCT_IDMap_remap(&context->IDMap, newTransform.transformID, depthEnds[newDepth]);
+        cOCT_IDMap_remap(&context->entityIDMap, newTransform.transformID, depthEnds[newDepth]);
         return;
     }
     if (newDepth > *currentMaxDepth) {   // insert at the end, nothing gets displaced, nothing needs resolving
@@ -150,7 +150,7 @@ static void iOCT_transform2D_insert(iOCT_entityContext* context, iOCT_transform2
             depthEnds[newDepth] = depthEnds[*currentMaxDepth] + 1;
         }
         poolArray[depthEnds[newDepth]] = newTransform;  // replace anyway
-        cOCT_IDMap_remap(&context->IDMap, newTransform.transformID, depthEnds[newDepth]);
+        cOCT_IDMap_remap(&context->entityIDMap, newTransform.transformID, depthEnds[newDepth]);
         *currentMaxDepth = newDepth;
         return;
     }
@@ -159,7 +159,7 @@ static void iOCT_transform2D_insert(iOCT_entityContext* context, iOCT_transform2
         displacedTransform = poolArray[targetIndex];    // temp copy of the displaced
 
         poolArray[targetIndex] = workingTransform;      // copy the new one in
-        cOCT_IDMap_remap(&context->IDMap, workingTransform.transformID, targetIndex);
+        cOCT_IDMap_remap(&context->entityIDMap, workingTransform.transformID, targetIndex);
 
         workingTransform = displacedTransform;          // start doing the same to the next layer
         depthEnds[workingDepth] += 1;                   // expand the depth group by 1
@@ -167,13 +167,13 @@ static void iOCT_transform2D_insert(iOCT_entityContext* context, iOCT_transform2
     }
     OCT_index finalIndex = depthEnds[*currentMaxDepth] + 1;
     poolArray[finalIndex] = workingTransform;
-    cOCT_IDMap_remap(&context->IDMap, workingTransform.transformID, finalIndex);
+    cOCT_IDMap_remap(&context->entityIDMap, workingTransform.transformID, finalIndex);
     depthEnds[*currentMaxDepth] += 1;
 }
 
 static void iOCT_transform2D_pull(iOCT_entityContext* context, iOCT_transform2D* transform) {
 	cOCT_pool* pool = iOCT_pool_get(context, OCT_ECSType_transform2D);
-    cOCT_IDMap* map = &context->IDMap;
+    cOCT_IDMap* map = &context->entityIDMap;
 
     iOCT_transform2D* keep;                // last transform in the next layer
     iOCT_transform2D* replace = transform;    // hole to be filled with keep
@@ -218,7 +218,7 @@ static void iOCT_transform2D_updateParentCaches(iOCT_entityContext* context) {
     OCT_index newIndex;
     for (int i = 0; i < transformPool->count; i++) {
         transform = &array[i];
-        newIndex = cOCT_IDMap_getIndex(&context->IDMap, transform->parentID);
+        newIndex = cOCT_IDMap_getIndex(&context->entityIDMap, transform->parentID);
         transform->parentCache = newIndex;
     }
 }

@@ -36,7 +36,7 @@ OCT_ID iOCT_camera2D_add(iOCT_entityContext* context, OCT_ID entityID, OCT_vec2 
 	iOCT_entity* entity = iOCT_entity_get(context, entityID);
 
 	newCamera = (iOCT_camera2D*)cOCT_pool_addEntry(iOCT_pool_get(context, OCT_ECSType_camera2D), &newIndex); // registration
-	newID = cOCT_IDMap_register(&context->IDMap, newIndex);
+	newID = cOCT_IDMap_register(&context->entityIDMap, newIndex);
 
 	newCamera->cameraID = newID;	// settings
 	newCamera->parentID = entityID;

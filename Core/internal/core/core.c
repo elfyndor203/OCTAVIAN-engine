@@ -9,6 +9,7 @@ void OCT_engine_init() {
 	iOCT_ECS_init();
 
 	iOCT_registerAllSystems();
+	iOCT_registry_distributeFields();
 
-	iOCT_registry_summary();
+	iOCT_registry_check();
 }

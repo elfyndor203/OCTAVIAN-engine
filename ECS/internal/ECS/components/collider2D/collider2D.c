@@ -50,7 +50,7 @@ OCT_ID iOCT_collider2D_add(iOCT_entityContext* context, OCT_ID entityID, OCT_sha
 
 	entity = iOCT_entity_get(context, entityID);
 	newCollider = (iOCT_collider2D*)cOCT_pool_addEntry(iOCT_pool_get(context, OCT_ECSType_collider2D), &newIndex);
-	newID = cOCT_IDMap_register(&context->IDMap, newIndex);
+	newID = cOCT_IDMap_register(&context->entityIDMap, newIndex);
 
 	newCollider->colliderID = newID;
 	newCollider->shape = shape;
