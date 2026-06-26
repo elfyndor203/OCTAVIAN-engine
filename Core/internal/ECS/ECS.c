@@ -19,6 +19,7 @@ void iOCT_ECS_init() {
 
 OCT_index iOCT_ECS_addComponentType(eOCT_componentDescription desc) {
 	iOCT_ECS_inst.entitySize += sizeof(OCT_index);
+	iOCT_ECS_inst.componentTypeCount++;
 	OCT_index index = (OCT_index)iOCT_ECS_inst.componentList.count;
 	//printf("Contexts will now allocate component %s with index %zu\n", desc.name, index);
 

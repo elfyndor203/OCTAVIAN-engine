@@ -5,6 +5,7 @@
 
 struct iOCT_ECS {
 	size_t entitySize;
+	size_t componentTypeCount;
 
 	eOCT_IDMap contextMap;
 	eOCT_pool contextPool;

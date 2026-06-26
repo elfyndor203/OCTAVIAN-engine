@@ -96,6 +96,8 @@ void iOCT_registry_check() {
 			printf("%02zu.    | %s\n", component.componentIndex_reg, component.name);
 		}
 	}
+	printf("ECS Component Count: %zu\n", iOCT_ECS_inst.componentTypeCount);
+	printf("ECS Entity Size: %zu\n", iOCT_ECS_inst.entitySize);
 
 	printf("\nFields requested:\n");
 	for (systemCtr = 0; systemCtr < systemPool.count; systemCtr++) {
@@ -132,10 +134,11 @@ void iOCT_registry_check() {
 #pragma region engine
 eOCT_pool eOCT_generateFieldDescriptionPool(eOCT_fieldDescription* array, size_t count) {
 	eOCT_pool pool = eOCT_pool_init(OCT_ID_NULL, count, sizeof(eOCT_fieldDescription));
-
+	printf("array=%p capacity=%zu count=%zu elementSize=%zu\n",
+		pool.array, (size_t)pool.capacity, (size_t)pool.count, pool.elementSize);
 	eOCT_fieldDescription* destination;
-	for (int ctr = 0; ctr < count; ctr++) {
-		destination = eOCT_pool_addEntry(&pool, NULL);
+	for (OCT_index ctr = 0; ctr < count; ctr++) {
+		destination = (eOCT_fieldDescription*)eOCT_pool_addEntry(&pool, NULL);
 		*destination = array[ctr];
 	}
 	return pool;

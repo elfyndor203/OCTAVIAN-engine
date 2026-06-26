@@ -4,5 +4,4 @@
 
 #define OCT_index_NULL SIZE_MAX
 
-typedef size_t OCT_counter;
 typedef size_t OCT_index;

@@ -106,7 +106,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
@@ -184,6 +184,7 @@
     <ClCompile Include="include\math\units\constants.c" />
     <ClCompile Include="include\math\units\conversions.c" />
     <ClCompile Include="include\math\vectors\vec2.c" />
+    <ClCompile Include="internal\ECS\entity\entity.c" />
     <ClCompile Include="registration_build.c" />
     <ClCompile Include="internal\core\core.c" />
     <ClCompile Include="internal\ECS\ECS.c" />

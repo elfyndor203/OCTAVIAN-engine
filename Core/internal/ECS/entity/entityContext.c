@@ -16,19 +16,25 @@ OCT_ID iOCT_entityContext_open() {
 	newID = eOCT_IDMap_register(&iOCT_ECS_inst.contextMap, newIndex);
 	newContext->contextID = newID;
 
-	newContext->entityIDMap = eOCT_IDMap_init(newID, eOCT_POOLSIZE_DEFAULT);
-	newContext->entityPool = eOCT_pool_init(newID, eOCT_POOLSIZE_DEFAULT, iOCT_ECS_inst.entitySize);
+	// init entity pool
+	OCT_index entityCapacity = eOCT_POOLSIZE_DEFAULT;
+	newContext->entityIDMap = eOCT_IDMap_init(newID, entityCapacity);
+	newContext->entityPool = eOCT_pool_init(newID, entityCapacity, iOCT_ECS_inst.entitySize);
+	//eOCT_pool_fill(&newContext->entityPool, eOCT_POOL_FILL_ALL, eOCT_POOL_FILL_BYTES, NULL, eOCT_POOL_FILL_BYTES_ONES, 0);
+	//eOCT_pool_dump(&newContext->entityPool);
 
+	// init component pools-pool
 	size_t componentTotal = iOCT_ECS_inst.componentList.count;
 	OCT_index componentCtr;
 	eOCT_pool* componentPoolDest;
 	size_t componentSize;
 	OCT_index indexCheck;
 
-	newContext->componentPools = eOCT_pool_init(newID, componentTotal, sizeof(eOCT_pool)); // init pool of component pools
+	newContext->componentPools = eOCT_pool_init(newID, componentTotal, sizeof(eOCT_pool));
 	printf("Allocated entityContext %"PRIu64"\n", newID);
 
-	for (componentCtr = 0; componentCtr < componentTotal; componentCtr++) {		// init each component pool
+	// init component pools
+	for (componentCtr = 0; componentCtr < componentTotal; componentCtr++) {
 		componentSize = *(size_t*)eOCT_pool_access(&iOCT_ECS_inst.componentList, componentCtr, 0);	// add entry to the pool pool
 		componentPoolDest = eOCT_pool_addEntry(&newContext->componentPools, &indexCheck);
 
@@ -39,14 +45,16 @@ OCT_ID iOCT_entityContext_open() {
 	return newID;
 }
 
-eOCT_pool* eOCT_getComponentPool(OCT_ID contextID, eOCT_componentDescription component) {
-	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, contextID);
+eOCT_pool* iOCT_getComponentPool(iOCT_entityContext* context, OCT_index componentIndex) {
 	eOCT_pool* poolsArray = (eOCT_pool*)context->componentPools.array;
-	return &poolsArray[component.componentIndex_reg];
+	return &poolsArray[componentIndex];
 }
 
+eOCT_pool* eOCT_getComponentPool(OCT_ID contextID, eOCT_componentDescription component) {
+	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, contextID);
+	return iOCT_getComponentPool(context, component.componentIndex_reg);
+}
 eOCT_pool* eOCT_getFieldSourcePool(OCT_ID contextID, eOCT_fieldRequest field) {
 	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, contextID);
-	eOCT_pool* poolsArray = (eOCT_pool*)context->componentPools.array;
-	return &poolsArray[field.componentIndex_reg];
+	return iOCT_getComponentPool(context, field.componentIndex_reg);
 }

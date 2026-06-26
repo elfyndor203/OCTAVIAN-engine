@@ -1,4 +1,6 @@
 #pragma once
+#include "ECS/types_int.h"
+
 #include "OCT_Core_eng.h"
 
 #define iOCT_ROOT_ID 1
@@ -18,6 +20,8 @@ struct iOCT_entityContext {
 //eOCT_pool* iOCT_pool_get(iOCT_entityContext* context, OCT_ECSTypes componentType);
 
 OCT_ID iOCT_entityContext_open();
+eOCT_pool* iOCT_getComponentPool(iOCT_entityContext* context, OCT_index componentIndex);
+
 //void iOCT_entityContext_close(iOCT_entityContext* context);
 //void* iOCT_getByID(iOCT_entityContext* context, OCT_ID ID, OCT_ECSTypes componentType);
 //void iOCT_entityContext_update(iOCT_entityContext* context);
