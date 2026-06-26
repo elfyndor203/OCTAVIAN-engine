@@ -1,0 +1,10 @@
+{
+	"InstallScripts" : 
+	[
+		"C:/Users/Elfyndor/MyDocuments/Projects/OCTAVIAN-Engine/build/cmake_install.cmake",
+		"C:/Users/Elfyndor/MyDocuments/Projects/OCTAVIAN-Engine/build/Core/cmake_install.cmake",
+		"C:/Users/Elfyndor/MyDocuments/Projects/OCTAVIAN-Engine/build/_SYSTEM_TEMPLATE/cmake_install.cmake",
+		"C:/Users/Elfyndor/MyDocuments/Projects/OCTAVIAN-Engine/build/ZZGAMETEST/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

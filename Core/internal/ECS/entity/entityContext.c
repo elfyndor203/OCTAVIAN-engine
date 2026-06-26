@@ -7,6 +7,16 @@
 
 #include "ECS/ECS_int.h"
 
+OCT_handle OCT_entityContext_open() {
+	OCT_ID contextID = iOCT_entityContext_open();
+	OCT_handle handle = {
+		.containerID = OCT_ID_ECS,
+		.handleType = 0,
+		.objectID = contextID,
+		.system = OCT_ID_ECS
+	};
+	return handle;
+}
 OCT_ID iOCT_entityContext_open() {
 	OCT_index newIndex;
 	OCT_ID newID;

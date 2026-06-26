@@ -31,6 +31,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Errors", "Errors\Errors.vcx
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
 	ProjectSection(SolutionItems) = preProject
+		CMakeLists.txt = CMakeLists.txt
 		designNotes.txt = designNotes.txt
 	EndProjectSection
 EndProject
@@ -117,6 +118,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "_SYSTEM_TEMPLATE", "_SYSTEM
 	ProjectSection(ProjectDependencies) = postProject
 		{20ED3712-C186-436C-ACCF-F9DDD5AD8489} = {20ED3712-C186-436C-ACCF-F9DDD5AD8489}
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ZZGAMETEST", "ZZGAMETEST\ZZGAMETEST.vcxproj", "{741EF9CD-0DEB-4D02-BAB9-C1E6B35BD6B9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -262,6 +265,14 @@ Global
 		{116C9535-606D-42E0-9118-A58D180CEBE6}.Release|x64.Build.0 = Release|x64
 		{116C9535-606D-42E0-9118-A58D180CEBE6}.Release|x86.ActiveCfg = Release|Win32
 		{116C9535-606D-42E0-9118-A58D180CEBE6}.Release|x86.Build.0 = Release|Win32
+		{741EF9CD-0DEB-4D02-BAB9-C1E6B35BD6B9}.Debug|x64.ActiveCfg = Debug|x64
+		{741EF9CD-0DEB-4D02-BAB9-C1E6B35BD6B9}.Debug|x64.Build.0 = Debug|x64
+		{741EF9CD-0DEB-4D02-BAB9-C1E6B35BD6B9}.Debug|x86.ActiveCfg = Debug|Win32
+		{741EF9CD-0DEB-4D02-BAB9-C1E6B35BD6B9}.Debug|x86.Build.0 = Debug|Win32
+		{741EF9CD-0DEB-4D02-BAB9-C1E6B35BD6B9}.Release|x64.ActiveCfg = Release|x64
+		{741EF9CD-0DEB-4D02-BAB9-C1E6B35BD6B9}.Release|x64.Build.0 = Release|x64
+		{741EF9CD-0DEB-4D02-BAB9-C1E6B35BD6B9}.Release|x86.ActiveCfg = Release|Win32
+		{741EF9CD-0DEB-4D02-BAB9-C1E6B35BD6B9}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

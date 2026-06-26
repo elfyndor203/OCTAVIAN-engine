@@ -1,0 +1,14 @@
+C:\Users\Elfyndor\MyDocuments\Projects\OCTAVIAN-Engine\Core\engine\BUILD_MANIFEST.c;C:\Users\Elfyndor\MyDocuments\Projects\OCTAVIAN-Engine\build\Core\Core.dir\Debug\BUILD_MANIFEST.obj
+C:\Users\Elfyndor\MyDocuments\Projects\OCTAVIAN-Engine\Core\include\errors\errors\errorHandling.c;C:\Users\Elfyndor\MyDocuments\Projects\OCTAVIAN-Engine\build\Core\Core.dir\Debug\errorHandling.obj
+C:\Users\Elfyndor\MyDocuments\Projects\OCTAVIAN-Engine\Core\include\math\matrices\mat3.c;C:\Users\Elfyndor\MyDocuments\Projects\OCTAVIAN-Engine\build\Core\Core.dir\Debug\mat3.obj
+C:\Users\Elfyndor\MyDocuments\Projects\OCTAVIAN-Engine\Core\include\math\units\constants.c;C:\Users\Elfyndor\MyDocuments\Projects\OCTAVIAN-Engine\build\Core\Core.dir\Debug\constants.obj
+C:\Users\Elfyndor\MyDocuments\Projects\OCTAVIAN-Engine\Core\include\math\units\conversions.c;C:\Users\Elfyndor\MyDocuments\Projects\OCTAVIAN-Engine\build\Core\Core.dir\Debug\conversions.obj
+C:\Users\Elfyndor\MyDocuments\Projects\OCTAVIAN-Engine\Core\include\math\vectors\vec2.c;C:\Users\Elfyndor\MyDocuments\Projects\OCTAVIAN-Engine\build\Core\Core.dir\Debug\vec2.obj
+C:\Users\Elfyndor\MyDocuments\Projects\OCTAVIAN-Engine\Core\internal\ECS\entity\entity.c;C:\Users\Elfyndor\MyDocuments\Projects\OCTAVIAN-Engine\build\Core\Core.dir\Debug\entity.obj
+C:\Users\Elfyndor\MyDocuments\Projects\OCTAVIAN-Engine\Core\internal\core\core.c;C:\Users\Elfyndor\MyDocuments\Projects\OCTAVIAN-Engine\build\Core\Core.dir\Debug\core.obj
+C:\Users\Elfyndor\MyDocuments\Projects\OCTAVIAN-Engine\Core\internal\ECS\ECS.c;C:\Users\Elfyndor\MyDocuments\Projects\OCTAVIAN-Engine\build\Core\Core.dir\Debug\ECS.obj
+C:\Users\Elfyndor\MyDocuments\Projects\OCTAVIAN-Engine\Core\internal\ECS\entity\entityContext.c;C:\Users\Elfyndor\MyDocuments\Projects\OCTAVIAN-Engine\build\Core\Core.dir\Debug\entityContext.obj
+C:\Users\Elfyndor\MyDocuments\Projects\OCTAVIAN-Engine\Core\internal\registry\registry.c;C:\Users\Elfyndor\MyDocuments\Projects\OCTAVIAN-Engine\build\Core\Core.dir\Debug\registry.obj
+C:\Users\Elfyndor\MyDocuments\Projects\OCTAVIAN-Engine\Core\internal\utilities\IDMap.c;C:\Users\Elfyndor\MyDocuments\Projects\OCTAVIAN-Engine\build\Core\Core.dir\Debug\IDMap.obj
+C:\Users\Elfyndor\MyDocuments\Projects\OCTAVIAN-Engine\Core\internal\utilities\poolMapPair.c;C:\Users\Elfyndor\MyDocuments\Projects\OCTAVIAN-Engine\build\Core\Core.dir\Debug\poolMapPair.obj
+C:\Users\Elfyndor\MyDocuments\Projects\OCTAVIAN-Engine\Core\internal\utilities\pools.c;C:\Users\Elfyndor\MyDocuments\Projects\OCTAVIAN-Engine\build\Core\Core.dir\Debug\pools.obj

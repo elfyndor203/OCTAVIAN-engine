@@ -142,11 +142,15 @@
   <ItemGroup>
     <ClCompile Include="internal\componentEx\componentEx_int.h" />
     <ClCompile Include="internal\system\systemEx.c" />
-    <ClCompile Include="systemDescription.c" />
+    <ClCompile Include="internal\system\systems_succeed.c" />
+    <ClCompile Include="internal\systemDescription.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="internal\system\systemEx_int.h" />
     <ClInclude Include="internal\types_int.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
