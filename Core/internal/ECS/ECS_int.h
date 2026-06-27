@@ -15,7 +15,6 @@ struct iOCT_ECS {
 
 extern iOCT_ECS iOCT_ECS_inst;
 
-void iOCT_ECS_init();
 /// <summary>
 /// Creates the list of components for each context to generate: component order and sizes
 /// </summary>

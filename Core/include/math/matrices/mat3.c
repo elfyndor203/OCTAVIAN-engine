@@ -1,4 +1,3 @@
-#pragma once
 #include "math/matrices/mat3.h"
 #include "math/vectors/vec2.h"
 #include "math/vectors/vec3.h"

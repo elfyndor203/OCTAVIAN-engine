@@ -1,7 +1,5 @@
 
 add_library(Core STATIC
-    engine/BUILD_MANIFEST.c
-    
     include/errors/errors/errorHandling.c
     include/math/matrices/mat3.c
     include/math/units/constants.c
@@ -31,3 +29,6 @@ set_target_properties(Core PROPERTIES
     C_STANDARD_REQUIRED ON
     C_EXTENSIONS OFF
 )
+
+add_library(CoreInit INTERFACE)
+target_include_directories(CoreInit INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/init)

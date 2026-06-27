@@ -1,8 +1,8 @@
 #include "OCT_Core_eng.h"
 #include <stddef.h>
 
-#include "system/world_int.h"
-#include "transform2D/transform2D_int.h"
+#include "../internal/world/world_int.h"
+#include "../internal/transform2D/transform2D_int.h"
 
 void system_register_WORLD() {
 	eOCT_fieldDescription posX = { "pos.x", eOCT_FIELDTYPE_FLOAT32, offsetof(iOCT_transform2D, position) + offsetof(OCT_vec2, x)};

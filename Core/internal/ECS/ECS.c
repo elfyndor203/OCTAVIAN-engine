@@ -9,7 +9,7 @@
 
 iOCT_ECS iOCT_ECS_inst = { 0 };
 
-void iOCT_ECS_init() {
+void init_OCT_ECS_init() {
 	iOCT_ECS_inst.contextMap = eOCT_IDMap_init(OCT_ID_ECS, eOCT_POOLSIZE_DEFAULT);
 	iOCT_ECS_inst.contextPool = eOCT_pool_init(OCT_ID_ECS, eOCT_POOLSIZE_DEFAULT, sizeof(iOCT_entityContext));
 	iOCT_ECS_inst.componentList = eOCT_pool_init(OCT_ID_ECS, eOCT_POOLSIZE_DEFAULT, sizeof(size_t));

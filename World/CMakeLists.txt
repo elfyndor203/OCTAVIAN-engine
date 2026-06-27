@@ -1,8 +1,8 @@
 
 add_library(World STATIC
-    internal/system/world.c
-    internal/transform2D/transform2D.c
-    internal/systemDescription.c
+        internal/world/world.c
+        internal/transform2D/transform2D.c
+        system/systemDescription.c
 )
 
 target_include_directories(World
@@ -17,5 +17,8 @@ set_target_properties(World PROPERTIES
     C_STANDARD_REQUIRED ON
     C_EXTENSIONS OFF
 )
+
+add_library(WorldSystem INTERFACE)
+target_include_directories(WorldSystem INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/system)
 
 target_link_libraries(World PUBLIC Core)

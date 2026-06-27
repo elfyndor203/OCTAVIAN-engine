@@ -16,7 +16,7 @@ static bool iOCT_registry_findField(const char* fieldName, eOCT_fieldDescription
 iOCT_registry iOCT_registry_inst = { 0 }; 
 
 #pragma region internal
-void iOCT_registry_init() {
+void init_OCT_registry_init() {
 	eOCT_pool systems = eOCT_pool_init(OCT_ID_REGISTRY, eOCT_POOLSIZE_DEFAULT, sizeof(eOCT_systemDescription*)); // store system pointers
 	eOCT_pool fields = eOCT_pool_init(OCT_ID_REGISTRY, eOCT_POOLSIZE_DEFAULT, sizeof(eOCT_fieldDescription));
 	eOCT_pool components = eOCT_pool_init(OCT_ID_REGISTRY, eOCT_POOLSIZE_DEFAULT, sizeof(eOCT_componentDescription));
@@ -28,7 +28,7 @@ void iOCT_registry_init() {
 	printf("| Registry initialized\n");
 }
 
-void iOCT_registry_distributeFields() {
+void init_OCT_registry_distributeFields() {
 	eOCT_pool systemPool = iOCT_registry_inst.systems;
 	eOCT_systemDescription** systemArray = (eOCT_systemDescription**)systemPool.array;
 	eOCT_systemDescription* system;
@@ -67,7 +67,7 @@ void iOCT_registry_distributeFields() {
 	}
 }
 
-void iOCT_registry_check() {
+void init_OCT_registry_check() {
 	eOCT_pool systemPool = iOCT_registry_inst.systems;
 	eOCT_systemDescription** systemArray = (eOCT_systemDescription**)systemPool.array;
 	eOCT_systemDescription system;
@@ -84,7 +84,7 @@ void iOCT_registry_check() {
 	int requestCtr = 0;
 
 	printf("\n--------SUMMARY--------\n");
-	printf("Systems:\n");
+	printf("Systems: (1 & 2 reserved)\n");
 	for (systemCtr = 0; systemCtr < systemPool.count; systemCtr++) {
 		system = *systemArray[systemCtr];
 		printf("%02zu.    | %s\n", system.systemID_reg, system.name);

@@ -1,5 +1,7 @@
 #include "errorHandling_internal.h"
 
+#include <stdio.h>
+#include <stdlib.h>
 bool logError(errorCodes errorCode) {
 	if (errorCode <= FATAL_THRESHOLD) {
 		printf("FATAL Error: %d\n", errorCode);

@@ -1,10 +1,10 @@
 #include "OCT_Core_eng.h"
 #include <stddef.h>
 
-#include "system/systemEx_int.h"
-#include "componentEx/componentEx_int.h"
+#include "../internal/systemEx/systemEx_int.h"
+#include "../internal/componentEx/componentEx_int.h"
 
-void system_register_NAME() {
+void system_register_systemEx() {
 
 	// FOR EACH COMPONENT
 		// Describe each field:
@@ -29,9 +29,9 @@ void system_register_NAME() {
 
 	// ensure the correct counts
 	eOCT_systemDescription templateSystem = {
-		.name = "ooeeoo",
+		.name = "_SystemEx",
 		.providedComponents = eOCT_generateComponentDescriptionPool(components, 1),
-		.requestedFields = eOCT_generateComponentDescriptionPool(requests, 3)
+		.requestedFields = eOCT_generateFieldRequestPool(requests, 3)
 	};
 
 	// Store the system somewhere, then register the system from there.
