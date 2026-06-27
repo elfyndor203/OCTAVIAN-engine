@@ -60,11 +60,11 @@ eOCT_pool* iOCT_getComponentPool(iOCT_entityContext* context, OCT_index componen
 	return &poolsArray[componentIndex];
 }
 
-eOCT_pool* eOCT_getComponentPool(OCT_ID contextID, eOCT_componentDescription component) {
-	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, contextID);
-	return iOCT_getComponentPool(context, component.componentIndex_reg);
+eOCT_pool* eOCT_getComponentPool(OCT_handle contextHandle, eOCT_componentDescription component) {
+	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, contextHandle.objectID);
+	return iOCT_getComponentPool(context, component.componentTypeIndex_reg);
 }
-eOCT_pool* eOCT_getFieldSourcePool(OCT_ID contextID, eOCT_fieldRequest field) {
-	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, contextID);
-	return iOCT_getComponentPool(context, field.componentIndex_reg);
+eOCT_pool* eOCT_getFieldSourcePool(OCT_handle contextHandle, eOCT_fieldRequest field) {
+	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, contextHandle.objectID);
+	return iOCT_getComponentPool(context, field.componentTypeIndex_reg);
 }

@@ -142,7 +142,7 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="engine\ECS\entityContext\entityContext_eng.h" />
+    <ClInclude Include="engine\ECS\entity\entity_eng.h" />
     <ClInclude Include="engine\OCT_Core_eng.h" />
     <ClInclude Include="engine\registry\registry_eng.h" />
     <ClInclude Include="engine\utilities\structures\poolMapPair_eng.h" />
@@ -167,6 +167,7 @@
     <ClInclude Include="include\OCT_Core.h" />
     <ClInclude Include="internal\ECS\ECS_int.h" />
     <ClInclude Include="internal\ECS\entity\entityContext_int.h" />
+    <ClInclude Include="internal\ECS\entity\entity_int.h" />
     <ClInclude Include="internal\ECS\types_int.h" />
     <ClInclude Include="internal\registry\registry_int.h" />
     <ClInclude Include="internal\registry\types_int.h" />

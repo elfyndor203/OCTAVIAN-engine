@@ -140,11 +140,19 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="internal\system\world.c" />
+    <ClCompile Include="internal\transform2D\transform2D.c" />
     <ClCompile Include="systemDescription.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="internal\position2D\position2D_int.h" />
-    <ClInclude Include="internal\position2D\types_int.h" />
+    <ClInclude Include="include\transform2D\transform2D.h" />
+    <ClInclude Include="include\types.h" />
+    <ClInclude Include="internal\system\world_int.h" />
+    <ClInclude Include="internal\transform2D\transform2D_int.h" />
+    <ClInclude Include="internal\types_int.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

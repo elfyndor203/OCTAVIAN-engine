@@ -25,7 +25,7 @@ typedef struct eOCT_fieldRequest eOCT_fieldRequest;
 /// Describes one component provided by the system. 
 /// Leave all _reg fields blank.
 /// Do not include private fields.
-/// { "name", sizeof(component), eOCT_generateFieldDescriptionPool(publicFields[], count )}
+/// { "name", sizeof(component), eOCT_generateFieldDescriptionPool(publicFields[], count ))
 /// </summary>
 typedef struct eOCT_componentDescription eOCT_componentDescription;
 

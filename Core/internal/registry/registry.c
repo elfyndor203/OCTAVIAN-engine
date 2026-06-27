@@ -42,12 +42,16 @@ void iOCT_registry_distributeFields() {
 	for (int systemCtr = 0; systemCtr < systemPool.count; systemCtr++) {
 		system = systemArray[systemCtr];
 		requestPool = system->requestedFields;
+
+		if (eOCT_pool_isEmpty(requestPool)) {	// ensure pool has contents
+			continue;
+		}
 		requestArray = (eOCT_fieldRequest*)requestPool.array;
 
 		for (int requestCtr = 0; requestCtr < requestPool.count; requestCtr++) {
 			request = &requestArray[requestCtr];
 			if (iOCT_registry_findField(request->name, &match)) {	// if there is a match
-				request->componentIndex_reg = match.componentIndex_reg;
+				request->componentTypeIndex_reg = match.componentTypeIndex_reg;
 				request->fieldOffset_reg = match.offset;
 				request->fulfilled_reg = true;
 				//printf("Fulfilled field '%s' for system '%s'\n", request->name, system->name);
@@ -93,7 +97,7 @@ void iOCT_registry_check() {
 		componentArray = (eOCT_componentDescription*)componentPool.array;
 		for (componentCtr = 0; componentCtr < componentPool.count; componentCtr++) {
 			component = componentArray[componentCtr];
-			printf("%02zu.    | %s\n", component.componentIndex_reg, component.name);
+			printf("%02zu.    | %s\n", component.componentTypeIndex_reg, component.name);
 		}
 	}
 	printf("ECS Component Count: %zu\n", iOCT_ECS_inst.componentTypeCount);
@@ -107,7 +111,7 @@ void iOCT_registry_check() {
 		for (requestCtr = 0; requestCtr < requestPool.count; requestCtr++) {
 			request = requestArray[requestCtr];
 			if (request.fulfilled_reg) {
-				printf("%02zu[%02zu]", request.componentIndex_reg, request.fieldOffset_reg);
+				printf("%02zu[%02zu]", request.componentTypeIndex_reg, request.fieldOffset_reg);
 			}
 			else if (request.optional) {
 				printf("XX[XX]");
@@ -134,8 +138,6 @@ void iOCT_registry_check() {
 #pragma region engine
 eOCT_pool eOCT_generateFieldDescriptionPool(eOCT_fieldDescription* array, size_t count) {
 	eOCT_pool pool = eOCT_pool_init(OCT_ID_NULL, count, sizeof(eOCT_fieldDescription));
-	printf("array=%p capacity=%zu count=%zu elementSize=%zu\n",
-		pool.array, (size_t)pool.capacity, (size_t)pool.count, pool.elementSize);
 	eOCT_fieldDescription* destination;
 	for (OCT_index ctr = 0; ctr < count; ctr++) {
 		destination = (eOCT_fieldDescription*)eOCT_pool_addEntry(&pool, NULL);
@@ -174,6 +176,12 @@ void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription) {
 
 	int componentCtr = 0;
 	int fieldCtr = 0;
+
+	if (eOCT_pool_isEmpty(systemDescription->providedComponents)) {		// requests handed separately later, so registration ends
+		printf("No provided components\n");
+		printf("--------------------------------\n\n");
+		return;
+	}
 	eOCT_componentDescription* componentArray = (eOCT_componentDescription*)systemDescription->providedComponents.array;
 	eOCT_componentDescription* component;				// pointer to return index to
 	eOCT_componentDescription* componentDestination;
@@ -189,13 +197,18 @@ void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription) {
 		component = &componentArray[componentCtr];
 		componentDestination = (eOCT_componentDescription*)eOCT_pool_addEntry(&iOCT_registry_inst.components, NULL);
 		*componentDestination = *component;
-		component->componentIndex_reg = iOCT_ECS_addComponentType(*component); // tells the system the index of the component's pool
-		printf("%02"PRIu64".%02zu.--| %2cComponent %zu: %-15s\n", systemID, component->componentIndex_reg, ' ', component->componentIndex_reg, component->name);
+		component->componentTypeIndex_reg = iOCT_ECS_addComponentType(*component); // tells the system the index of the component's pool
 
+		printf("%02"PRIu64".%02zu.--| %2cComponent %zu: %-15s\n", systemID, component->componentTypeIndex_reg, ' ', component->componentTypeIndex_reg, component->name);
+
+		if (eOCT_pool_isEmpty(systemDescription->providedComponents)) {
+			printf("Component has no public fields\n");
+			continue;
+		}
 		fieldArray = (eOCT_fieldDescription*)component->providedFields.array;
 		for (fieldCtr = 0; fieldCtr < component->providedFields.count; fieldCtr++) {
 			field = &fieldArray[fieldCtr];
-			printf("%02"PRIu64".%02zu.%02d| %4cField: %-15s | ", systemID, component->componentIndex_reg, fieldCtr, ' ', field->name);
+			printf("%02"PRIu64".%02zu.%02d| %4cField: %-15s | ", systemID, component->componentTypeIndex_reg, fieldCtr, ' ', field->name);
 
 			if (iOCT_registry_findField(field->name, NULL)) {	// check for duplicates
 				printf("Failed: Field already exists\n");
@@ -203,7 +216,7 @@ void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription) {
 			}
 
 			else {
-				field->componentIndex_reg = component->componentIndex_reg;
+				field->componentTypeIndex_reg = component->componentTypeIndex_reg;
 
 				fieldDestination = (eOCT_fieldDescription*)eOCT_pool_addEntry(&iOCT_registry_inst.fields, NULL);	// add field to the registry
 				*fieldDestination = *field;
@@ -211,7 +224,9 @@ void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription) {
 			}
 		}
 		printf("%13c Fields: %zu\n", ' ', component->providedFields.count);
-
+		if (component->cacheLocation) {
+			*component->cacheLocation = *component;	// cache the component optionally
+		}
 	}
 	printf("--------------------------------\n\n");
 }

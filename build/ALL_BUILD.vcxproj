@@ -182,6 +182,10 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <Project>{A09B7B7A-2EBB-3E45-A809-F002AF4CE35D}</Project>
       <Name>GAME</Name>
     </ProjectReference>
+    <ProjectReference Include="C:\Users\Elfyndor\MyDocuments\Projects\OCTAVIAN-Engine\build\World\World.vcxproj">
+      <Project>{CEBEB947-FC55-376C-9293-D3CFB82BD4CD}</Project>
+      <Name>World</Name>
+    </ProjectReference>
     <ProjectReference Include="C:\Users\Elfyndor\MyDocuments\Projects\OCTAVIAN-Engine\build\_SYSTEM_TEMPLATE\_SYSTEM_TEST.vcxproj">
       <Project>{452CC945-E535-38E9-9223-0145F2F9EA81}</Project>
       <Name>_SYSTEM_TEST</Name>

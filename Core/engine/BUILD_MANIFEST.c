@@ -1,10 +1,9 @@
-#pragma once
-
 void testDesc_register();
 void systemB_register();
 void systemC_register();
 void systemD_register();
 void system_register_NAME();
+void system_register_WORLD();
 
 void iOCT_registerAllSystems() {
 	testDesc_register();
@@ -12,4 +11,5 @@ void iOCT_registerAllSystems() {
 	systemC_register();
 	systemD_register();
 	system_register_NAME();
+	system_register_WORLD();
 };

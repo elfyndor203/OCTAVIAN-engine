@@ -36,6 +36,8 @@ struct eOCT_pool {
 	void* array;
 };
 
+extern eOCT_pool eOCT_POOL_EMPTY;
+
 eOCT_pool eOCT_pool_init(OCT_ID ownerID, OCT_index capacity, size_t elementSize);
 /// <summary>
 /// Returns a void* pointer to the pool slot to be written into which should be cast to the correct type. Optionally returns the index of the slot to be used for ID registration.
@@ -47,6 +49,7 @@ void* eOCT_pool_addEntry(eOCT_pool* pool, OCT_index* outIndex);
 void* eOCT_pool_access(eOCT_pool* pool, OCT_index index, size_t offset);
 bool eOCT_pool_combine(eOCT_pool* destination, eOCT_pool* source, bool freeSource);
 bool eOCT_pool_fill(eOCT_pool* pool, eOCT_pool_options startSetting, eOCT_pool_options fillSetting, const void* typeFill, eOCT_pool_options byteFill, size_t valueFill);
+bool eOCT_pool_isEmpty(eOCT_pool pool);
 void eOCT_pool_dump(eOCT_pool* pool);
 
 OCT_ID eOCT_pool_deleteEntry(eOCT_pool* pool, OCT_index index, bool compact);

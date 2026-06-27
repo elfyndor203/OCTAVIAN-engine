@@ -1,0 +1,127 @@
+{
+	"configurations" : 
+	[
+		{
+			"abstractTargets" : [],
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						2,
+						3
+					],
+					"jsonFile" : "directory-.-Debug-f040eec181a89de70dbe.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.15"
+					},
+					"projectIndex" : 0,
+					"source" : "."
+				},
+				{
+					"build" : "Core",
+					"jsonFile" : "directory-Core-Debug-27f2f04d16d603b5a0f3.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.15"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "Core",
+					"targetIndexes" : 
+					[
+						0
+					]
+				},
+				{
+					"build" : "_SYSTEM_TEMPLATE",
+					"jsonFile" : "directory-_SYSTEM_TEMPLATE-Debug-d040735e77310e19a3d9.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.15"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "_SYSTEM_TEMPLATE",
+					"targetIndexes" : 
+					[
+						2
+					]
+				},
+				{
+					"build" : "ZZGAMETEST",
+					"jsonFile" : "directory-ZZGAMETEST-Debug-1f8c12e22d4cfd4cd121.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.15"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "ZZGAMETEST",
+					"targetIndexes" : 
+					[
+						1
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					],
+					"name" : "OCT_Engine",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 1,
+					"id" : "Core::@94795ff35dabbbd3a8ca",
+					"jsonFile" : "target-Core-Debug-8fe867204035491d2d84.json",
+					"name" : "Core",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "GAME::@c8a01089b3bd45bdca35",
+					"jsonFile" : "target-GAME-Debug-3ea166b8944460f81589.json",
+					"name" : "GAME",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "_SYSTEM_TEST::@9ad655b34512a70042f9",
+					"jsonFile" : "target-_SYSTEM_TEST-Debug-eee4372b5ad77f9aa3ed.json",
+					"name" : "_SYSTEM_TEST",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/Elfyndor/MyDocuments/Projects/OCTAVIAN-Engine/out/build/x64-Debug",
+		"source" : "C:/Users/Elfyndor/MyDocuments/Projects/OCTAVIAN-Engine"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 10
+	}
+}

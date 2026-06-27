@@ -10,6 +10,14 @@
 #include <stdbool.h>
 #include <inttypes.h>
 
+eOCT_pool eOCT_POOL_EMPTY = {
+	.array = NULL,
+	.capacity = 0,
+	.count = 0,
+	.elementSize = 0,
+	.ownerID = OCT_ID_NULL
+};
+
 static bool eOCT_pool_expand(eOCT_pool* pool, unsigned int factor);
 
 /// <summary>
@@ -154,6 +162,14 @@ bool eOCT_pool_fill(eOCT_pool* pool, eOCT_pool_options startSetting, eOCT_pool_o
 	return 1;
 }
 
+bool eOCT_pool_isEmpty(eOCT_pool pool) {
+	if ((!pool.array) || pool.capacity == 0 || pool.count == 0) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
 //// generated
 //void eOCT_pool_dump(eOCT_pool* pool) {
 //	if (!pool) {

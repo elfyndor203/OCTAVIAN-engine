@@ -12,7 +12,7 @@ void system_register_NAME() {
 			eOCT_fieldDescription field2 = { "someOtherField", eOCT_FIELDTYPE_INT64, offsetof(iOCT_componentEx, fieldB) };
 		// Create a componentDescription
 		eOCT_fieldDescription componentExFields[] = { field1, field2 };
-		eOCT_componentDescription componentEx = { "componentEx", sizeof(componentEx), eOCT_generateFieldDescriptionPool(componentExFields, 2) };
+		eOCT_componentDescription componentEx = { "componentEx", sizeof(componentEx), eOCT_generateFieldDescriptionPool(componentExFields, 2)};
 	//
 
 	// FOR EACH SYSTEM

@@ -33,15 +33,16 @@ struct eOCT_fieldDescription {
 	eOCT_fieldTypes type;	// standard field types defined in fields.h
 	size_t offset;			// offset from the start of the component struct
 
-	OCT_index componentIndex_reg;
+	OCT_index componentTypeIndex_reg;
 };
 
 struct eOCT_componentDescription {
 	const char* name;
 	size_t stride;
 	eOCT_pool providedFields;
+	eOCT_componentDescription* cacheLocation;
 
-	OCT_index componentIndex_reg; // where the component is located in the ECS
+	OCT_index componentTypeIndex_reg; // where the component is located in the ECS
 };
 
 struct eOCT_fieldRequest {
@@ -50,7 +51,7 @@ struct eOCT_fieldRequest {
 	//eOCT_fieldAccess access;
 	bool optional;
 
-	OCT_index componentIndex_reg;
+	OCT_index componentTypeIndex_reg;
 	size_t fieldOffset_reg;
 	bool fulfilled_reg;
 };

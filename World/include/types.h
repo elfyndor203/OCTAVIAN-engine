@@ -1,0 +1,3 @@
+#pragma once
+
+typedef enum OCT_TRANSFORM2D_OPTIONS OCT_TRANSFORM2D_OPTIONS
