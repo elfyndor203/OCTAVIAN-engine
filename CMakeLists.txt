@@ -7,4 +7,4 @@ add_subdirectory(Core)
 add_subdirectory(_SYSTEM_TEMPLATE)
 add_subdirectory(World)
 
-add_subdirectory(ZZGAMETEST)
+add_subdirectory(GAME)
