@@ -10,7 +10,8 @@ struct iOCT_ECS {
 	eOCT_IDMap contextMap;
 	eOCT_pool contextPool;
 
-	eOCT_pool componentList; // provides sizes and ordering of all components
+	eOCT_pool componentSizeList; // provides sizes and ordering of all components
+	eOCT_pool componentRootInitList; // functions to call when creating the root entity
 };
 
 extern iOCT_ECS iOCT_ECS_inst;

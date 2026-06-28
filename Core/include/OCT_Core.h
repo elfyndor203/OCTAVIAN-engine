@@ -2,6 +2,7 @@
 #include "OCT_Errors.h"
 #include "OCT_Math.h"
 
+#include "ECS/entity.h"
 #include "ECS/entityContext.h"
 
 #include "layout/systems.h"

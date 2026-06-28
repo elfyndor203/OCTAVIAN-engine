@@ -19,7 +19,7 @@ struct iOCT_entityContext {
 //iOCT_entityContext* iOCT_entityContext_get(OCT_ID entityContextID);
 //eOCT_pool* iOCT_pool_get(iOCT_entityContext* context, OCT_ECSTypes componentType);
 
-OCT_ID iOCT_entityContext_open();
+OCT_handle iOCT_entityContext_open(OCT_ID* contextOut);
 eOCT_pool* iOCT_getComponentPool(iOCT_entityContext* context, OCT_index componentIndex);
 
 //void iOCT_entityContext_close(iOCT_entityContext* context);

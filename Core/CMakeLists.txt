@@ -7,7 +7,7 @@ add_library(Core STATIC
     include/math/vectors/vec2.c
 
     internal/ECS/entity/entity.c
-    internal/core/core.c
+        internal/layout/layout.c
     internal/ECS/ECS.c
     internal/ECS/entity/entityContext.c
     internal/registry/registry.c

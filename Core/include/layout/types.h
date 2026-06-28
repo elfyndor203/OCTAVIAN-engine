@@ -12,3 +12,5 @@ typedef struct OCT_handle {
 	OCT_ID handleType;
 } OCT_handle;
 
+extern OCT_handle OCT_HANDLE_NULL;
+

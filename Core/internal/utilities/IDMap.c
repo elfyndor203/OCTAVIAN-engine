@@ -1,4 +1,4 @@
-#include "utilities/structures/IDMap_eng.h"
+#include "utilities/IDMap_eng.h"
 
 #include "OCT_Core_eng.h"
 #include <stdlib.h>
@@ -6,7 +6,7 @@
 #include <crtdbg.h>
 #include <stdio.h>
 
-#include "utilities/structures/pools_eng.h"
+#include "utilities/pools_eng.h"
 
 // Allocates initial memory for a single entityContext.
 eOCT_IDMap eOCT_IDMap_init(OCT_ID ownerID, OCT_index capacity) {

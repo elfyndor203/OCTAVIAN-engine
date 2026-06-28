@@ -1,5 +1,6 @@
 #pragma once
 #include "types_eng.h"
+#include "ECS/entity/types_eng.h"
 
 #include "utilities/utilities_eng.h"
 
@@ -41,6 +42,7 @@ struct eOCT_componentDescription {
 	size_t stride;
 	eOCT_pool providedFields;
 	eOCT_componentDescription* cacheLocation;
+	eOCT_rootAttachmentFx rootAttachmentFx;
 
 	OCT_index componentTypeIndex_reg; // where the component is located in the ECS
 };

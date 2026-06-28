@@ -6,18 +6,24 @@
 #include <stdio.h>
 
 #include "ECS/ECS_int.h"
+#include "entity_int.h"
 
-OCT_handle OCT_entityContext_open() {
-	OCT_ID contextID = iOCT_entityContext_open();
-	OCT_handle handle = {
+OCT_handle OCT_entityContext_open(OCT_handle* contextOut) {
+	OCT_ID contextID;
+	OCT_handle rootHandle = iOCT_entityContext_open(&contextID);
+	OCT_handle contextHandle = {
 		.containerID = OCT_ID_ECS,
 		.handleType = 0,
 		.objectID = contextID,
 		.system = OCT_ID_ECS
 	};
-	return handle;
+
+	if (contextOut) {
+		*contextOut = contextHandle;
+	}
+	return rootHandle;
 }
-OCT_ID iOCT_entityContext_open() {
+OCT_handle iOCT_entityContext_open(OCT_ID* contextOut) {
 	OCT_index newIndex;
 	OCT_ID newID;
 	iOCT_entityContext* newContext;
@@ -27,32 +33,51 @@ OCT_ID iOCT_entityContext_open() {
 	newContext->contextID = newID;
 
 	// init entity pool
-	OCT_index entityCapacity = eOCT_POOLSIZE_DEFAULT;
+	OCT_index entityCapacity = eOCT_POOL_SIZE_DEFAULT;
 	newContext->entityIDMap = eOCT_IDMap_init(newID, entityCapacity);
-	newContext->entityPool = eOCT_pool_init(newID, entityCapacity, iOCT_ECS_inst.entitySize);
-	//eOCT_pool_fill(&newContext->entityPool, eOCT_POOL_FILL_ALL, eOCT_POOL_FILL_BYTES, NULL, eOCT_POOL_FILL_BYTES_ONES, 0);
-	//eOCT_pool_dump(&newContext->entityPool);
+	newContext->entityPool = eOCT_pool_init(newID, entityCapacity, iOCT_ECS_inst.entitySize, (eOCT_pool_fillSetting){
+		                                        .fillStyle = eOCT_POOL_FILLSTYLE_BYTES,
+		                                        .value.byteFill = 0xFF
+	                                        }); // mark all components indices as unset
 
 	// init component pools-pool
-	size_t componentTotal = iOCT_ECS_inst.componentList.count;
+	const OCT_index componentTotal = iOCT_ECS_inst.componentTypeCount;
 	OCT_index componentCtr;
 	eOCT_pool* componentPoolDest;
 	size_t componentSize;
 	OCT_index indexCheck;
 
-	newContext->componentPools = eOCT_pool_init(newID, componentTotal, sizeof(eOCT_pool));
-	printf("Allocated entityContext %"PRIu64"\n", newID);
+	newContext->componentPools = eOCT_pool_init(newID, componentTotal, sizeof(eOCT_pool), eOCT_POOL_FILLSETTING_NONE);
 
 	// init component pools
 	for (componentCtr = 0; componentCtr < componentTotal; componentCtr++) {
-		componentSize = *(size_t*)eOCT_pool_access(&iOCT_ECS_inst.componentList, componentCtr, 0);	// add entry to the pool pool
+		componentSize = *(size_t*)eOCT_pool_access(&iOCT_ECS_inst.componentSizeList, componentCtr, 0);	// add entry to the pool pool
 		componentPoolDest = eOCT_pool_addEntry(&newContext->componentPools, &indexCheck);
 
-		*componentPoolDest = eOCT_pool_init(newID, eOCT_POOLSIZE_DEFAULT, componentSize);	// init actual component pool
+		*componentPoolDest = eOCT_pool_init(newID, eOCT_POOL_SIZE_DEFAULT, componentSize, eOCT_POOL_FILLSETTING_NONE);	// init actual component pool
 		//printf("Allocated component #%zu with size %zu\n", indexCheck, componentSize);
 	}
 
-	return newID;
+	printf("Allocated entityContext %"PRIu64"\n", newID);
+
+	// init root entity
+	OCT_handle rootEntity = iOCT_entity_new(newContext);
+	const OCT_index attachTotal = iOCT_ECS_inst.componentRootInitList.count;
+	eOCT_rootAttachmentFx* attachFx;
+	for (componentCtr = 0; componentCtr < attachTotal; componentCtr++) {
+		attachFx = (eOCT_rootAttachmentFx*)eOCT_pool_access(&iOCT_ECS_inst.componentRootInitList, componentCtr, 0);
+		if (attachFx) {
+			printf("Trying to attach\n");
+			(*attachFx)(rootEntity);
+		}
+		else {
+			printf("No attachment\n");
+		}
+	}
+	eOCT_pool_dump(&newContext->entityPool);
+
+	*contextOut = newID;
+	return rootEntity;
 }
 
 eOCT_pool* iOCT_getComponentPool(iOCT_entityContext* context, OCT_index componentIndex) {
@@ -67,4 +92,9 @@ eOCT_pool* eOCT_getComponentPool(OCT_handle contextHandle, eOCT_componentDescrip
 eOCT_pool* eOCT_getFieldSourcePool(OCT_handle contextHandle, eOCT_fieldRequest field) {
 	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, contextHandle.objectID);
 	return iOCT_getComponentPool(context, field.componentTypeIndex_reg);
+}
+
+void OCT_entityContext_dumpEntityPool(OCT_handle contextHandle) {
+	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, contextHandle.objectID);
+	eOCT_pool_dump(&context->entityPool);
 }

@@ -17,3 +17,5 @@ struct iOCT_transform2D {
 	OCT_mat3 globalMatrix;
 };
 
+void iOCT_transform2D_generateRoot(OCT_handle rootEntity);
+

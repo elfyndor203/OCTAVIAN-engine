@@ -17,9 +17,9 @@ iOCT_registry iOCT_registry_inst = { 0 };
 
 #pragma region internal
 void init_OCT_registry_init() {
-	eOCT_pool systems = eOCT_pool_init(OCT_ID_REGISTRY, eOCT_POOLSIZE_DEFAULT, sizeof(eOCT_systemDescription*)); // store system pointers
-	eOCT_pool fields = eOCT_pool_init(OCT_ID_REGISTRY, eOCT_POOLSIZE_DEFAULT, sizeof(eOCT_fieldDescription));
-	eOCT_pool components = eOCT_pool_init(OCT_ID_REGISTRY, eOCT_POOLSIZE_DEFAULT, sizeof(eOCT_componentDescription));
+	eOCT_pool systems = eOCT_pool_init(OCT_ID_REGISTRY, eOCT_POOL_SIZE_DEFAULT, sizeof(eOCT_systemDescription*), eOCT_POOL_FILLSETTING_NONE); // store system pointers
+	eOCT_pool components = eOCT_pool_init(OCT_ID_REGISTRY, eOCT_POOL_SIZE_DEFAULT, sizeof(eOCT_componentDescription), eOCT_POOL_FILLSETTING_NONE);
+	eOCT_pool fields = eOCT_pool_init(OCT_ID_REGISTRY, eOCT_POOL_SIZE_DEFAULT, sizeof(eOCT_fieldDescription), eOCT_POOL_FILLSETTING_NONE);
 	iOCT_registry_inst.systems = systems;
 	iOCT_registry_inst.components = components;
 	iOCT_registry_inst.fields = fields;
@@ -137,7 +137,7 @@ void init_OCT_registry_check() {
 
 #pragma region engine
 eOCT_pool eOCT_generateFieldDescriptionPool(eOCT_fieldDescription* array, size_t count) {
-	eOCT_pool pool = eOCT_pool_init(OCT_ID_NULL, count, sizeof(eOCT_fieldDescription));
+	eOCT_pool pool = eOCT_pool_init(OCT_ID_NULL, count, sizeof(eOCT_fieldDescription), eOCT_POOL_FILLSETTING_NONE);
 	eOCT_fieldDescription* destination;
 	for (OCT_index ctr = 0; ctr < count; ctr++) {
 		destination = (eOCT_fieldDescription*)eOCT_pool_addEntry(&pool, NULL);
@@ -147,7 +147,7 @@ eOCT_pool eOCT_generateFieldDescriptionPool(eOCT_fieldDescription* array, size_t
 }
 
 eOCT_pool eOCT_generateComponentDescriptionPool(eOCT_componentDescription* array, size_t count) {
-	eOCT_pool pool = eOCT_pool_init(OCT_ID_NULL, count, sizeof(eOCT_componentDescription));
+	eOCT_pool pool = eOCT_pool_init(OCT_ID_NULL, count, sizeof(eOCT_componentDescription), eOCT_POOL_FILLSETTING_NONE);
 
 	eOCT_componentDescription* destination;
 	for (int ctr = 0; ctr < count; ctr++) {
@@ -158,7 +158,7 @@ eOCT_pool eOCT_generateComponentDescriptionPool(eOCT_componentDescription* array
 }
 
 eOCT_pool eOCT_generateFieldRequestPool(eOCT_fieldRequest* array, size_t count) {
-	eOCT_pool pool = eOCT_pool_init(OCT_ID_NULL, count, sizeof(eOCT_fieldRequest));
+	eOCT_pool pool = eOCT_pool_init(OCT_ID_NULL, count, sizeof(eOCT_fieldRequest), eOCT_POOL_FILLSETTING_NONE);
 
 	eOCT_fieldRequest* destination;
 	for (int ctr = 0; ctr < count; ctr++) {
@@ -177,6 +177,7 @@ void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription) {
 	int componentCtr = 0;
 	int fieldCtr = 0;
 
+#pragma region component adding
 	if (eOCT_pool_isEmpty(systemDescription->providedComponents)) {		// requests handed separately later, so registration ends
 		printf("No provided components\n");
 		printf("--------------------------------\n\n");
@@ -197,10 +198,12 @@ void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription) {
 		component = &componentArray[componentCtr];
 		componentDestination = (eOCT_componentDescription*)eOCT_pool_addEntry(&iOCT_registry_inst.components, NULL);
 		*componentDestination = *component;
+		//ECS
 		component->componentTypeIndex_reg = iOCT_ECS_addComponentType(*component); // tells the system the index of the component's pool
 
 		printf("%02"PRIu64".%02zu.--| %2cComponent %zu: %-15s\n", systemID, component->componentTypeIndex_reg, ' ', component->componentTypeIndex_reg, component->name);
 
+#pragma region fields
 		if (eOCT_pool_isEmpty(systemDescription->providedComponents)) {
 			printf("Component has no public fields\n");
 			continue;
@@ -224,6 +227,8 @@ void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription) {
 			}
 		}
 		printf("%13c Fields: %zu\n", ' ', component->providedFields.count);
+#pragma endregion
+#pragma endregion
 		if (component->cacheLocation) {
 			*component->cacheLocation = *component;	// cache the component optionally
 		}

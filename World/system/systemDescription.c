@@ -1,5 +1,6 @@
 #include "OCT_Core_eng.h"
 #include <stddef.h>
+#include <stdio.h>
 
 #include "../internal/world/world_int.h"
 #include "../internal/transform2D/transform2D_int.h"
@@ -13,8 +14,12 @@ void system_register_WORLD() {
 		.name = "transform2D",
 		.stride = sizeof(iOCT_transform2D),
 		.providedFields = eOCT_generateFieldDescriptionPool(transformFields, 2),
-		.cacheLocation = &iOCT_world_inst.transform2DCache
+		.cacheLocation = &iOCT_world_inst.transform2DCache,
+		.rootAttachmentFx = iOCT_transform2D_generateRoot
 	};
+
+	//printf("Transform attach fx: %p\n", iOCT_transform2D_generateRoot);
+
 	eOCT_componentDescription worldComponents[] = { transform2D };
 
 	eOCT_systemDescription world = {
