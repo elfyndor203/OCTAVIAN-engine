@@ -18,14 +18,16 @@ set_target_properties(OCTAVIANEngine PROPERTIES
 )
 
 target_link_libraries(OCTAVIANEngine
-        PUBLIC
-            Core
-            World
-            _SystemEx
-            Window
-        PRIVATE
-            WorldSystem
-            _SystemExSystem
-            CoreInit
-            WindowSystem
+    PUBLIC
+        Core
+        World
+        _SystemEx
+        Window
+        Renderer
+    PRIVATE
+        WorldSystem
+        _SystemExSystem
+        CoreInit
+        WindowSystem
+        RendererSystem
 )

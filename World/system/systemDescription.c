@@ -7,23 +7,29 @@
 
 void system_register_WORLD() {
 	eOCT_fieldDescription posX = {
-		.name = "pos.x",
+		.name = "position.x",
 		.type = eOCT_FIELDTYPE_FLOAT32,
 		.offset = offsetof(iOCT_transform2D, position) + offsetof(OCT_vec2, x),
 		.source = eOCT_FIELDPROVIDER_COMPONENT
 	};
 	eOCT_fieldDescription posY = {
-		.name = "pos.y",
+		.name = "position.y",
 		.type = eOCT_FIELDTYPE_FLOAT32,
 		.offset = offsetof(iOCT_transform2D, position) + offsetof(OCT_vec2, y),
 		.source = eOCT_FIELDPROVIDER_COMPONENT
 	};
+	eOCT_fieldDescription rotation = {
+		.name = "rotation",
+		.type = eOCT_FIELDTYPE_FLOAT32,
+		.offset = offsetof(iOCT_transform2D, rotation),
+		.source = eOCT_FIELDPROVIDER_COMPONENT
+	};
 
-	eOCT_fieldDescription transformFields[] = { posX, posY };
+	eOCT_fieldDescription transformFields[] = { posX, posY, rotation };
 	eOCT_componentDescription transform2D = {
 		.name = "transform2D",
 		.stride = sizeof(iOCT_transform2D),
-		.providedFields = eOCT_generateFieldDescriptionPool(transformFields, 2),
+		.providedFields = eOCT_generateFieldDescriptionPool(transformFields, 3),
 		.cacheLocation = &iOCT_world_inst.transform2DCache,
 		.rootAttachmentFx = iOCT_transform2D_generateRoot
 	};

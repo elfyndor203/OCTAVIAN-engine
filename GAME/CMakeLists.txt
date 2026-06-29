@@ -6,8 +6,4 @@ add_executable(GAME
 
 target_link_libraries(GAME
         PRIVATE
-            Core
-            _SystemEx
-            World
-            Window
             OCTAVIANEngine)

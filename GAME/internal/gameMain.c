@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#define NUM_WINDOWS 50
+#define NUM_WINDOWS 2
 
 int main() {
 	OCT_engine_init();

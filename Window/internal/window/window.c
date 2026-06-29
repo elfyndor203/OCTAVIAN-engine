@@ -15,7 +15,6 @@ OCT_handle OCT_window_open(const char* name, unsigned int sizeX, unsigned int si
     GLFWwindow* windowPtr;
     if (iOCT_windowSystem_inst.mainWindow == NULL) {
         printf("Main / Resource\n");
-        printf("\n");
         windowPtr = glfwCreateWindow(sizeX, sizeY, name, NULL, NULL);
         iOCT_windowSystem_inst.mainWindow = windowPtr;
 

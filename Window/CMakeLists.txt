@@ -10,7 +10,6 @@ target_include_directories(Window
             ${CMAKE_CURRENT_SOURCE_DIR}/include
         PRIVATE
             ${CMAKE_CURRENT_SOURCE_DIR}/internal
-        ../External/GLAD/include
             ${CMAKE_CURRENT_SOURCE_DIR}/GLFW/include
 )
 
