@@ -6,10 +6,10 @@ add_library(Core STATIC
     include/math/units/conversions.c
     include/math/vectors/vec2.c
 
-    internal/ECS/entity/entity.c
+        internal/ECS/entity.c
         internal/layout/layout.c
     internal/ECS/ECS.c
-    internal/ECS/entity/entityContext.c
+        internal/ECS/entityContext.c
     internal/registry/registry.c
     internal/utilities/IDMap.c
     internal/utilities/poolMapPair.c

@@ -10,7 +10,6 @@
 static OCT_index* iOCT_entity_get(iOCT_entityContext* context, OCT_index entityIndex);
 
 OCT_handle OCT_entity_new(OCT_handle contextHandle) {
-	printf("Got here 2\n");
 	printf("Context ID: %zu\n", contextHandle.objectID);
 	iOCT_entityContext* context = eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, contextHandle.objectID);
 	printf("Context: %p\n", context);
@@ -75,5 +74,5 @@ void* iOCT_entity_getComponent(iOCT_entityContext* context, OCT_index entityInde
 /// <returns></returns>
 static OCT_index* iOCT_entity_get(iOCT_entityContext* context, OCT_index entityIndex) {
 	OCT_index* array = (OCT_index*)context->entityPool.array;
-	return &array[entityIndex * iOCT_ECS_inst.componentTypeCount];
+	return &array[entityIndex * iOCT_ECS_inst.componentSizeAndOrderList.count];
 }

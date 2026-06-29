@@ -5,13 +5,18 @@
 
 struct iOCT_ECS {
 	size_t entitySize;
-	size_t componentTypeCount;
 
 	eOCT_IDMap contextMap;
 	eOCT_pool contextPool;
 
-	eOCT_pool componentSizeList; // provides sizes and ordering of all components
+	// context instructions
+	eOCT_pool componentSizeAndOrderList; // provides sizes and ordering of all components
 	eOCT_pool componentRootInitList; // functions to call when creating the root entity
+	eOCT_pool dataPoolSizeAndOrderList;
+
+	// global data
+	eOCT_IDMap globalDataMap;
+	eOCT_pool globalDataPools;
 };
 
 extern iOCT_ECS iOCT_ECS_inst;
@@ -22,3 +27,4 @@ extern iOCT_ECS iOCT_ECS_inst;
 /// <param name="desc"></param>
 /// <returns></returns>
 OCT_index iOCT_ECS_addComponentType(eOCT_componentDescription desc);
+OCT_index iOCT_ECS_addDataPool(eOCT_dataPoolDescription desc, bool global);

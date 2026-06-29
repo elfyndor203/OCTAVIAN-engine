@@ -1,14 +1,12 @@
 #pragma once
 #include "types_eng.h"
-#include "ECS/entity/types_eng.h"
+#include "ECS/types_eng.h"
 
 #include "utilities/utilities_eng.h"
 
-enum eOCT_descriptionTypes {
-	eOCT_DESC_FIELD,
-	eOCT_DESC_COMPONENT,
-	eOCT_DESC_SYSTEM,
-	eOCT_DESC_REQUEST
+enum eOCT_fieldProvider {
+	eOCT_FIELDPROVIDER_COMPONENT = 1,
+	eOCT_FIELDPROVIDER_DATAPOOL
 };
 
 enum eOCT_fieldTypes {
@@ -34,7 +32,8 @@ struct eOCT_fieldDescription {
 	eOCT_fieldTypes type;	// standard field types defined in fields.h
 	size_t offset;			// offset from the start of the component struct
 
-	OCT_index componentTypeIndex_reg;
+	eOCT_fieldProvider source;
+	OCT_index sourceIndex_reg;
 };
 
 struct eOCT_componentDescription {
@@ -45,6 +44,16 @@ struct eOCT_componentDescription {
 	eOCT_rootAttachmentFx rootAttachmentFx;
 
 	OCT_index componentTypeIndex_reg; // where the component is located in the ECS
+};
+
+struct eOCT_dataPoolDescription {
+	const char* name;
+	size_t stride;
+	eOCT_pool providedFields;
+	eOCT_dataPoolDescription* cacheLocation;
+	bool global;
+
+	OCT_index dataPoolTypeIndex_reg;
 };
 
 struct eOCT_fieldRequest {
@@ -61,7 +70,9 @@ struct eOCT_fieldRequest {
 struct eOCT_systemDescription {
 	const char* name;
 	eOCT_pool providedComponents;
+	eOCT_pool providedDataPools;
 	eOCT_pool requestedFields;
+	eOCT_systemInitFx initFx;
 
 	OCT_ID systemID_reg; // provided by the registry
 };
@@ -70,4 +81,5 @@ void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription);
 //void eOCT_registry_allocateComponents(eOCT_componentDescription* componentDescription);
 eOCT_pool eOCT_generateFieldDescriptionPool(eOCT_fieldDescription* array, size_t count);
 eOCT_pool eOCT_generateComponentDescriptionPool(eOCT_componentDescription* array, size_t count);
+eOCT_pool eOCT_generateDataPoolDescriptionPool(eOCT_dataPoolDescription* array, size_t count);
 eOCT_pool eOCT_generateFieldRequestPool(eOCT_fieldRequest* array, size_t count);

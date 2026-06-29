@@ -41,7 +41,7 @@ OCT_handle iOCT_entityContext_open(OCT_ID* contextOut) {
 	                                        }); // mark all components indices as unset
 
 	// init component pools-pool
-	const OCT_index componentTotal = iOCT_ECS_inst.componentTypeCount;
+	const OCT_index componentTotal = iOCT_ECS_inst.componentSizeAndOrderList.count;
 	OCT_index componentCtr;
 	eOCT_pool* componentPoolDest;
 	size_t componentSize;
@@ -51,7 +51,7 @@ OCT_handle iOCT_entityContext_open(OCT_ID* contextOut) {
 
 	// init component pools
 	for (componentCtr = 0; componentCtr < componentTotal; componentCtr++) {
-		componentSize = *(size_t*)eOCT_pool_access(&iOCT_ECS_inst.componentSizeList, componentCtr, 0);	// add entry to the pool pool
+		componentSize = *(size_t*)eOCT_pool_access(&iOCT_ECS_inst.componentSizeAndOrderList, componentCtr, 0);	// add entry to the pool pool
 		componentPoolDest = eOCT_pool_addEntry(&newContext->componentPools, &indexCheck);
 
 		*componentPoolDest = eOCT_pool_init(newID, eOCT_POOL_SIZE_DEFAULT, componentSize, eOCT_POOL_FILLSETTING_NONE);	// init actual component pool
@@ -80,10 +80,7 @@ OCT_handle iOCT_entityContext_open(OCT_ID* contextOut) {
 	return rootEntity;
 }
 
-eOCT_pool* iOCT_getComponentPool(iOCT_entityContext* context, OCT_index componentIndex) {
-	eOCT_pool* poolsArray = (eOCT_pool*)context->componentPools.array;
-	return &poolsArray[componentIndex];
-}
+
 
 eOCT_pool* eOCT_getComponentPool(OCT_handle contextHandle, eOCT_componentDescription component) {
 	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, contextHandle.objectID);
@@ -92,6 +89,23 @@ eOCT_pool* eOCT_getComponentPool(OCT_handle contextHandle, eOCT_componentDescrip
 eOCT_pool* eOCT_getFieldSourcePool(OCT_handle contextHandle, eOCT_fieldRequest field) {
 	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, contextHandle.objectID);
 	return iOCT_getComponentPool(context, field.componentTypeIndex_reg);
+}
+eOCT_pool* eOCT_getDataPool_context(OCT_handle contextHandle, eOCT_dataPoolDescription dataPoolDescription) {
+	if (dataPoolDescription.global) {
+		printf("Data pool %s is global\n", dataPoolDescription.name);
+		return NULL;
+	}
+	iOCT_entityContext* context = eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, contextHandle.objectID);
+	return iOCT_getDataPool(context, dataPoolDescription.dataPoolTypeIndex_reg);
+}
+
+eOCT_pool* iOCT_getComponentPool(iOCT_entityContext* context, OCT_index componentIndex) {
+	eOCT_pool* poolsArray = (eOCT_pool*)context->componentPools.array;
+	return &poolsArray[componentIndex];
+}
+eOCT_pool* iOCT_getDataPool(iOCT_entityContext* context, OCT_index dataPoolTypeIndex) {
+	eOCT_pool* pool = (eOCT_pool*)eOCT_pool_access(&context->systemDataPools, dataPoolTypeIndex, 0);
+	return pool;
 }
 
 void OCT_entityContext_dumpEntityPool(OCT_handle contextHandle) {

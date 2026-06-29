@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "module/WDWModule_internal.h"
+#include "windowSystem/WDWModule_internal.h"
 
 static OCT_key iOCT_getOCTKey(int GLFW_KEY);
 static OCT_key iOCT_getOCTButton(int glfwButton);
@@ -138,7 +138,7 @@ void iOCT_keyMap_init() {
     map[GLFW_KEY_KP_SUBTRACT] = OCT_KEY_NP_SUBTRACT;
     map[GLFW_KEY_KP_ADD] = OCT_KEY_NP_ADD;
     map[GLFW_KEY_KP_ENTER] = OCT_KEY_NP_ENTER;
-    
+
 }
 
 void iOCT_mouseMap_init() {

@@ -73,5 +73,5 @@ void eOCT_pool_clear(eOCT_pool* pool);
 bool eOCT_pool_isEmpty(eOCT_pool pool);
 void eOCT_pool_dump(eOCT_pool* pool);
 
-OCT_ID eOCT_pool_deleteEntry(eOCT_pool* pool, OCT_index index, bool compact);
+void eOCT_pool_deleteEntry(eOCT_pool* pool, OCT_index index, bool compact);
 void eOCT_pool_free(eOCT_pool* pool);

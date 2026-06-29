@@ -1,8 +1,8 @@
 #include "systems_build.h"
-#include "systemDescription_sysEx.h"
 
+#include "systemDescription_sysEx.h"
 #include "systemDescription_world.h"
-#include "OCT_Core.h"
+#include "systemDescription_window.h"
 
 void init_OCT_registerAllSystems() {
 	// testDesc_register();
@@ -11,4 +11,9 @@ void init_OCT_registerAllSystems() {
 	// systemD_register();
 	system_register_systemEx();
 	system_register_WORLD();
+	system_register_WINDOW();
 };
+
+void OCT_engine_tick() {
+	system_update_WINDOW();
+}

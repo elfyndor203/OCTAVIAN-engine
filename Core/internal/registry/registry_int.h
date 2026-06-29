@@ -4,9 +4,10 @@
 #include "utilities/utilities_eng.h"
 
 struct iOCT_registry {
-	eOCT_pool systems;
-	eOCT_pool components;
-	eOCT_pool fields;
+	eOCT_pool systems;	// systemDesc pointers
+	eOCT_pool components; // componentDesc copies
+	eOCT_pool dataPools; // dataPoolDesc copies
+	eOCT_pool fields;	  // field copies
 
 	bool success;
 };

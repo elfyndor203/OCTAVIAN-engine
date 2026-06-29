@@ -67,22 +67,22 @@ void* eOCT_pool_addEntry(eOCT_pool* pool, OCT_index* outIndex) {
 	return slot;
 }
 
-OCT_ID eOCT_pool_deleteEntry(eOCT_pool* pool, OCT_index index, bool compact) {
+void eOCT_pool_deleteEntry(eOCT_pool* pool, OCT_index index, bool compact) {
 	void* entry = eOCT_pool_access(pool, index, 0);
-	OCT_ID swappedID = OCT_ID_NULL;
+	// OCT_ID swappedID = OCT_ID_NULL;
 
 	// if shuffling is needed
 	if (index < pool->count - 1 && compact) {
-		void* finalEntry = eOCT_pool_access(pool, pool->count, 0);
+		void* finalEntry = eOCT_pool_access(pool, pool->count - 1, 0);
 		memcpy(entry, finalEntry, pool->elementSize);
 		memset(finalEntry, 0, pool->elementSize);
-		swappedID = *(OCT_ID*)entry; // return the ID that got swapped to update the IDmap
+		// swappedID = *(OCT_ID*)entry; // return the ID that got swapped to update the IDmap
 	}
 	else {
 		memset(entry, 0, pool->elementSize);
 	}
 	pool->count--;
-	return swappedID;
+	// return swappedID;
 }
 
 void eOCT_pool_free(eOCT_pool* pool) {

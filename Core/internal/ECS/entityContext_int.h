@@ -14,6 +14,7 @@ struct iOCT_entityContext {
 	eOCT_IDMap entityIDMap;
 	eOCT_pool entityPool;
 	eOCT_pool componentPools;
+	eOCT_pool systemDataPools;
 };
 
 //iOCT_entityContext* iOCT_entityContext_get(OCT_ID entityContextID);
@@ -21,6 +22,7 @@ struct iOCT_entityContext {
 
 OCT_handle iOCT_entityContext_open(OCT_ID* contextOut);
 eOCT_pool* iOCT_getComponentPool(iOCT_entityContext* context, OCT_index componentIndex);
+eOCT_pool* iOCT_getDataPool(iOCT_entityContext* context, OCT_index dataPoolTypeIndex);
 
 //void iOCT_entityContext_close(iOCT_entityContext* context);
 //void* iOCT_getByID(iOCT_entityContext* context, OCT_ID ID, OCT_ECSTypes componentType);

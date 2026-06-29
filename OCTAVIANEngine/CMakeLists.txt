@@ -22,8 +22,10 @@ target_link_libraries(OCTAVIANEngine
             Core
             World
             _SystemEx
+            Window
         PRIVATE
             WorldSystem
             _SystemExSystem
             CoreInit
+            WindowSystem
 )
