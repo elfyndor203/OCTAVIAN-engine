@@ -14,11 +14,32 @@ void system_register_WINDOW() {
         .cacheLocation = &iOCT_windowSystem_inst.windowCache
     };
 
-    eOCT_dataPoolDescription dataPools[] = { window };
+    eOCT_fieldDescription glfwKeyEvent = {
+        .name = "glfwKeys",
+        .provider = eOCT_FIELDPROVIDER_DATAPOOL,
+        .offset = offsetof(iOCT_keyEvent, key),
+        .type = eOCT_FIELDTYPE_INT64
+    };
+    eOCT_fieldDescription glfwKeyAction = {
+        .name = "glfwKeyAction",
+        .provider = eOCT_FIELDPROVIDER_DATAPOOL,
+        .offset = 0,
+        .type = eOCT_FIELDTYPE_INT64
+    };
+    eOCT_fieldDescription keyFields[] = { glfwKeyEvent, glfwKeyAction };
+    eOCT_dataPoolDescription glfwKeyData = {
+        .name = "glfwKeyData",
+        .providedFields = eOCT_generateFieldDescriptionPool(keyFields, 2),
+        .global = true,
+        .stride = sizeof(int),
+        .cacheLocation = &iOCT_windowSystem_inst.keyCache
+    };
+
+    eOCT_dataPoolDescription dataPools[] = { window, glfwKeyData };
 
     eOCT_systemDescription windowSystem = {
         .name = "Window",
-        .providedDataPools = eOCT_generateDataPoolDescriptionPool(dataPools, 1),
+        .providedDataPools = eOCT_generateDataPoolDescriptionPool(dataPools, 2),
         .providedComponents = eOCT_POOL_EMPTY,
         .requestedFields = eOCT_POOL_EMPTY,
         .initFx = iOCT_windowSystem_init

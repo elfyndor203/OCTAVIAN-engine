@@ -10,26 +10,44 @@ void system_register_WORLD() {
 		.name = "position.x",
 		.type = eOCT_FIELDTYPE_FLOAT32,
 		.offset = offsetof(iOCT_transform2D, position) + offsetof(OCT_vec2, x),
-		.source = eOCT_FIELDPROVIDER_COMPONENT
+		.provider = eOCT_FIELDPROVIDER_COMPONENT
 	};
 	eOCT_fieldDescription posY = {
 		.name = "position.y",
 		.type = eOCT_FIELDTYPE_FLOAT32,
 		.offset = offsetof(iOCT_transform2D, position) + offsetof(OCT_vec2, y),
-		.source = eOCT_FIELDPROVIDER_COMPONENT
+		.provider = eOCT_FIELDPROVIDER_COMPONENT
 	};
 	eOCT_fieldDescription rotation = {
 		.name = "rotation",
 		.type = eOCT_FIELDTYPE_FLOAT32,
 		.offset = offsetof(iOCT_transform2D, rotation),
-		.source = eOCT_FIELDPROVIDER_COMPONENT
+		.provider = eOCT_FIELDPROVIDER_COMPONENT
+	};
+	eOCT_fieldDescription scaleX = {
+		.name = "scale.x",
+		.type = eOCT_FIELDTYPE_FLOAT32,
+		.offset = offsetof(iOCT_transform2D, rotation),
+		.provider = eOCT_FIELDPROVIDER_COMPONENT
+	};
+	eOCT_fieldDescription scaleY = {
+		.name = "scale.y",
+		.type = eOCT_FIELDTYPE_FLOAT32,
+		.offset = offsetof(iOCT_transform2D, rotation),
+		.provider = eOCT_FIELDPROVIDER_COMPONENT
+	};
+	eOCT_fieldDescription matrix2D = {
+		.name = "transform2D",
+		.type = eOCT_FIELDTYPE_FLOAT32,
+		.offset = offsetof(iOCT_transform2D, rotation),
+		.provider = eOCT_FIELDPROVIDER_COMPONENT
 	};
 
-	eOCT_fieldDescription transformFields[] = { posX, posY, rotation };
+	eOCT_fieldDescription transformFields[] = { posX, posY, rotation, scaleX, scaleY, matrix2D };
 	eOCT_componentDescription transform2D = {
 		.name = "transform2D",
 		.stride = sizeof(iOCT_transform2D),
-		.providedFields = eOCT_generateFieldDescriptionPool(transformFields, 3),
+		.providedFields = eOCT_generateFieldDescriptionPool(transformFields, 6),
 		.cacheLocation = &iOCT_world_inst.transform2DCache,
 		.rootAttachmentFx = iOCT_transform2D_generateRoot
 	};

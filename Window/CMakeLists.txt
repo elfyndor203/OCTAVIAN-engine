@@ -2,6 +2,7 @@
 add_library(Window STATIC
         system/systemDescription.c
         internal/window/window.c
+        internal/window/callbacks.c
         internal/windowSystem/windowSystem.c
 )
 

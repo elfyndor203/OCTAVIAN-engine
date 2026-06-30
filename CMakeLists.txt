@@ -9,6 +9,7 @@ add_subdirectory(_SystemEx)
 add_subdirectory(World)
 add_subdirectory(Window)
 add_subdirectory(Renderer)
+add_subdirectory(Input)
 add_subdirectory(OCTAVIANEngine)
 
 add_subdirectory(GAME)

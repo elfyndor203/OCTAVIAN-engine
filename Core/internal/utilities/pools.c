@@ -67,6 +67,20 @@ void* eOCT_pool_addEntry(eOCT_pool* pool, OCT_index* outIndex) {
 	return slot;
 }
 
+void* eOCT_pool_addBatch(eOCT_pool* pool, OCT_index count, OCT_index* outIndex_last) {
+	while (pool->count + count >= pool->capacity) {
+		eOCT_pool_expand(pool, 2);
+	}
+
+	void* slot = eOCT_pool_access(pool, pool->count, 0);
+
+	if (outIndex_last) {
+		*outIndex_last = pool->count + count;
+	}
+	pool->count += count;
+	return slot;
+}
+
 void eOCT_pool_deleteEntry(eOCT_pool* pool, OCT_index index, bool compact) {
 	void* entry = eOCT_pool_access(pool, index, 0);
 	// OCT_ID swappedID = OCT_ID_NULL;
@@ -167,6 +181,9 @@ bool eOCT_pool_fill(const eOCT_pool* pool, eOCT_pool_fillSetting fillSetting) {
 }
 void eOCT_pool_clear(eOCT_pool* pool) {
 	memset(pool->array, 0, pool->capacity * pool->elementSize);
+	// if (pool->count) {
+	// 	printf("Cleared %zu entries\n", pool->count);
+	// }
 	pool->count = 0;
 }
 bool eOCT_pool_isEmpty(eOCT_pool pool) {

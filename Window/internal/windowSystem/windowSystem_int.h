@@ -8,6 +8,7 @@
 struct iOCT_windowSystem {
 	eOCT_systemDescription windowSystem;
 	eOCT_dataPoolDescription windowCache;
+	eOCT_dataPoolDescription keyCache;
 
 	GLFWwindow* mainWindow; // holds gpu resources
 

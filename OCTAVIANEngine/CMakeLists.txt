@@ -24,10 +24,12 @@ target_link_libraries(OCTAVIANEngine
         _SystemEx
         Window
         Renderer
+        Input
     PRIVATE
         WorldSystem
         _SystemExSystem
         CoreInit
         WindowSystem
         RendererSystem
+        InputSystem
 )

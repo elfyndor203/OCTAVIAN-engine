@@ -18,6 +18,14 @@ enum eOCT_fieldTypes {
 	eOCT_FIELDTYPE_CHAR8,
 	eOCT_FIELDTYPE_PTR64,
 	eOCT_FIELDTYPE_STRING64,
+
+	eOCT_FIELDTYPE_ID,
+	eOCT_FIELDTYPE_INDEX,
+	eOCT_FIELDTYPE_VEC2,
+	eOCT_FIELDTYPE_VEC3,
+	eOCT_FIELDTYPE_VEC4,
+	eOCT_FIELDTYPE_MAT3,
+	eOCT_FIELDTYPE_MAT4
 };
 
 enum eOCT_fieldAccess {
@@ -32,8 +40,8 @@ struct eOCT_fieldDescription {
 	eOCT_fieldTypes type;	// standard field types defined in fields.h
 	size_t offset;			// offset from the start of the component struct
 
-	eOCT_fieldProvider source;
-	OCT_index sourceIndex_reg;
+	eOCT_fieldProvider provider;
+	OCT_index providerIndex_reg;
 };
 
 struct eOCT_componentDescription {

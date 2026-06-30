@@ -53,7 +53,7 @@ void init_OCT_registry_distributeFields() {
 		for (int requestCtr = 0; requestCtr < requestPool.count; requestCtr++) {
 			request = &requestArray[requestCtr];
 			if (iOCT_registry_findField(request->name, &match)) {	// if there is a match
-				request->componentTypeIndex_reg = match.sourceIndex_reg;
+				request->componentTypeIndex_reg = match.providerIndex_reg;
 				request->fieldOffset_reg = match.offset;
 				request->fulfilled_reg = true;
 				//printf("Fulfilled field '%s' for system '%s'\n", request->name, system->name);
@@ -297,7 +297,7 @@ static OCT_index iOCT_registry_registerFields(eOCT_pool providedFields, OCT_ID s
 		}
 
 		else {
-			field->sourceIndex_reg = providerIndex;
+			field->providerIndex_reg = providerIndex;
 
 			fieldDestination = (eOCT_fieldDescription*)eOCT_pool_addEntry(&iOCT_registry_inst.fields, NULL);	// add field to the registry
 			*fieldDestination = *field;

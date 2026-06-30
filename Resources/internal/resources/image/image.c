@@ -9,9 +9,6 @@
 #include "resources/resourceList/resourceList_internal.h"
 #include "module/RESModule_internal.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-
 #define iOCT_RGBA 4
 
 OCT_handle OCT_image_load(const char* path) {

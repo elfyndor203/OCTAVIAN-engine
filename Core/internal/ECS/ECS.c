@@ -43,12 +43,12 @@ OCT_index iOCT_ECS_addComponentType(eOCT_componentDescription desc) {
 
 OCT_index iOCT_ECS_addDataPool(eOCT_dataPoolDescription desc, bool global) {
 	if (global) {
-		printf("Added global data pool\n");
+		//printf("Added global data pool\n");
 		return iOCT_ECS_addGlobalDataPool(desc);
 	}
 	else {
 		printf("Added context data pool\n");
-		return iOCT_ECS_addContextDataPool(desc);
+		//return iOCT_ECS_addContextDataPool(desc);
 	}
 }
 
@@ -65,7 +65,7 @@ eOCT_pool* eOCT_getDataPool_global(eOCT_dataPoolDescription dataPoolDescription,
 	return dataPool;
 }
 
-void* eOCT_addGlobalDataEntry(eOCT_dataPoolDescription dataPoolDescription, OCT_ID* IDOut) {
+void* eOCT_addGlobalDataEntry(eOCT_dataPoolDescription dataPoolDescription, bool createID, OCT_ID* IDOut) {
 	if (!dataPoolDescription.global) {
 		printf("Data pool %s is context local\n", dataPoolDescription.name);
 		return NULL;
@@ -76,7 +76,10 @@ void* eOCT_addGlobalDataEntry(eOCT_dataPoolDescription dataPoolDescription, OCT_
 
 	OCT_index dataIndex;
 	void* dataLoc = eOCT_pool_addEntry(dataPool, &dataIndex);
-	*IDOut = eOCT_IDMap_register(map, dataIndex);
+
+	if (createID && IDOut) {
+		*IDOut = eOCT_IDMap_register(map, dataIndex);
+	}
 	return dataLoc;
 }
 

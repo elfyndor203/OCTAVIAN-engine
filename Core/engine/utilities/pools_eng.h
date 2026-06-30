@@ -58,6 +58,7 @@ eOCT_pool eOCT_pool_init(OCT_ID ownerID, OCT_index capacity, size_t elementSize,
 /// <param name="outIndex"></param>
 /// <returns></returns>
 void* eOCT_pool_addEntry(eOCT_pool* pool, OCT_index* outIndex);
+void* eOCT_pool_addBatch(eOCT_pool* pool, OCT_index count, OCT_index* outIndex_last);
 void* eOCT_pool_access(eOCT_pool* pool, OCT_index index, size_t offset);
 
 bool eOCT_pool_combine(eOCT_pool* destination, eOCT_pool* source, bool freeSource);

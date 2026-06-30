@@ -44,6 +44,28 @@ void iOCT_windowSystem_init() {
 	iOCT_windowSystem_inst.mainWindow = NULL;
 }
 
+void system_update_WINDOW() {
+	iOCT_window* window;
+	eOCT_pool* windowPool = eOCT_getDataPool_global(iOCT_windowSystem_inst.windowCache, NULL);
+	iOCT_window* windowArray = (iOCT_window*)windowPool->array;
+
+	for (OCT_index windowCtr = 0; windowCtr < windowPool->count; windowCtr++) {
+		window = &windowArray[windowCtr];
+		iOCT_window_poll(window);
+
+		// check if windows should close
+		if (glfwWindowShouldClose(window->windowPtr)) {
+			window->open = false;
+			glfwDestroyWindow(window->windowPtr);
+			eOCT_pool_deleteEntry(windowPool, windowCtr, true); // remove the window
+			windowCtr--;
+		}
+	}
+
+	eOCT_pool* keyPool = eOCT_getDataPool_global(iOCT_windowSystem_inst.keyCache, NULL);
+	eOCT_pool_clear(keyPool);
+}
+
 // void OCT_WDWModule_update() {
 // 	iOCT_windowSystem_inst.cursorDelta = OCT_vec2_zero;
 // 	iOCT_windowSystem_inst.scrollDelta = OCT_vec2_zero;

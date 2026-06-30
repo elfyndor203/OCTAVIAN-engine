@@ -27,13 +27,15 @@ OCT_handle OCT_window_open(const char* name, unsigned int sizeX, unsigned int si
     glfwMakeContextCurrent(windowPtr);
     glfwSwapInterval(1);
 
+    glfwSetKeyCallback(windowPtr, iOCT_window_keyCallback);
+
     window.windowPtr = windowPtr;
     window.targetResolution = (OCT_vec2){ (float)sizeX, (float)sizeY };
     window.currentResolution = (OCT_vec2){ (float)sizeX, (float)sizeY };
     window.open = true;
 
     OCT_ID windowID;
-    iOCT_window* windowDestination = eOCT_addGlobalDataEntry(iOCT_windowSystem_inst.windowCache, &windowID);
+    iOCT_window* windowDestination = eOCT_addGlobalDataEntry(iOCT_windowSystem_inst.windowCache, true, &windowID);
     *windowDestination = window;
 
     OCT_handle windowHandle = {
@@ -56,23 +58,6 @@ bool OCT_window_isOpen(OCT_handle windowHandle) {
 void iOCT_window_poll(iOCT_window* window) {
     window->cursorDelta = OCT_vec2_zero;
     glfwPollEvents();
-}
-
-void system_update_WINDOW() {
-    iOCT_window* window;
-    eOCT_pool* windowPool = eOCT_getDataPool_global(iOCT_windowSystem_inst.windowCache, NULL);
-    iOCT_window* windowArray = (iOCT_window*)windowPool->array;
-    for (OCT_index windowCtr = 0; windowCtr < windowPool->count; windowCtr++) {
-        window = &windowArray[windowCtr];
-        iOCT_window_poll(window);
-
-        if (glfwWindowShouldClose(window->windowPtr)) {
-            window->open = false;
-            glfwDestroyWindow(window->windowPtr);
-            eOCT_pool_deleteEntry(windowPool, windowCtr, true); // remove the window
-            windowCtr--;
-        }
-    }
 }
 // void OCT_window_wipe() {
 // 	iOCT_window_wipe();
