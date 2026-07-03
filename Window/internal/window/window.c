@@ -9,8 +9,6 @@
 #include "windowSystem/windowSystem_int.h"
 
 OCT_handle OCT_window_open(const char* name, unsigned int sizeX, unsigned int sizeY, OCT_vec4 color) {
-    iOCT_window window;
-
     printf("\nOpening window %s", name);
     GLFWwindow* windowPtr = glfwCreateWindow(sizeX, sizeY, name, NULL, iOCT_windowSystem_inst.rootWindow);
     glfwMakeContextCurrent(windowPtr);
@@ -18,19 +16,15 @@ OCT_handle OCT_window_open(const char* name, unsigned int sizeX, unsigned int si
     glfwSwapInterval(1);
     glfwSetKeyCallback(windowPtr, iOCT_window_keyCallback);
 
-    window.windowPtr = windowPtr;
-    window.targetResolution = (OCT_vec2){ (float)sizeX, (float)sizeY };
-    window.currentResolution = (OCT_vec2){ (float)sizeX, (float)sizeY };
-
-    OCT_ID windowID;
-    iOCT_window* windowDestination = eOCT_addGlobalDataEntry(iOCT_windowSystem_inst.windowCache, true, &windowID);
-    *windowDestination = window;
-
+    OCT_ID newID;
+    iOCT_window* newWindow = eOCT_addGlobalDataEntry(iOCT_windowSystem_inst.windowCache, true, &newID);
+    newWindow->windowID = newID;
+    newWindow->windowPtr = windowPtr;
+    newWindow->targetResolution = (OCT_vec2){ (float)sizeX, (float)sizeY };
+    newWindow->currentResolution = (OCT_vec2){ (float)sizeX, (float)sizeY };
     OCT_handle windowHandle = {
         .containerID = OCT_ID_ECS,
-        .objectID = windowID,
-        .system = iOCT_windowSystem_inst.windowSystem.systemID_reg,
-        .valid = true
+        .objectID = newID,
     };
 
     glfwMakeContextCurrent(iOCT_windowSystem_inst.rootWindow);

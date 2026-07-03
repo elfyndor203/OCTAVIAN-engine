@@ -11,7 +11,7 @@
 #define eOCT_BYTE_ONES 0xFF
 #define eOCT_BYTE_ZEROES 0x00
 
-#define eOCT_POOL_SORTVALUE_NONE SIZE_MAX
+#define eOCT_POOL_SORT_NONE SIZE_MAX
 
 enum eOCT_pool_fillStyles {
 	eOCT_POOL_FILLSTYLE_NONE,
@@ -69,11 +69,12 @@ void* eOCT_pool_addEntry(eOCT_pool* pool, OCT_index* outIndex);
  * @param outIndex
  * @return
  */
-void* eOCT_pool_addSorted(eOCT_pool* pool, OCT_index sortValue, OCT_index* outIndex);
+void* eOCT_pool_addEntrySorted(eOCT_pool* pool, OCT_index sortValue, OCT_index* outIndex);
 //void* eOCT_pool_addBatch(eOCT_pool* pool, OCT_index count, OCT_index* outIndex_last);
 void* eOCT_pool_access(eOCT_pool* pool, OCT_index index, size_t offset);
 
 void eOCT_pool_setFill(eOCT_pool* pool, eOCT_pool_fillSetting fillSetting);
+void eOCT_pool_setSort(eOCT_pool* pool, size_t sortValueOffset);
 
 bool eOCT_pool_combine(eOCT_pool* destination, eOCT_pool* source, bool freeSource);
 

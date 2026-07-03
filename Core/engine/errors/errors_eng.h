@@ -2,6 +2,7 @@
 #include "types_eng.h"
 
 #include <stdbool.h>
+#include <stdio.h>
 
 enum iOCT_errorLevels{
     iOCT_FATAL,
@@ -24,6 +25,9 @@ X(OCT_WARNING_UNINITIALIZED,			iOCT_WARNING,	"Accessing uninitialized object") \
 \
 X(OCT_NOTE_POOL_NOT_EMPTY,              iOCT_NOTE,      "Pool is not empty")
 
+void iOCT_logError(OCT_ERROR_CODES errorCode);  // for macro access
+bool iOCT_handleError(OCT_ERROR_CODES errorCode); // for macro access
+
 #define OCT_ERROR_LOG(errorCode, reason) do {\
     iOCT_logError(errorCode); \
     fprintf(stderr, "Source: \n  File: %s\n  Line: %d\n  Function: %s\n  Message: %s\n", __FILE__, __LINE__, __func__, reason); \
@@ -36,5 +40,3 @@ enum OCT_ERROR_CODES {
 #undef X								// undef for next enum
 };
 
-void iOCT_logError(OCT_ERROR_CODES errorCode);  // for macro access
-bool iOCT_handleError(OCT_ERROR_CODES errorCode); // for macro access

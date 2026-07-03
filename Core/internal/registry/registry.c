@@ -119,7 +119,7 @@ void init_OCT_registry_check() {
 			printf("%02zu.    | %s\n", component.componentTypeIndex_reg, component.name);
 		}
 	}
-	printf("ECS Component Count: %zu\n", iOCT_ECS_inst.componentSizeAndOrderList.count);
+	printf("ECS Component Count: %zu\n", iOCT_ECS_inst.componentDescPtrList.count);
 	printf("ECS Entity Size: %zu\n", iOCT_ECS_inst.entitySize);
 
 	printf("\nFields requested:\n");
@@ -220,7 +220,7 @@ void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription) {
 			component = &componentArray[componentCtr];
 			componentDestination = (eOCT_componentDescription*)eOCT_pool_addEntry(&iOCT_registry_inst.components, NULL);
 			*componentDestination = *component;
-			component->componentTypeIndex_reg = iOCT_ECS_addComponentType(*component); // tells the ECS the index of the component's pool
+			component->componentTypeIndex_reg = iOCT_ECS_addComponentType(component); // tells the ECS the index of the component's pool
 
 			printf("%02"PRIu64".%02zu.--| %2cComponent %zu: %-15s\n", systemID, component->componentTypeIndex_reg, ' ', component->componentTypeIndex_reg, component->name);
 			OCT_index registeredFields = iOCT_registry_registerFields(component->providedFields, systemID, eOCT_FIELDPROVIDER_COMPONENT, component->componentTypeIndex_reg);

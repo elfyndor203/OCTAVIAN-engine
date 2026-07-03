@@ -46,7 +46,6 @@ OCT_handle OCT_textureGroup_open(OCT_vec2 dimensions, OCT_index maxCount) {
     OCT_handle newHandle = {
         .objectID = newID,
         .containerID = systemID,
-        .system = systemID
     };
 
     printf("Created new texture group\n");
@@ -76,7 +75,6 @@ OCT_handle OCT_texture_new(OCT_handle textureGroup, const char* path) {
     OCT_handle newHandle = {
         .objectID = newTexID,
         .containerID = texGroup->textureGroupID,
-        .system = OCT_ID_RESOURCES
     };
 
     printf("Loaded new texture\n");

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "OCT_Math.h"
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -8,11 +9,11 @@
 typedef uint64_t OCT_ID;
 
 typedef struct OCT_handle {
-	OCT_ID system;
 	OCT_ID containerID;
 	OCT_ID objectID;
 	OCT_ID handleType;
-	bool valid;
+
+	//OCT_index generation;
 } OCT_handle;
 
 extern OCT_handle OCT_HANDLE_NULL;

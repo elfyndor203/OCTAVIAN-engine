@@ -10,6 +10,7 @@ void iOCT_logError(OCT_ERROR_CODES errorCode) {
 	iOCT_errorLevels errorLevel = iOCT_errorLevelList[errorCode];
 	const char* message = iOCT_errorMessageList[errorCode];
 
+	printf("\n!!!\n");
 	if (errorLevel == iOCT_FATAL) {
 		printf("FATAL Error %d:", errorCode);
 	}

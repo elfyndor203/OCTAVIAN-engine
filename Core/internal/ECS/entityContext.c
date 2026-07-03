@@ -8,22 +8,8 @@
 #include "ECS/ECS_int.h"
 #include "entity_int.h"
 
-OCT_handle OCT_entityContext_open(OCT_handle* contextOut) {
-	OCT_ID contextID;
-	OCT_handle rootHandle = iOCT_entityContext_open(&contextID);
-	OCT_handle contextHandle = {
-		.containerID = OCT_ID_ECS,
-		.handleType = 0,
-		.objectID = contextID,
-		.system = OCT_ID_ECS
-	};
-
-	if (contextOut) {
-		*contextOut = contextHandle;
-	}
-	return rootHandle;
-}
-OCT_handle iOCT_entityContext_open(OCT_ID* contextOut) {
+OCT_handle OCT_entityContext_open(OCT_handle* rootOut) {
+	// init context details
 	OCT_index newIndex;
 	OCT_ID newID;
 	iOCT_entityContext* newContext;
@@ -31,8 +17,7 @@ OCT_handle iOCT_entityContext_open(OCT_ID* contextOut) {
 	newContext = (iOCT_entityContext*)eOCT_pool_addEntry(&iOCT_ECS_inst.contextPool, &newIndex);	// add context to context list
 	newID = eOCT_IDMap_register(&iOCT_ECS_inst.contextMap, newIndex);
 	newContext->contextID = newID;
-
-	// init entity pool
+		// init entity pool
 	OCT_index entityCapacity = eOCT_POOL_SIZE_DEFAULT;
 	newContext->entityIDMap = eOCT_IDMap_init(newID, entityCapacity);
 	newContext->entityPool = eOCT_pool_init(newID, entityCapacity, iOCT_ECS_inst.entitySize);
@@ -40,27 +25,28 @@ OCT_handle iOCT_entityContext_open(OCT_ID* contextOut) {
 		.fillStyle = eOCT_POOL_FILLSTYLE_BYTES,
 		.value.valueFill = 0xFF
 	};
-	eOCT_pool_setFill(&newContext->entityPool, noComponent);
-	// mark all component indices as unset
-
-	// init component pools-pool
-	const OCT_index componentTotal = iOCT_ECS_inst.componentSizeAndOrderList.count;
-	OCT_index componentCtr;
-	eOCT_pool* componentPoolDest;
-	size_t componentSize;
-	OCT_index indexCheck;
-
+	eOCT_pool_setFill(&newContext->entityPool, noComponent); 	// mark all component indices as unset
+		// init component pools-pool
+	const OCT_index componentTotal = iOCT_ECS_inst.componentDescPtrList.count;
 	newContext->componentPools = eOCT_pool_init(newID, componentTotal, sizeof(eOCT_pool));
-
-	// init component pools
+		// init component pools
+	OCT_index componentCtr;
+	OCT_index indexCheck;
 	for (componentCtr = 0; componentCtr < componentTotal; componentCtr++) {
-		componentSize = *(size_t*)eOCT_pool_access(&iOCT_ECS_inst.componentSizeAndOrderList, componentCtr, 0);	// add entry to the pool pool
-		componentPoolDest = eOCT_pool_addEntry(&newContext->componentPools, &indexCheck);
+		eOCT_componentDescription* component = *(eOCT_componentDescription**)eOCT_pool_access(&iOCT_ECS_inst.componentDescPtrList, componentCtr, 0);
 
-		*componentPoolDest = eOCT_pool_init(newID, eOCT_POOL_SIZE_DEFAULT, componentSize);	// init actual component pool
+		eOCT_pool* newPool = eOCT_pool_addEntry(&newContext->componentPools, &indexCheck);
+		*newPool = eOCT_pool_init(newID, eOCT_POOL_SIZE_DEFAULT, component->stride);	// init actual component pool
+		if (component->sortValueOffset != eOCT_POOL_SORT_NONE) {
+			eOCT_pool_setSort(newPool, component->sortValueOffset);
+		}
 		//printf("Allocated component #%zu with size %zu\n", indexCheck, componentSize);
 	}
-
+		// finalize
+	OCT_handle contextHandle = {
+		.containerID = OCT_ID_NULL,
+		.objectID = newID,
+	};
 	printf("Allocated entityContext %"PRIu64"\n", newID);
 
 	// init root entity
@@ -77,13 +63,12 @@ OCT_handle iOCT_entityContext_open(OCT_ID* contextOut) {
 			printf("No attachment\n");
 		}
 	}
-	eOCT_pool_dump(&newContext->entityPool);
 
-	*contextOut = newID;
-	return rootEntity;
+	if (rootOut) {
+		*rootOut = rootEntity;
+	}
+	return contextHandle;
 }
-
-
 
 eOCT_pool* eOCT_getComponentPool(OCT_handle contextHandle, eOCT_componentDescription component) {
 	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, contextHandle.objectID);

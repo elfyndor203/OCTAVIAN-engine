@@ -16,7 +16,7 @@ void init_OCT_ECS_init() {
 	iOCT_ECS_inst.contextMap = eOCT_IDMap_init(OCT_ID_ECS, eOCT_POOL_SIZE_DEFAULT);
 	iOCT_ECS_inst.contextPool = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_SIZE_DEFAULT, sizeof(iOCT_entityContext));
 
-	iOCT_ECS_inst.componentSizeAndOrderList = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_SIZE_DEFAULT, sizeof(size_t));
+	iOCT_ECS_inst.componentDescPtrList = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_SIZE_DEFAULT, sizeof(eOCT_componentDescription*));
 	iOCT_ECS_inst.componentRootInitList = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_SIZE_DEFAULT, sizeof(eOCT_rootAttachmentFx));
 	eOCT_pool_setFill(&iOCT_ECS_inst.componentRootInitList, eOCT_POOL_FILLSETTING_ZEROS);
 	iOCT_ECS_inst.dataPoolSizeAndOrderList = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_SIZE_DEFAULT, sizeof(size_t));
@@ -27,16 +27,16 @@ void init_OCT_ECS_init() {
 	printf("| ECS initialized\n");
 }
 
-OCT_index iOCT_ECS_addComponentType(eOCT_componentDescription desc) {
+OCT_index iOCT_ECS_addComponentType(eOCT_componentDescription* desc) {
 	OCT_index index;
-	size_t* strideDestination = (size_t*)eOCT_pool_addEntry(&iOCT_ECS_inst.componentSizeAndOrderList, &index);
-	*strideDestination = desc.stride;
+	eOCT_componentDescription** descPtr = (eOCT_componentDescription**)eOCT_pool_addEntry(&iOCT_ECS_inst.componentDescPtrList, &index);
+	*descPtr = desc;
 
 	iOCT_ECS_inst.entitySize += sizeof(OCT_index);
 
-	if (desc.rootAttachmentFx) {
+	if (desc->rootAttachmentFx) {
 		eOCT_rootAttachmentFx* rootAttachDestination = (eOCT_rootAttachmentFx*)eOCT_pool_addEntry(&iOCT_ECS_inst.componentRootInitList, NULL);
-		*rootAttachDestination = desc.rootAttachmentFx;
+		*rootAttachDestination = desc->rootAttachmentFx;
 	}
 
 	return index;
@@ -49,7 +49,7 @@ OCT_index iOCT_ECS_addDataPool(eOCT_dataPoolDescription desc, bool global) {
 	}
 	else {
 		printf("Added context data pool\n");
-		//return iOCT_ECS_addContextDataPool(desc);
+		return iOCT_ECS_addContextDataPool(desc);
 	}
 }
 

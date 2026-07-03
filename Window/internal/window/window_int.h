@@ -6,6 +6,8 @@
 #include <GLFW/glfw3.h>
 
 struct iOCT_window {
+    OCT_ID windowID;
+
     GLFWwindow* windowPtr;
     OCT_vec2 targetResolution;
     OCT_vec2 currentResolution;

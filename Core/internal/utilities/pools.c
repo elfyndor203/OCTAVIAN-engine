@@ -39,7 +39,7 @@ eOCT_pool eOCT_pool_init(OCT_ID ownerID, OCT_index capacity, size_t elementSize)
 	pool.capacity = capacity;
 	pool.elementSize = elementSize;
 	pool.fillSetting = eOCT_POOL_FILLSETTING_NONE;
-	pool.sortValueOffset = eOCT_POOL_SORTVALUE_NONE;
+	pool.sortValueOffset = eOCT_POOL_SORT_NONE;
 	pool.array = calloc(capacity, elementSize);
 	if (!pool.array) {
 		OCT_ERROR_LOG(OCT_EXIT_FAILED_TO_ALLOCATE, "Failed to allocate pool array memory");
@@ -60,16 +60,25 @@ void* eOCT_pool_addEntry(eOCT_pool* pool, OCT_index* outIndex) {
 	return slot;
 }
 
-void* eOCT_pool_addSorted(eOCT_pool* pool, OCT_index sortValue, OCT_index* outIndex) {
-	if (pool->sortValueOffset == eOCT_POOL_SORTVALUE_NONE) {
+void* eOCT_pool_addEntrySorted(eOCT_pool* pool, OCT_index sortValue, OCT_index* outIndex) {
+	if (pool->sortValueOffset == eOCT_POOL_SORT_NONE) {
 		OCT_ERROR_LOG(OCT_ERR_CREATION_FAILED, "Cannot add sorted item to a pool without a sort setting");
 		return NULL;
 	}
 	if (pool->count == pool->capacity) {
 		iOCT_pool_expand(pool, 2);
 	}
-	void* slot = iOCT_findDestination(pool, sortValue, outIndex); // provides outIndex already
 
+	// shift logic
+	OCT_index slotIndex;
+	void* slot = iOCT_findDestination(pool, sortValue, &slotIndex);
+	void* displaceBase = (char*)slot + pool->elementSize;
+	size_t displaceSize = pool->elementSize * (pool->count - slotIndex);
+	memmove(displaceBase, slot, displaceSize);
+
+	if (outIndex) {
+		*outIndex = slotIndex;
+	}
 	pool->count++;
 	return slot;
 }
@@ -83,7 +92,7 @@ void* eOCT_pool_access(eOCT_pool* pool, OCT_index index, size_t offset) {
 		OCT_ERROR_LOG(OCT_EXIT_REFERENCE_DOES_NOT_EXIST, "Index out of range");
 		return NULL;
 	}
-	if (index >= pool->count) {
+	if (index > pool->count) {
 		OCT_ERROR_LOG(OCT_WARNING_UNINITIALIZED, "Pool entry is uninitialized");
 	}
 	if (offset > pool->elementSize) {

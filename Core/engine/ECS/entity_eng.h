@@ -11,6 +11,7 @@
  * @return componentDataLocation
  */
 void* eOCT_entity_attachComponent(OCT_handle entity, eOCT_componentDescription component);
+void* eOCT_entity_attachComponentSorted(OCT_handle entity, eOCT_componentDescription component, OCT_index sortValue);
 void* eOCT_entity_getComponent(OCT_handle entity, eOCT_componentDescription component);
 void* eOCT_entity_getField(OCT_handle entity, eOCT_fieldRequest field);
-OCT_handle eOCT_entity_getContextHandle(OCT_handle entity);
+//OCT_handle eOCT_entity_genContextHandle(OCT_handle entity);

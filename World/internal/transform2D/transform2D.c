@@ -15,7 +15,7 @@ bool OCT_transform2D_attach(OCT_handle entity, OCT_handle parentEntity) {
 	}
 	iOCT_transform2D parentTransform = *(iOCT_transform2D*)eOCT_entity_getComponent(parentEntity, iOCT_world_inst.transform2DCache);
 
-	iOCT_transform2D* transform = (iOCT_transform2D*)eOCT_entity_attachComponent(entity, iOCT_world_inst.transform2DCache);
+	iOCT_transform2D* transform = (iOCT_transform2D*)eOCT_entity_attachComponentSorted(entity, iOCT_world_inst.transform2DCache, parentTransform.depth + 1);
 	transform->entityID = entity.objectID;
 	transform->parentEntityID = parentEntity.objectID;
 	transform->position = OCT_vec2_zero;
@@ -24,18 +24,31 @@ bool OCT_transform2D_attach(OCT_handle entity, OCT_handle parentEntity) {
 	transform->localMatrix = OCT_mat3_identity;
 	transform->globalMatrix = parentTransform.globalMatrix;
 	transform->depth = parentTransform.depth + 1;
+
 	return true;
 }
 
-OCT_vec2 OCT_transform2D_moveTo(OCT_handle entity, OCT_vec2 XY) {
+OCT_vec2 OCT_transform2D_moveTo(OCT_handle entity, OCT_vec2 destination) {
 	iOCT_transform2D* transform = (iOCT_transform2D*)eOCT_entity_getComponent(entity, iOCT_world_inst.transform2DCache);
-	// __NOTE_
+	transform->position = destination;
+	return transform->position;
 }
 OCT_vec2 OCT_transform2D_moveBy(OCT_handle entity, OCT_vec2 deltaXY);
 
 
 OCT_vec2 iOCT_transform2D_setPosition(iOCT_transform2D* transform, OCT_vec2 xy) {
 	transform->position = xy;
+	return transform->position;
+}
+OCT_vec2 OCT_transform2D_read(OCT_handle entity, float* rotationOut, OCT_vec2* scaleOut) {
+	iOCT_transform2D* transform = (iOCT_transform2D*)eOCT_entity_getComponent(entity, iOCT_world_inst.transform2DCache);
+
+	if (rotationOut) {
+		*rotationOut = transform->rotation;
+	}
+	if (scaleOut) {
+		*scaleOut = transform->scale;
+	}
 	return transform->position;
 }
 

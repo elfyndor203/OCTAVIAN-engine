@@ -10,7 +10,7 @@ struct iOCT_ECS {
 	eOCT_pool contextPool;
 
 	// context instructions
-	eOCT_pool componentSizeAndOrderList; // provides sizes and ordering of all components
+	eOCT_pool componentDescPtrList;
 	eOCT_pool componentRootInitList; // functions to call when creating the root entity
 	eOCT_pool dataPoolSizeAndOrderList;
 
@@ -26,5 +26,5 @@ extern iOCT_ECS iOCT_ECS_inst;
 /// </summary>
 /// <param name="desc"></param>
 /// <returns></returns>
-OCT_index iOCT_ECS_addComponentType(eOCT_componentDescription desc);
+OCT_index iOCT_ECS_addComponentType(eOCT_componentDescription* desc);
 OCT_index iOCT_ECS_addDataPool(eOCT_dataPoolDescription desc, bool global);

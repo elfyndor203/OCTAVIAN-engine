@@ -49,24 +49,17 @@ void system_register_WORLD() {
 		.stride = sizeof(iOCT_transform2D),
 		.providedFields = eOCT_generateFieldDescriptionPool(transformFields, 6),
 		.cacheLocation = &iOCT_world_inst.transform2DCache,
-		.rootAttachmentFx = iOCT_transform2D_generateRoot
+		.rootAttachmentFx = iOCT_transform2D_generateRoot,
+		.sortValueOffset = offsetof(iOCT_transform2D, depth),
 	};
 
-	eOCT_dataPoolDescription depth = {
-		.name = "depth",
-		.stride = sizeof(OCT_index),
-		.providedFields = eOCT_POOL_EMPTY,
-		.cacheLocation = &iOCT_world_inst.depthCache,
-		.global = false
-	};
-
-	eOCT_dataPoolDescription worldDataPools[] = { depth };
 	eOCT_componentDescription worldComponents[] = { transform2D };
 	eOCT_systemDescription world = {
 		.name = "WORLD",
 		.providedComponents = eOCT_generateComponentDescriptionPool(worldComponents, 1),
-		.providedDataPools = eOCT_generateDataPoolDescriptionPool(worldDataPools, 1),
-		.requestedFields = eOCT_POOL_EMPTY
+		.providedDataPools = eOCT_POOL_EMPTY,
+		.requestedFields = eOCT_POOL_EMPTY,
+		.initFx = iOCT_world_init
 	};
 
 	iOCT_world_inst.system = world;

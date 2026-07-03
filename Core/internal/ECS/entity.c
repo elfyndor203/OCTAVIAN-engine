@@ -22,9 +22,7 @@ OCT_handle iOCT_entity_new(iOCT_entityContext* context) {
 
 	return (OCT_handle) {
 		.objectID = newID,
-		.containerID = context->contextID,
-		.system = OCT_ID_ECS,
-		.valid = true
+		.containerID = context->contextID
 	};
 }
 
@@ -32,40 +30,51 @@ void* eOCT_entity_attachComponent(OCT_handle entity, eOCT_componentDescription c
 	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, entity.containerID);
 	OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
 
-	return iOCT_entity_attachComponent(context, entityIndex, component.componentTypeIndex_reg);
+	return iOCT_entity_attachComponent(context, entityIndex, component.componentTypeIndex_reg, false, 0);
 }
-void* iOCT_entity_attachComponent(iOCT_entityContext* context, OCT_index entityIndex, OCT_index componentTypeIndex) {
+void* eOCT_entity_attachComponentSorted(OCT_handle entity, eOCT_componentDescription component, OCT_index sortValue) {
+	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, entity.containerID);
+	OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
+
+	return iOCT_entity_attachComponent(context, entityIndex, component.componentTypeIndex_reg, true, sortValue);
+}
+void* iOCT_entity_attachComponent(iOCT_entityContext* context, OCT_index entityIndex, OCT_index componentTypeIndex, bool sort, OCT_index sortValue) {
 	// goes to the slot in the entity pool
 	OCT_index* entityBase = iOCT_entity_get(context, entityIndex);
-	OCT_index* componentEntry = entityBase + componentTypeIndex; // moves componentIndex elements to the pool index for that component type, of that entity
+	OCT_index* entityKeyEntry = entityBase + componentTypeIndex; // moves componentIndex elements to the pool index for that component type, of that entity
 
 	// gets the index within the component's pool
 	eOCT_pool* componentPool = iOCT_getComponentPool(context, componentTypeIndex);
-	OCT_index componentEntryIndex;
-	void* dataLoc = eOCT_pool_addEntry(componentPool, &componentEntryIndex);
+	OCT_index destinationIndex;
+	void* dataLoc;
+	if (sort) {
+		dataLoc = eOCT_pool_addEntrySorted(componentPool, sortValue, &destinationIndex);
+	}
+	else {
+		dataLoc = eOCT_pool_addEntry(componentPool, &destinationIndex);
+	}
 
 	// saves that index in the entity slot
-	*componentEntry = componentEntryIndex;
-
+	*entityKeyEntry = destinationIndex;
 	//__NOTE__
 	printf("Attached component\n");
 	return dataLoc;
 }
 
-OCT_handle eOCT_entity_getContextHandle(OCT_handle entity) {
-	OCT_handle contextHandle = {
-		.objectID = entity.containerID,
-		.containerID = OCT_ID_ECS,
-		.system = OCT_ID_ECS,
-		.valid = true
-	};
-	if (entity.valid) {
-		return contextHandle;
-	}
-	else {
-		return OCT_HANDLE_NULL;
-	}
-}
+// OCT_handle eOCT_entity_genContextHandle(OCT_handle entity) {
+// 	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, entity.containerID);
+// 	OCT_handle contextHandle = {
+// 		.objectID = entity.containerID,
+// 		.containerID = OCT_ID_NULL,
+// 		.valid = &context->valid
+// 	};
+// 	if (*entity.valid) {
+// 		return contextHandle;
+// 	}
+// 	else {
+// 		return OCT_HANDLE_NULL;
+// 	}
+// }
 
 void* eOCT_entity_getField(OCT_handle entity, eOCT_fieldRequest field) {
 	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, entity.containerID);
@@ -97,5 +106,5 @@ void* iOCT_entity_getComponent(iOCT_entityContext* context, OCT_index entityInde
 /// <returns></returns>
 static OCT_index* iOCT_entity_get(iOCT_entityContext* context, OCT_index entityIndex) {
 	OCT_index* array = (OCT_index*)context->entityPool.array;
-	return &array[entityIndex * iOCT_ECS_inst.componentSizeAndOrderList.count];
+	return &array[entityIndex * iOCT_ECS_inst.componentDescPtrList.count];
 }
