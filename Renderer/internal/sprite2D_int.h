@@ -15,6 +15,7 @@ struct iOCT_sprite2D {
     OCT_ID texGroupID;
     OCT_index texArrayLayer;
     OCT_index drawLayer;
+    OCT_index sortKey;
 
     iOCT_spriteData spriteData;
 };

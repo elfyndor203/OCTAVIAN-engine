@@ -12,6 +12,7 @@ void system_register_RENDERER() {
         .rootAttachmentFx = NULL,
         .stride = sizeof(iOCT_sprite2D),
         .cacheLocation = &iOCT_renderer_inst.sprite2DCache,
+        .sortValueOffset = offsetof(iOCT_sprite2D, sortKey)
     };
 
     eOCT_fieldRequest transform2D = {
