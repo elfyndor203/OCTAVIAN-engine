@@ -35,10 +35,13 @@ OCT_handle iOCT_entityContext_open(OCT_ID* contextOut) {
 	// init entity pool
 	OCT_index entityCapacity = eOCT_POOL_SIZE_DEFAULT;
 	newContext->entityIDMap = eOCT_IDMap_init(newID, entityCapacity);
-	newContext->entityPool = eOCT_pool_init(newID, entityCapacity, iOCT_ECS_inst.entitySize, (eOCT_pool_fillSetting){
-		                                        .fillStyle = eOCT_POOL_FILLSTYLE_BYTES,
-		                                        .value.byteFill = 0xFF
-	                                        }); // mark all components indices as unset
+	newContext->entityPool = eOCT_pool_init(newID, entityCapacity, iOCT_ECS_inst.entitySize);
+	eOCT_pool_fillSetting noComponent = {
+		.fillStyle = eOCT_POOL_FILLSTYLE_BYTES,
+		.value.valueFill = 0xFF
+	};
+	eOCT_pool_setFill(&newContext->entityPool, noComponent);
+	// mark all component indices as unset
 
 	// init component pools-pool
 	const OCT_index componentTotal = iOCT_ECS_inst.componentSizeAndOrderList.count;
@@ -47,14 +50,14 @@ OCT_handle iOCT_entityContext_open(OCT_ID* contextOut) {
 	size_t componentSize;
 	OCT_index indexCheck;
 
-	newContext->componentPools = eOCT_pool_init(newID, componentTotal, sizeof(eOCT_pool), eOCT_POOL_FILLSETTING_NONE);
+	newContext->componentPools = eOCT_pool_init(newID, componentTotal, sizeof(eOCT_pool));
 
 	// init component pools
 	for (componentCtr = 0; componentCtr < componentTotal; componentCtr++) {
 		componentSize = *(size_t*)eOCT_pool_access(&iOCT_ECS_inst.componentSizeAndOrderList, componentCtr, 0);	// add entry to the pool pool
 		componentPoolDest = eOCT_pool_addEntry(&newContext->componentPools, &indexCheck);
 
-		*componentPoolDest = eOCT_pool_init(newID, eOCT_POOL_SIZE_DEFAULT, componentSize, eOCT_POOL_FILLSETTING_NONE);	// init actual component pool
+		*componentPoolDest = eOCT_pool_init(newID, eOCT_POOL_SIZE_DEFAULT, componentSize);	// init actual component pool
 		//printf("Allocated component #%zu with size %zu\n", indexCheck, componentSize);
 	}
 

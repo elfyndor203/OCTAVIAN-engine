@@ -17,10 +17,10 @@ iOCT_registry iOCT_registry_inst = { 0 };
 
 #pragma region internal
 void init_OCT_registry_init() {
-	eOCT_pool systems = eOCT_pool_init(OCT_ID_REGISTRY, eOCT_POOL_SIZE_DEFAULT, sizeof(eOCT_systemDescription*), eOCT_POOL_FILLSETTING_NONE); // store system pointers
-	eOCT_pool components = eOCT_pool_init(OCT_ID_REGISTRY, eOCT_POOL_SIZE_DEFAULT, sizeof(eOCT_componentDescription), eOCT_POOL_FILLSETTING_NONE);
-	eOCT_pool dataPools = eOCT_pool_init(OCT_ID_REGISTRY, eOCT_POOL_SIZE_DEFAULT, sizeof(eOCT_dataPoolDescription), eOCT_POOL_FILLSETTING_NONE);
-	eOCT_pool fields = eOCT_pool_init(OCT_ID_REGISTRY, eOCT_POOL_SIZE_DEFAULT, sizeof(eOCT_fieldDescription), eOCT_POOL_FILLSETTING_NONE);
+	eOCT_pool systems = eOCT_pool_init(OCT_ID_REGISTRY, eOCT_POOL_SIZE_DEFAULT, sizeof(eOCT_systemDescription*)); // store system pointers
+	eOCT_pool components = eOCT_pool_init(OCT_ID_REGISTRY, eOCT_POOL_SIZE_DEFAULT, sizeof(eOCT_componentDescription));
+	eOCT_pool dataPools = eOCT_pool_init(OCT_ID_REGISTRY, eOCT_POOL_SIZE_DEFAULT, sizeof(eOCT_dataPoolDescription));
+	eOCT_pool fields = eOCT_pool_init(OCT_ID_REGISTRY, eOCT_POOL_SIZE_DEFAULT, sizeof(eOCT_fieldDescription));
 	iOCT_registry_inst.systems = systems;
 	iOCT_registry_inst.components = components;
 	iOCT_registry_inst.dataPools = dataPools;
@@ -75,11 +75,13 @@ void init_OCT_registry_initAllSystems() {
 	eOCT_systemInitFx initFx;
 	for (OCT_index systemCtr = 0; systemCtr < iOCT_registry_inst.systems.count; systemCtr++) {
 		system = **(eOCT_systemDescription**)eOCT_pool_access(&iOCT_registry_inst.systems, systemCtr, 0);
-		printf("Attemping to init system %s\n", system.name);
 		initFx = system.initFx;
 		if (initFx) {
-			printf("System %s has init fx %p\n", system.name, initFx);
+			printf("Init system %s with init fx %p\n", system.name, initFx);
 			initFx();
+		}
+		else {
+			printf("System %s has no init fx\n", system.name);
 		}
 	}
 }
@@ -101,7 +103,7 @@ void init_OCT_registry_check() {
 	int requestCtr = 0;
 
 	printf("\n--------SUMMARY--------\n");
-	printf("Systems: (1 & 2 reserved)\n");
+	printf("Systems: (%d - %d reserved)\n", 1, OCT_ID_SYSTEM_START - 1);
 	for (systemCtr = 0; systemCtr < systemPool.count; systemCtr++) {
 		system = *systemArray[systemCtr];
 		printf("%02zu.    | %s\n", system.systemID_reg, system.name);
@@ -154,7 +156,7 @@ void init_OCT_registry_check() {
 
 #pragma region engine
 eOCT_pool eOCT_generateFieldDescriptionPool(eOCT_fieldDescription* array, size_t count) {
-	eOCT_pool pool = eOCT_pool_init(OCT_ID_NULL, count, sizeof(eOCT_fieldDescription), eOCT_POOL_FILLSETTING_NONE);
+	eOCT_pool pool = eOCT_pool_init(OCT_ID_NULL, count, sizeof(eOCT_fieldDescription));
 	eOCT_fieldDescription* destination;
 	for (OCT_index ctr = 0; ctr < count; ctr++) {
 		destination = (eOCT_fieldDescription*)eOCT_pool_addEntry(&pool, NULL);
@@ -164,7 +166,7 @@ eOCT_pool eOCT_generateFieldDescriptionPool(eOCT_fieldDescription* array, size_t
 }
 
 eOCT_pool eOCT_generateComponentDescriptionPool(eOCT_componentDescription* array, size_t count) {
-	eOCT_pool pool = eOCT_pool_init(OCT_ID_NULL, count, sizeof(eOCT_componentDescription), eOCT_POOL_FILLSETTING_NONE);
+	eOCT_pool pool = eOCT_pool_init(OCT_ID_NULL, count, sizeof(eOCT_componentDescription));
 
 	eOCT_componentDescription* destination;
 	for (int ctr = 0; ctr < count; ctr++) {
@@ -175,7 +177,7 @@ eOCT_pool eOCT_generateComponentDescriptionPool(eOCT_componentDescription* array
 }
 
 eOCT_pool eOCT_generateDataPoolDescriptionPool(eOCT_dataPoolDescription* array, size_t count) {
-	eOCT_pool pool = eOCT_pool_init(OCT_ID_NULL, count, sizeof(eOCT_dataPoolDescription), eOCT_POOL_FILLSETTING_NONE);
+	eOCT_pool pool = eOCT_pool_init(OCT_ID_NULL, count, sizeof(eOCT_dataPoolDescription));
 
 	eOCT_dataPoolDescription* destination;
 	for (int ctr = 0; ctr < count; ctr++) {
@@ -186,7 +188,7 @@ eOCT_pool eOCT_generateDataPoolDescriptionPool(eOCT_dataPoolDescription* array, 
 }
 
 eOCT_pool eOCT_generateFieldRequestPool(eOCT_fieldRequest* array, size_t count) {
-	eOCT_pool pool = eOCT_pool_init(OCT_ID_NULL, count, sizeof(eOCT_fieldRequest), eOCT_POOL_FILLSETTING_NONE);
+	eOCT_pool pool = eOCT_pool_init(OCT_ID_NULL, count, sizeof(eOCT_fieldRequest));
 
 	eOCT_fieldRequest* destination;
 	for (int ctr = 0; ctr < count; ctr++) {

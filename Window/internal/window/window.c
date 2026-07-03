@@ -11,28 +11,16 @@
 OCT_handle OCT_window_open(const char* name, unsigned int sizeX, unsigned int sizeY, OCT_vec4 color) {
     iOCT_window window;
 
-    printf("\nOpening window '%s'\n %2cType: ", name, ' ');
-    GLFWwindow* windowPtr;
-    if (iOCT_windowSystem_inst.mainWindow == NULL) {
-        printf("Main / Resource\n");
-        windowPtr = glfwCreateWindow(sizeX, sizeY, name, NULL, NULL);
-        iOCT_windowSystem_inst.mainWindow = windowPtr;
-
-        glfwMakeContextCurrent(windowPtr);
-    } else {
-        printf("Auxiliary\n");
-        windowPtr = glfwCreateWindow(sizeX, sizeY, name, NULL, iOCT_windowSystem_inst.mainWindow);
-    }
-
+    printf("\nOpening window %s", name);
+    GLFWwindow* windowPtr = glfwCreateWindow(sizeX, sizeY, name, NULL, iOCT_windowSystem_inst.rootWindow);
     glfwMakeContextCurrent(windowPtr);
-    glfwSwapInterval(1);
 
+    glfwSwapInterval(1);
     glfwSetKeyCallback(windowPtr, iOCT_window_keyCallback);
 
     window.windowPtr = windowPtr;
     window.targetResolution = (OCT_vec2){ (float)sizeX, (float)sizeY };
     window.currentResolution = (OCT_vec2){ (float)sizeX, (float)sizeY };
-    window.open = true;
 
     OCT_ID windowID;
     iOCT_window* windowDestination = eOCT_addGlobalDataEntry(iOCT_windowSystem_inst.windowCache, true, &windowID);
@@ -42,8 +30,10 @@ OCT_handle OCT_window_open(const char* name, unsigned int sizeX, unsigned int si
         .containerID = OCT_ID_ECS,
         .objectID = windowID,
         .system = iOCT_windowSystem_inst.windowSystem.systemID_reg,
+        .valid = true
     };
 
+    glfwMakeContextCurrent(iOCT_windowSystem_inst.rootWindow);
     return windowHandle;
 }
 
@@ -52,7 +42,19 @@ bool OCT_window_isOpen(OCT_handle windowHandle) {
     if (!window) {
         return false;
     }
-    return window->open;
+    return true;
+}
+
+bool OCT_window_anyOpen() {
+    eOCT_pool* windowPool = (eOCT_pool*)eOCT_getDataPool_global(iOCT_windowSystem_inst.windowCache, NULL);
+    return windowPool->count;
+}
+
+void iOCT_window_close(iOCT_window* window, OCT_index windowIndex) {
+    eOCT_pool* windowPool = eOCT_getDataPool_global(iOCT_windowSystem_inst.windowCache, NULL);
+
+    glfwDestroyWindow(window->windowPtr);
+    eOCT_pool_deleteEntry(windowPool, windowIndex, true); // remove the window
 }
 
 void iOCT_window_poll(iOCT_window* window) {

@@ -2,23 +2,33 @@
 
 #include "OCT_Core_eng.h"
 
-#include "renderer/renderer_int.h"
+#include "renderer_int.h"
+#include "../internal/sprite2D_int.h"
 
 void system_register_RENDERER() {
+    eOCT_componentDescription sprite2D = {
+        .name = "sprite2D",
+        .providedFields = eOCT_POOL_EMPTY,
+        .rootAttachmentFx = NULL,
+        .stride = sizeof(iOCT_sprite2D),
+        .cacheLocation = &iOCT_renderer_inst.sprite2DCache,
+    };
+
     eOCT_fieldRequest transform2D = {
         .name = "transform2D",
         .type = eOCT_FIELDTYPE_MAT3,
         .optional = false
     };
 
+    eOCT_componentDescription components[1] = { sprite2D };
     eOCT_fieldRequest fieldRequests[1] = { transform2D };
 
     eOCT_systemDescription rendererSystem = {
         .name = "Renderer",
-        .providedComponents = eOCT_POOL_EMPTY,
+        .providedComponents = eOCT_generateComponentDescriptionPool(components, 1),
         .providedDataPools = eOCT_POOL_EMPTY,
         .requestedFields = eOCT_generateFieldRequestPool(fieldRequests, 1),
-        .initFx = NULL
+        .initFx = iOCT_renderer_init
     };
 
     iOCT_renderer_inst.systemDescription = rendererSystem;

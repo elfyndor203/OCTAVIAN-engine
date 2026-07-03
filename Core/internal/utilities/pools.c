@@ -27,60 +27,72 @@ eOCT_pool_fillSetting eOCT_POOL_FILLSETTING_ZEROS = {
 	.value.byteFill = 0x00
 };
 
-static bool eOCT_pool_expand(eOCT_pool* pool, unsigned int factor);
+static bool iOCT_pool_expand(eOCT_pool* pool, OCT_index factor);
+static void* iOCT_findDestination(eOCT_pool* pool, OCT_index target, OCT_index* outIndex);
 
-/// <summary>
-/// Allocates memory for a single pool. Allows creation of all pools without rewriting when new component types are added
-/// </summary>
-eOCT_pool eOCT_pool_init(OCT_ID ownerID, OCT_index capacity, size_t elementSize, eOCT_pool_fillSetting fillSetting) {
+#pragma region basic functions
+eOCT_pool eOCT_pool_init(OCT_ID ownerID, OCT_index capacity, size_t elementSize) {
 	eOCT_pool pool = { 0 };
 
 	pool.ownerID = ownerID;					// set default values
 	pool.count = 0;
 	pool.capacity = capacity;
 	pool.elementSize = elementSize;
-	pool.fillSetting = fillSetting;
+	pool.fillSetting = eOCT_POOL_FILLSETTING_NONE;
+	pool.sortValueOffset = eOCT_POOL_SORTVALUE_NONE;
 	pool.array = calloc(capacity, elementSize);
 	if (!pool.array) {
-		OCT_logError(EXIT_FAILED_TO_ALLOCATE);
-	}
-
-	if (fillSetting.fillStyle != eOCT_POOL_FILLSTYLE_NONE) {
-		eOCT_pool_fill(&pool, fillSetting);
+		OCT_ERROR_LOG(OCT_EXIT_FAILED_TO_ALLOCATE, "Failed to allocate pool array memory");
 	}
 	//printf(">Init pool of size: %zu\n", capacity * elementSize);
 	return pool;
 }
-
 void* eOCT_pool_addEntry(eOCT_pool* pool, OCT_index* outIndex) {
 	if (pool->count == pool->capacity) {
-		eOCT_pool_expand(pool, 2);
+		iOCT_pool_expand(pool, 2);
 	}
-
 	void* slot = eOCT_pool_access(pool, pool->count, 0);
 
 	if (outIndex) {
 		*outIndex = pool->count;
 	}
 	pool->count++;
-
 	return slot;
 }
 
-void* eOCT_pool_addBatch(eOCT_pool* pool, OCT_index count, OCT_index* outIndex_last) {
-	while (pool->count + count >= pool->capacity) {
-		eOCT_pool_expand(pool, 2);
+void* eOCT_pool_addSorted(eOCT_pool* pool, OCT_index sortValue, OCT_index* outIndex) {
+	if (pool->sortValueOffset == eOCT_POOL_SORTVALUE_NONE) {
+		OCT_ERROR_LOG(OCT_ERR_CREATION_FAILED, "Cannot add sorted item to a pool without a sort setting");
+		return NULL;
 	}
-
-	void* slot = eOCT_pool_access(pool, pool->count, 0);
-
-	if (outIndex_last) {
-		*outIndex_last = pool->count + count;
+	if (pool->count == pool->capacity) {
+		iOCT_pool_expand(pool, 2);
 	}
-	pool->count += count;
+	void* slot = iOCT_findDestination(pool, sortValue, outIndex); // provides outIndex already
+
+	pool->count++;
 	return slot;
 }
 
+void* eOCT_pool_access(eOCT_pool* pool, OCT_index index, size_t offset) {
+	if (!pool) {
+		OCT_ERROR_LOG(OCT_EXIT_REFERENCE_DOES_NOT_EXIST, "Pool DNE");
+		return NULL;
+	}
+	if (index >= pool->capacity) {
+		OCT_ERROR_LOG(OCT_EXIT_REFERENCE_DOES_NOT_EXIST, "Index out of range");
+		return NULL;
+	}
+	if (index >= pool->count) {
+		OCT_ERROR_LOG(OCT_WARNING_UNINITIALIZED, "Pool entry is uninitialized");
+	}
+	if (offset > pool->elementSize) {
+		OCT_ERROR_LOG(OCT_EXIT_REFERENCE_DOES_NOT_EXIST, "Offset greater than element size");
+		return NULL;
+	}
+	void* entry = (char*)pool->array + (size_t)index * pool->elementSize + offset;
+	return entry;
+}
 void eOCT_pool_deleteEntry(eOCT_pool* pool, OCT_index index, bool compact) {
 	void* entry = eOCT_pool_access(pool, index, 0);
 	// OCT_ID swappedID = OCT_ID_NULL;
@@ -98,52 +110,32 @@ void eOCT_pool_deleteEntry(eOCT_pool* pool, OCT_index index, bool compact) {
 	pool->count--;
 	// return swappedID;
 }
-
 void eOCT_pool_free(eOCT_pool* pool) {
 	free(pool->array);
 	pool->array = NULL;
 }
+#pragma endregion
 
-void* eOCT_pool_access(eOCT_pool* pool, OCT_index index, size_t offset) {
-	if (!pool) {
-		return NULL;
-	}
-	if (index >= pool->capacity) {
-		return NULL;
-	}
-	if (offset > pool->elementSize) {
-		return NULL;
-	}
-	void* entry = (char*)pool->array + (size_t)index * pool->elementSize + offset;
-	return entry;
-}
-
-bool eOCT_pool_combine(eOCT_pool* destination, eOCT_pool* source, bool freeSource) {
-	if (destination->elementSize != source->elementSize) {
-		return false;
-	}
-
-	size_t elementSize = source->elementSize;
-	size_t sourceDataSize = elementSize * source->count;
-	while (elementSize * (destination->capacity - destination->count) < sourceDataSize) {
-		if (!eOCT_pool_expand(destination, 2)) {
-			return false;
-		}
-	}
-	memcpy((char*)destination->array + (elementSize * destination->count), source->array, elementSize * source->count);
-	destination->count += source->count;
-
-	if (freeSource) {
-		eOCT_pool_free(source);
-	}
-	return true;
-}
-
+#pragma region batch functions
+// void* eOCT_pool_addBatch(eOCT_pool* pool, OCT_index count, OCT_index* outIndex_last) {
+// 	while (pool->count + count >= pool->capacity) {
+// 		iOCT_pool_expand(pool, 2);
+// 	}
+//
+// 	void* slot = eOCT_pool_access(pool, pool->count, 0);
+//
+// 	if (outIndex_last) {
+// 		*outIndex_last = pool->count + count;
+// 	}
+// 	pool->count += count;
+// 	return slot;
+// }
 bool eOCT_pool_fill(const eOCT_pool* pool, eOCT_pool_fillSetting fillSetting) {
 	if (fillSetting.fillStyle == eOCT_POOL_FILLSTYLE_NONE) {
 		printf("No fill setting chosen\n");
 		return 0;
 	}
+	assert(fillSetting.fillStyle != eOCT_POOL_FILLSTYLE_VALUE && "Value fill doesn't work yet\n");
 
 	OCT_index startIndex = pool->count;
 
@@ -162,15 +154,15 @@ bool eOCT_pool_fill(const eOCT_pool* pool, eOCT_pool_fillSetting fillSetting) {
 		char* startLoc = array + (startIndex * pool->elementSize);
 		memset(startLoc, fillSetting.value.byteFill, pool->elementSize * (pool->capacity - startIndex));
 	}
-	else if (fillSetting.fillStyle == eOCT_POOL_FILLSTYLE_VALUE) {
-		if (pool->elementSize != sizeof(size_t)) {
-			printf("Pool size mismatch. \n");
-			return 0;
-		}
-		for (OCT_index index = startIndex; index < pool->capacity; index++) {
-			((size_t*)array)[index] = fillSetting.value.valueFill;
-		}
-	}
+	// else if (fillSetting.fillStyle == eOCT_POOL_FILLSTYLE_VALUE) {
+	// 	if (pool->elementSize != sizeof(size_t)) {
+	// 		printf("Pool size mismatch. \n");
+	// 		return 0;
+	// 	}
+	// 	for (OCT_index index = startIndex; index < pool->capacity; index++) {
+	// 		((size_t*)array)[index] = fillSetting.value.valueFill;
+	// 	}
+	// }
 	else {
 		printf("Something went wrong: pool fill\n");
 		return 0;
@@ -186,6 +178,77 @@ void eOCT_pool_clear(eOCT_pool* pool) {
 	// }
 	pool->count = 0;
 }
+bool eOCT_pool_combine(eOCT_pool* destination, eOCT_pool* source, bool freeSource) {
+	if (destination->elementSize != source->elementSize) {
+		return false;
+	}
+
+	size_t elementSize = source->elementSize;
+	size_t sourceDataSize = elementSize * source->count;
+	while (elementSize * (destination->capacity - destination->count) < sourceDataSize) {
+		if (!iOCT_pool_expand(destination, 2)) {
+			return false;
+		}
+	}
+	memcpy((char*)destination->array + (elementSize * destination->count), source->array, elementSize * source->count);
+	destination->count += source->count;
+
+	if (freeSource) {
+		eOCT_pool_free(source);
+	}
+	return true;
+}
+#pragma endregion
+
+#pragma region settings
+void eOCT_pool_setFill(eOCT_pool* pool, eOCT_pool_fillSetting fillSetting) {
+	pool->fillSetting = fillSetting;
+
+	eOCT_pool_fill(pool, pool->fillSetting);
+};
+void eOCT_pool_setSort(eOCT_pool* pool, size_t sortValueOffset) {
+	pool->sortValueOffset = sortValueOffset;
+
+	if (pool->count > 0) {
+		OCT_ERROR_LOG(OCT_NOTE_POOL_NOT_EMPTY, "Adding sort setting does not sort existing items");
+	}
+}
+#pragma endregion
+
+#pragma region control functions
+OCT_index eOCT_pool_expand(eOCT_pool* pool, OCT_index minCapacity) {
+	OCT_index currentCapacity = pool->capacity;
+	OCT_index factor = 2;
+	while (currentCapacity * factor < minCapacity) {
+		factor++;
+	}
+	iOCT_pool_expand(pool, factor);
+	return pool->capacity;
+}
+static bool iOCT_pool_expand(eOCT_pool* pool, OCT_index factor) {
+	if (factor * pool->capacity == 0) {
+		return false;
+	}
+
+	void* newArray = realloc(pool->array, pool->elementSize * pool->capacity * factor);
+	if (!newArray) {
+		OCT_ERROR_LOG(OCT_EXIT_FAILED_TO_ALLOCATE, "Failed to expand pool array");
+		return false;
+	}
+	else {
+		pool->array = newArray;
+		pool->capacity *= factor;
+		//printf("%zu\n", pool->capacity * pool->elementSize);
+	}
+
+	if (pool->fillSetting.fillStyle != eOCT_POOL_FILLSTYLE_NONE) {
+		eOCT_pool_fill(pool, pool->fillSetting);
+	}
+	return true;
+}
+#pragma endregion
+
+#pragma region utilities
 bool eOCT_pool_isEmpty(eOCT_pool pool) {
 	if ((!pool.array) || pool.capacity == 0 || pool.count == 0) {
 		return true;
@@ -194,7 +257,6 @@ bool eOCT_pool_isEmpty(eOCT_pool pool) {
 		return false;
 	}
 }
-
 // Claude generated
 void eOCT_pool_dump(eOCT_pool* pool) {
 	if (!pool) {
@@ -228,27 +290,35 @@ void eOCT_pool_dump(eOCT_pool* pool) {
 
 	printf("==============================\n");
 }
+#pragma endregion
 
-static bool eOCT_pool_expand(eOCT_pool* pool, unsigned int factor) {
-	if (factor * pool->capacity == 0) {
-		return false;
-	}
+static void* iOCT_findDestination(eOCT_pool* pool, OCT_index target, OCT_index* outIndex) {
+	char* array = (char*)pool->array;
 
-	void* newArray = realloc(pool->array, pool->elementSize * pool->capacity * factor);
-	if (!newArray) {
-		OCT_logError(EXIT_FAILED_TO_ALLOCATE);
-		return false;
-	}
-	else {
-		pool->array = newArray;
-		pool->capacity *= factor;
-		//printf("%zu\n", pool->capacity * pool->elementSize);
-	}
+	OCT_index start = 0;
+	OCT_index end = pool->count;
+	OCT_index destinationIndex = 0;
 
-	if (pool->fillSetting.fillStyle != eOCT_POOL_FILLSTYLE_NONE) {
-		eOCT_pool_fill(pool, pool->fillSetting);
+
+	while (start < end) {
+		OCT_index mid = start + (end - start) / 2;
+		OCT_index midValue = 0;
+
+		midValue = *(OCT_index*)(array + (mid * pool->elementSize) + pool->sortValueOffset);
+		if (midValue < target) {
+			start = mid + 1;
+		}
+		else {
+			end = mid; // in case mid is equal
+		}
 	}
-	return true;
+	destinationIndex = start;
+
+	if (outIndex) {
+		*outIndex = destinationIndex;
+	}
+	void* destination = array + (destinationIndex * pool->elementSize);
+	return destination;
 }
 
 

@@ -1,6 +1,7 @@
-
-cmake_minimum_required(VERSION 3.15)
-project(OCT_Engine C)
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+    cmake_minimum_required(VERSION 3.15)
+    project(OCTAVIANEngine C)
+endif()
 
 add_subdirectory(External)
 
@@ -11,5 +12,3 @@ add_subdirectory(Window)
 add_subdirectory(Renderer)
 add_subdirectory(Input)
 add_subdirectory(OCTAVIANEngine)
-
-add_subdirectory(GAME)

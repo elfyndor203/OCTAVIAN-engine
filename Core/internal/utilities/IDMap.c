@@ -17,7 +17,7 @@ eOCT_IDMap eOCT_IDMap_init(OCT_ID ownerID, OCT_index capacity) {
 	map.array = calloc(capacity + 1, sizeof(OCT_index)); // account for null ID slot
 	map.capacity = capacity;
 	if (!map.array) {
-		OCT_logError(EXIT_FAILED_TO_ALLOCATE);
+		OCT_ERROR_LOG(OCT_EXIT_FAILED_TO_ALLOCATE, "IDMap allocation failed");
 	}
 	//printf(">Init map of size %zu\n", capacity * sizeof(OCT_index));
 	return map;
@@ -30,7 +30,7 @@ OCT_ID eOCT_IDMap_register(eOCT_IDMap* map, OCT_index inIndex) {
 
 		void* newArray = realloc(map->array, sizeof(OCT_index) * (map->capacity * 2 + 1));
 		if (!newArray) {
-			OCT_logError(EXIT_FAILED_TO_ALLOCATE);
+			OCT_ERROR_LOG(OCT_EXIT_FAILED_TO_ALLOCATE, "IDMap failed to expand");
 			return OCT_ID_NULL;
 		}
 		else {
@@ -72,7 +72,7 @@ OCT_ID eOCT_IDMap_remap(eOCT_IDMap* map, OCT_ID ID, OCT_index newIndex) {
 
 OCT_index eOCT_IDMap_getIndex(eOCT_IDMap* map, OCT_ID ID) {
 	if (ID == OCT_ID_NULL) {
-		return OCT_index_NULL;
+		return OCT_INDEX_NULL;
 	}
 	return map->array[ID];
 }

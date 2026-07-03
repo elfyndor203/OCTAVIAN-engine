@@ -2,9 +2,9 @@
 #include "types.h"
 
 enum OCT_system_ID {
-	OCT_ID_CORE = OCT_ID_NULL,
-	OCT_ID_REGISTRY,
+	OCT_ID_REGISTRY = 1,
 	OCT_ID_ECS,
+	OCT_ID_RESOURCES,
 
 	OCT_ID_SYSTEM_START
 };

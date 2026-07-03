@@ -10,7 +10,7 @@ struct iOCT_windowSystem {
 	eOCT_dataPoolDescription windowCache;
 	eOCT_dataPoolDescription keyCache;
 
-	GLFWwindow* mainWindow; // holds gpu resources
+	GLFWwindow* rootWindow; // holds gpu resources
 
 	// OCT_vec2 targetResolution;
 	// OCT_vec2 currentResolution;

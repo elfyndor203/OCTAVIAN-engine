@@ -22,10 +22,13 @@ void iOCT_windowSystem_init() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+	glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+	GLFWwindow* initWindow = glfwCreateWindow(100, 100, "OCTAVIAN Init Window", NULL, NULL);
+	glfwMakeContextCurrent(initWindow);
+	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+	glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
 	// GLFWwindow* window = glfwCreateWindow(width, height, name, NULL, NULL);
 	// glfwMakeContextCurrent(window);
-	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-
 	// glfwSetFramebufferSizeCallback(window, iOCT_window_callback_resize);
 	// glfwSetKeyCallback(window, iOCT_window_callback_keyEvent);
 	// glfwSetMouseButtonCallback(window, iOCT_window_callback_mouseEvent);
@@ -41,7 +44,7 @@ void iOCT_windowSystem_init() {
 	// iOCT_window_viewport(width, height);
 	// iOCT_keyMap_init();
 	// iOCT_mouseMap_init();
-	iOCT_windowSystem_inst.mainWindow = NULL;
+	iOCT_windowSystem_inst.rootWindow = initWindow;
 }
 
 void system_update_WINDOW() {
@@ -55,9 +58,7 @@ void system_update_WINDOW() {
 
 		// check if windows should close
 		if (glfwWindowShouldClose(window->windowPtr)) {
-			window->open = false;
-			glfwDestroyWindow(window->windowPtr);
-			eOCT_pool_deleteEntry(windowPool, windowCtr, true); // remove the window
+			iOCT_window_close(window, windowCtr);
 			windowCtr--;
 		}
 	}

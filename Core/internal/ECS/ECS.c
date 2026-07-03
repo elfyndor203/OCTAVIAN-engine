@@ -14,14 +14,15 @@ iOCT_ECS iOCT_ECS_inst = { 0 };
 
 void init_OCT_ECS_init() {
 	iOCT_ECS_inst.contextMap = eOCT_IDMap_init(OCT_ID_ECS, eOCT_POOL_SIZE_DEFAULT);
-	iOCT_ECS_inst.contextPool = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_SIZE_DEFAULT, sizeof(iOCT_entityContext), eOCT_POOL_FILLSETTING_NONE);
+	iOCT_ECS_inst.contextPool = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_SIZE_DEFAULT, sizeof(iOCT_entityContext));
 
-	iOCT_ECS_inst.componentSizeAndOrderList = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_SIZE_DEFAULT, sizeof(size_t), eOCT_POOL_FILLSETTING_NONE);
-	iOCT_ECS_inst.componentRootInitList = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_SIZE_DEFAULT, sizeof(eOCT_rootAttachmentFx), eOCT_POOL_FILLSETTING_ZEROS);
-	iOCT_ECS_inst.dataPoolSizeAndOrderList = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_SIZE_DEFAULT, sizeof(size_t), eOCT_POOL_FILLSETTING_NONE);
+	iOCT_ECS_inst.componentSizeAndOrderList = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_SIZE_DEFAULT, sizeof(size_t));
+	iOCT_ECS_inst.componentRootInitList = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_SIZE_DEFAULT, sizeof(eOCT_rootAttachmentFx));
+	eOCT_pool_setFill(&iOCT_ECS_inst.componentRootInitList, eOCT_POOL_FILLSETTING_ZEROS);
+	iOCT_ECS_inst.dataPoolSizeAndOrderList = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_SIZE_DEFAULT, sizeof(size_t));
 
 	iOCT_ECS_inst.globalDataMap = eOCT_IDMap_init(OCT_ID_ECS, eOCT_POOL_SIZE_DEFAULT);
-	iOCT_ECS_inst.globalDataPools = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_SIZE_DEFAULT, sizeof(eOCT_pool), eOCT_POOL_FILLSETTING_NONE);
+	iOCT_ECS_inst.globalDataPools = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_SIZE_DEFAULT, sizeof(eOCT_pool));
 
 	printf("| ECS initialized\n");
 }
@@ -113,7 +114,7 @@ static OCT_index iOCT_ECS_addGlobalDataPool(eOCT_dataPoolDescription desc) {
 	OCT_index index;
 
 	eOCT_pool* poolDestination = eOCT_pool_addEntry(&iOCT_ECS_inst.globalDataPools, &index);
-	*poolDestination = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_SIZE_DEFAULT, desc.stride, eOCT_POOL_FILLSETTING_NONE);
+	*poolDestination = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_SIZE_DEFAULT, desc.stride);
 
 	return index;
 }

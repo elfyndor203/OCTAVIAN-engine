@@ -2,8 +2,12 @@ add_library(Renderer STATIC
         internal/renderer/spriteData/spriteData.c
         internal/renderer/texture.c
         system/systemDescription.c
-        internal/renderer/renderer_int.h
-        internal/renderer/renderer.c # __NOTE__
+        internal/renderer.c
+        internal/textureGroup.c
+        internal/sprite2D.c
+        internal/layer_int.h
+        internal/layer.c
+        # __NOTE__
 )
 
 target_include_directories(Renderer
@@ -20,7 +24,7 @@ set_target_properties(Renderer PROPERTIES
         C_EXTENSIONS OFF
 )
 
-target_link_libraries(Renderer PUBLIC Core PRIVATE glad)
+target_link_libraries(Renderer PUBLIC Core PRIVATE glad glfw)
 
 add_library(RendererSystem INTERFACE)
 target_include_directories(RendererSystem INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/system)

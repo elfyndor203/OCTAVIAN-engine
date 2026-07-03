@@ -1,6 +1,6 @@
 
 add_library(Core STATIC
-    include/errors/errors/errorHandling.c
+        internal/errors/errors.c
     include/math/matrices/mat3.c
     include/math/units/constants.c
     include/math/units/conversions.c
@@ -14,6 +14,15 @@ add_library(Core STATIC
     internal/utilities/IDMap.c
     internal/utilities/poolMapPair.c
     internal/utilities/pools.c
+        engine/resources/resources_eng.h
+        internal/resources/images_int.h
+        internal/resources/images.c
+        internal/resources/types_int.h
+        engine/resources/types_eng.h
+        internal/resources/resources_int.h
+        internal/resources/resources.c
+        engine/errors/types_eng.h
+        engine/errors/errors_eng.h
 )
 
 target_include_directories(Core
@@ -32,3 +41,5 @@ set_target_properties(Core PROPERTIES
 
 add_library(CoreInit INTERFACE)
 target_include_directories(CoreInit INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/init)
+
+target_link_libraries(Core PRIVATE stb_image)

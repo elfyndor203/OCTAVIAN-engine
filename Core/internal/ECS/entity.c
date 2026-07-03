@@ -23,7 +23,8 @@ OCT_handle iOCT_entity_new(iOCT_entityContext* context) {
 	return (OCT_handle) {
 		.objectID = newID,
 		.containerID = context->contextID,
-		.system = OCT_ID_ECS
+		.system = OCT_ID_ECS,
+		.valid = true
 	};
 }
 
@@ -51,6 +52,28 @@ void* iOCT_entity_attachComponent(iOCT_entityContext* context, OCT_index entityI
 	return dataLoc;
 }
 
+OCT_handle eOCT_entity_getContextHandle(OCT_handle entity) {
+	OCT_handle contextHandle = {
+		.objectID = entity.containerID,
+		.containerID = OCT_ID_ECS,
+		.system = OCT_ID_ECS,
+		.valid = true
+	};
+	if (entity.valid) {
+		return contextHandle;
+	}
+	else {
+		return OCT_HANDLE_NULL;
+	}
+}
+
+void* eOCT_entity_getField(OCT_handle entity, eOCT_fieldRequest field) {
+	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, entity.containerID);
+	OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
+
+	void* componentLoc = iOCT_entity_getComponent(context, entityIndex, field.componentTypeIndex_reg);
+	return (char*)componentLoc + field.fieldOffset_reg;
+}
 void* eOCT_entity_getComponent(OCT_handle entity, eOCT_componentDescription component) {
 	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, entity.containerID);
 	OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
