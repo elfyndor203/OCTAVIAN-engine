@@ -8,3 +8,5 @@
 // bool OCT_window_closed();
 //
 // void OCT_WDWModule_free();
+
+void system_update_WINDOW(OCT_handle contextHandle);

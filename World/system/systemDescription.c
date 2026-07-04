@@ -39,7 +39,7 @@ void system_register_WORLD() {
 	eOCT_fieldDescription matrix2D = {
 		.name = "transform2D",
 		.type = eOCT_FIELDTYPE_FLOAT32,
-		.offset = offsetof(iOCT_transform2D, rotation),
+		.offset = offsetof(iOCT_transform2D, localMatrix),
 		.provider = eOCT_FIELDPROVIDER_COMPONENT
 	};
 

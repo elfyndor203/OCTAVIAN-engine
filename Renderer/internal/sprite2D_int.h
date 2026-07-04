@@ -2,24 +2,24 @@
 #include "types_int.h"
 
 #include "OCT_Core_eng.h"
+#include <glad/glad.h>
 
 struct iOCT_spriteData {
     OCT_vec4 uv;
     OCT_vec4 color;
     OCT_vec2 dimensions;
-    OCT_mat3 transform;
+    GLuint texArrayLayer;
 };
 
 struct iOCT_sprite2D {
     OCT_handle entity;
+
     OCT_ID texGroupID;
-    OCT_index texArrayLayer;
+    OCT_ID texID;
     OCT_index drawLayer;
     OCT_index sortKey;
 
+    OCT_mat3 spriteTransform;
     iOCT_spriteData spriteData;
 };
 
-
-
-void OCT_sprite2D_attach(OCT_handle entity, OCT_handle texture, OCT_vec4 uv, OCT_vec4 color, OCT_index drawLayer);

@@ -57,7 +57,7 @@ void* iOCT_entity_attachComponent(iOCT_entityContext* context, OCT_index entityI
 	// saves that index in the entity slot
 	*entityKeyEntry = destinationIndex;
 	//__NOTE__
-	printf("Attached component\n");
+	//printf("Attached component\n");
 	return dataLoc;
 }
 
@@ -81,6 +81,10 @@ void* eOCT_entity_getField(OCT_handle entity, eOCT_fieldRequest field) {
 	OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
 
 	void* componentLoc = iOCT_entity_getComponent(context, entityIndex, field.componentTypeIndex_reg);
+
+	if (componentLoc == NULL) {
+		return NULL;
+	}
 	return (char*)componentLoc + field.fieldOffset_reg;
 }
 void* eOCT_entity_getComponent(OCT_handle entity, eOCT_componentDescription component) {
@@ -92,6 +96,10 @@ void* eOCT_entity_getComponent(OCT_handle entity, eOCT_componentDescription comp
 void* iOCT_entity_getComponent(iOCT_entityContext* context, OCT_index entityIndex, OCT_index componentTypeIndex) {
 	OCT_index* entityBase = iOCT_entity_get(context, entityIndex);
 	OCT_index componentIndex = *(entityBase + componentTypeIndex);
+
+	if (componentIndex == OCT_INDEX_NULL) {
+		return NULL;
+	}
 
 	eOCT_pool* componentPool = iOCT_getComponentPool(context, componentTypeIndex);
 	void* dataLoc = eOCT_pool_access(componentPool, componentIndex, 0);

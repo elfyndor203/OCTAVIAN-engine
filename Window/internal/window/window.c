@@ -9,12 +9,13 @@
 #include "windowSystem/windowSystem_int.h"
 
 OCT_handle OCT_window_open(const char* name, unsigned int sizeX, unsigned int sizeY, OCT_vec4 color) {
-    printf("\nOpening window %s", name);
+    printf("\nOpening window %s\n", name);
     GLFWwindow* windowPtr = glfwCreateWindow(sizeX, sizeY, name, NULL, iOCT_windowSystem_inst.rootWindow);
     glfwMakeContextCurrent(windowPtr);
 
     glfwSwapInterval(1);
     glfwSetKeyCallback(windowPtr, iOCT_window_keyCallback);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // __NOTE__ PASS AS PARAM
 
     OCT_ID newID;
     iOCT_window* newWindow = eOCT_addGlobalDataEntry(iOCT_windowSystem_inst.windowCache, true, &newID);
@@ -28,6 +29,7 @@ OCT_handle OCT_window_open(const char* name, unsigned int sizeX, unsigned int si
     };
 
     glfwMakeContextCurrent(iOCT_windowSystem_inst.rootWindow);
+
     return windowHandle;
 }
 

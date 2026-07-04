@@ -56,11 +56,11 @@ OCT_handle OCT_entityContext_open(OCT_handle* rootOut) {
 	for (componentCtr = 0; componentCtr < attachTotal; componentCtr++) {
 		attachFx = (eOCT_rootAttachmentFx*)eOCT_pool_access(&iOCT_ECS_inst.componentRootInitList, componentCtr, 0);
 		if (attachFx) {
-			printf("Trying to attach\n");
+			//printf("Trying to attach\n");
 			(*attachFx)(rootEntity);
 		}
 		else {
-			printf("No attachment\n");
+			//printf("No attachment\n");
 		}
 	}
 

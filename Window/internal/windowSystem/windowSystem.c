@@ -15,7 +15,7 @@ void OCT_WDWModule_init(char* name, unsigned int width, unsigned int height, OCT
 	// iOCT_windowSystem_init(name, width, height, color);
 }
 
-void iOCT_windowSystem_init() {
+void system_init_WINDOW() {
 	glfwInit();
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -47,7 +47,7 @@ void iOCT_windowSystem_init() {
 	iOCT_windowSystem_inst.rootWindow = initWindow;
 }
 
-void system_update_WINDOW() {
+void system_update_WINDOW(OCT_handle contextHandle) {
 	iOCT_window* window;
 	eOCT_pool* windowPool = eOCT_getDataPool_global(iOCT_windowSystem_inst.windowCache, NULL);
 	iOCT_window* windowArray = (iOCT_window*)windowPool->array;
@@ -56,11 +56,15 @@ void system_update_WINDOW() {
 		window = &windowArray[windowCtr];
 		iOCT_window_poll(window);
 
+		glClear(GL_COLOR_BUFFER_BIT);
+		glfwSwapBuffers(window->windowPtr);
+
 		// check if windows should close
 		if (glfwWindowShouldClose(window->windowPtr)) {
 			iOCT_window_close(window, windowCtr);
 			windowCtr--;
 		}
+
 	}
 
 	eOCT_pool* keyPool = eOCT_getDataPool_global(iOCT_windowSystem_inst.keyCache, NULL);

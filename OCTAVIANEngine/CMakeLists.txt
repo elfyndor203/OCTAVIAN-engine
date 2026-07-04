@@ -1,6 +1,7 @@
 add_library(OCTAVIANEngine STATIC
         internal/engine/engine.c
         SYSTEMS_BUILD/BUILD_MANIFEST.c
+        internal/engine/scheduler.c
 )
 
 target_include_directories(OCTAVIANEngine

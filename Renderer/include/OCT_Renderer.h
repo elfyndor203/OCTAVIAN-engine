@@ -1,3 +1,4 @@
 #pragma once
 
-#include "renderer/textures.h"
+#include "sprite2D.h"
+void system_update_RENDERER(OCT_handle contextHandle);

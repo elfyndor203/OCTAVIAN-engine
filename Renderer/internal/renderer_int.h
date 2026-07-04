@@ -1,10 +1,12 @@
 #pragma once
-#include "renderer/types_int.h"
+#include "rendererOld/texture/types_int.h"
 
 #include "OCT_Core_eng.h"
 #include <glad/glad.h>
 
 #include "sprite2D_int.h"
+
+#define GL_CHECK() { GLenum err = glGetError(); if (err != GL_NO_ERROR) printf("GL error %d at line %d\n", err, __LINE__); }
 
 struct iOCT_spriteFullData {
     iOCT_spriteData spriteData;
@@ -18,17 +20,18 @@ struct iOCT_renderer {
     eOCT_IDMap textureGroupMap;
     eOCT_pool textureGroupPool;
 
-    eOCT_pool layerCountsTotalsPool;
-    eOCT_pool drawOrderPool;
-
     eOCT_pool spriteFullDataBuffer;
-    GLuint spriteVBO;
     GLuint spriteVAO;
-    GLuint spriteEBO;
+    GLuint quadVBO;
+    GLuint quadEBO;
+    GLuint spriteDataVBO;
+    OCT_index spriteDataVBOCapacity;
+
+    GLuint spriteShaderProgram;
 };
 
 extern iOCT_renderer iOCT_renderer_inst;
 
-void iOCT_renderer_init();
+void system_init_RENDERER();
 
 void iOCT_renderer_drawLayer();

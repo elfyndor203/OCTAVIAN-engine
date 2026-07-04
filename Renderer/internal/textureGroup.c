@@ -36,6 +36,7 @@ OCT_handle OCT_textureGroup_open(OCT_vec2 dimensions, OCT_index maxCount) {
     newTexGroup->glTexArray = texArray;
     newTexGroup->textureMap = texMap;
     newTexGroup->textureGroupID = newID;
+    newTexGroup->textureCount = 0;
 
     // // update layers
     // OCT_index* layer;
@@ -49,11 +50,11 @@ OCT_handle OCT_textureGroup_open(OCT_vec2 dimensions, OCT_index maxCount) {
     };
 
     printf("Created new texture group\n");
+
     return newHandle;
 }
 
 OCT_handle OCT_texture_new(OCT_handle textureGroup, const char* path) {
-
     const unsigned char* pixels = eOCT_image_load(path);
     if (!pixels) {
         printf("Texture load failed\n");
@@ -65,10 +66,12 @@ OCT_handle OCT_texture_new(OCT_handle textureGroup, const char* path) {
     iOCT_textureGroup* texGroup = (iOCT_textureGroup*)eOCT_getByID(groupMap, groupPool, textureGroup.objectID);
 
     OCT_index newTexLayer = texGroup->textureCount++;
-    glBindTexture(GL_TEXTURE_2D, texGroup->glTexArray);
-    glTexSubImage3D(GL_TEXTURE_2D_ARRAY, TEXTURE_BASE_LEVEL, 0, 0, 0,
-                    (GLsizei)texGroup->dimensions.x, (GLsizei)texGroup->dimensions.y,
-                    (GLsizei)newTexLayer, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    glBindTexture(GL_TEXTURE_2D_ARRAY, texGroup->glTexArray);
+
+    glTexSubImage3D(GL_TEXTURE_2D_ARRAY, TEXTURE_BASE_LEVEL,
+                    0, 0, (GLsizei)newTexLayer,
+                    (GLsizei)texGroup->dimensions.x, (GLsizei)texGroup->dimensions.y, 1,
+                    GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 
     OCT_ID newTexID = eOCT_IDMap_register(&texGroup->textureMap, newTexLayer);
 
@@ -78,5 +81,6 @@ OCT_handle OCT_texture_new(OCT_handle textureGroup, const char* path) {
     };
 
     printf("Loaded new texture\n");
+
     return newHandle;
 }

@@ -1,4 +1,5 @@
 #pragma once
 
+#include "OCT_Core_eng.h"
+
 void system_register_WINDOW();
-void system_update_WINDOW();

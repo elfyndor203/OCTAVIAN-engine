@@ -68,6 +68,7 @@ struct eOCT_dataPoolDescription {
 struct eOCT_fieldRequest {
 	const char* name;
 	eOCT_fieldTypes type;
+	eOCT_fieldRequest* cacheLocation;
 	//eOCT_fieldAccess access;
 	bool optional;
 
@@ -82,6 +83,7 @@ struct eOCT_systemDescription {
 	eOCT_pool providedDataPools;
 	eOCT_pool requestedFields;
 	eOCT_systemInitFx initFx;
+	// eOCT_systemUpdateFx updateFx;
 
 	OCT_ID systemID_reg; // provided by the registry
 };

@@ -15,7 +15,3 @@ void init_OCT_registerAllSystems() {
 	system_register_WINDOW();
 	system_register_RENDERER();
 };
-
-void OCT_engine_tick() {
-	system_update_WINDOW();
-}

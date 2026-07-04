@@ -20,9 +20,9 @@ void system_register_systemEx() {
 		eOCT_componentDescription components[] = { componentEx };
 
 		// Describe each field request:
-			eOCT_fieldRequest heightReq = { "height", eOCT_FIELDTYPE_FLOAT32, true };
-			eOCT_fieldRequest widthReq = { "width", eOCT_FIELDTYPE_FLOAT32, true };
-			eOCT_fieldRequest mightNeed = { "depth", eOCT_FIELDTYPE_FLOAT32, true };
+			eOCT_fieldRequest heightReq = { "height", eOCT_FIELDTYPE_FLOAT32, NULL, true };
+			eOCT_fieldRequest widthReq = { "width", eOCT_FIELDTYPE_FLOAT32, NULL, true };
+			eOCT_fieldRequest mightNeed = { "depth", eOCT_FIELDTYPE_FLOAT32, NULL, true };
 		eOCT_fieldRequest requests[] = { heightReq, widthReq, mightNeed };
 
 	//

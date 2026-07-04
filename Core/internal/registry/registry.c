@@ -10,6 +10,7 @@
 #include "ECS/ECS_int.h"
 #include "utilities/utilities_eng.h"
 #include "layout/systems.h"
+#include "scheduler/scheduler_int.h"
 
 static bool iOCT_registry_findField(const char* fieldName, eOCT_fieldDescription* fieldOut);
 static OCT_index iOCT_registry_registerFields(eOCT_pool providedFields, OCT_ID systemID, eOCT_fieldProvider providerType, OCT_index providerIndex);
@@ -50,12 +51,16 @@ void init_OCT_registry_distributeFields() {
 		}
 		requestArray = (eOCT_fieldRequest*)requestPool.array;
 
+		// for each request
 		for (int requestCtr = 0; requestCtr < requestPool.count; requestCtr++) {
 			request = &requestArray[requestCtr];
 			if (iOCT_registry_findField(request->name, &match)) {	// if there is a match
 				request->componentTypeIndex_reg = match.providerIndex_reg;
 				request->fieldOffset_reg = match.offset;
 				request->fulfilled_reg = true;
+				if (request->cacheLocation) {
+					*request->cacheLocation = *request;
+				}
 				//printf("Fulfilled field '%s' for system '%s'\n", request->name, system->name);
 			}
 			else {
@@ -73,16 +78,26 @@ void init_OCT_registry_initAllSystems() {
 	printf("INIT ALL SYSTEMS\n");
 	eOCT_systemDescription system;
 	eOCT_systemInitFx initFx;
+	eOCT_systemUpdateFx updateFx;
 	for (OCT_index systemCtr = 0; systemCtr < iOCT_registry_inst.systems.count; systemCtr++) {
 		system = **(eOCT_systemDescription**)eOCT_pool_access(&iOCT_registry_inst.systems, systemCtr, 0);
 		initFx = system.initFx;
 		if (initFx) {
-			printf("Init system %s with init fx %p\n", system.name, initFx);
+			printf("Init system %s with INIT fx %p\n", system.name, initFx);
 			initFx();
 		}
 		else {
-			printf("System %s has no init fx\n", system.name);
+			printf("System %s has no INIT fx\n", system.name);
 		}
+
+		// updateFx = system.updateFx;
+		// if (updateFx) {
+		// 	printf("Init system %s with UPDATE fx %p\n", system.name, updateFx);
+		// 	iOCT_scheduler_addUpdateFx(updateFx);
+		// }
+		// else {
+		// 	printf("System %s has no UPDATE fx\n", system.name);
+		// }
 	}
 }
 

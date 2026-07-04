@@ -12,8 +12,6 @@ struct iOCT_textureGroup {
 
     eOCT_IDMap textureMap; // maps to texture array GLsizei
     OCT_index textureCount;
-
-    eOCT_pool layerCountsPool;
 };
 
 void iOCT_renderer_addToLayer(iOCT_textureGroup* texGroup, OCT_index newSpriteLayer);

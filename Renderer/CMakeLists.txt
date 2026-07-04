@@ -1,12 +1,12 @@
 add_library(Renderer STATIC
-        internal/renderer/spriteData/spriteData.c
-        internal/renderer/texture.c
+        internal/rendererOld/spriteData/spriteData.c
+        internal/rendererOld/texture/texture.c
         system/systemDescription.c
         internal/renderer.c
         internal/textureGroup.c
         internal/sprite2D.c
-        internal/layer_int.h
-        internal/layer.c
+        internal/shader/shader/shader.c
+        include/sprite2D.h
         # __NOTE__
 )
 

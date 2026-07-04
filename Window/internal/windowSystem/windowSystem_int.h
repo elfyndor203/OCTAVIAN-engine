@@ -5,6 +5,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#define GL_CHECK_WIN() { GLenum err = glGetError(); if (err != GL_NO_ERROR) printf("GL error %d at line %d\n", err, __LINE__); }
+
 struct iOCT_windowSystem {
 	eOCT_systemDescription windowSystem;
 	eOCT_dataPoolDescription windowCache;
@@ -26,4 +28,4 @@ struct iOCT_windowSystem {
 
 extern iOCT_windowSystem iOCT_windowSystem_inst;
 
-void iOCT_windowSystem_init();
+void system_init_WINDOW();

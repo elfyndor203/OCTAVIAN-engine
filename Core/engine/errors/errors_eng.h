@@ -14,6 +14,7 @@ enum iOCT_errorLevels{
 #define iOCT_ERROR_LIST \
 X(OCT_EXIT_INIT_FAILED,					iOCT_FATAL,		"Init function failed") \
 X(OCT_EXIT_FAILED_TO_ALLOCATE,			iOCT_FATAL,		"Memory allocation failed") \
+X(OCT_EXIT_FAILED_TO_OPEN_FILE,			iOCT_FATAL,		"Failed to open file") \
 X(OCT_EXIT_REFERENCE_DOES_NOT_EXIST,	iOCT_FATAL,		"Reference does not exist") \
 X(OCT_EXIT_STALE_HANDLE,				iOCT_FATAL,		"Handle is no longer valid") \
 X(OCT_EXIT_NOT_YET_IMPLEMENTED,			iOCT_FATAL,		"Feature is not yet implemented") \

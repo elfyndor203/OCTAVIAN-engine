@@ -100,6 +100,13 @@ void* eOCT_getGlobalDataEntry(eOCT_dataPoolDescription dataPoolDescription, OCT_
 	void* dataLoc = eOCT_pool_access(dataPool, dataIndex, 0);
 	return dataLoc;
 }
+
+OCT_handle iOCT_getContextHandle(const iOCT_entityContext* context) {
+	return (OCT_handle) {
+	.containerID = OCT_ID_NULL,
+	.objectID = context->contextID
+	};
+}
 #pragma region static
 static OCT_index iOCT_ECS_addContextDataPool(eOCT_dataPoolDescription desc) {
 	OCT_index index;

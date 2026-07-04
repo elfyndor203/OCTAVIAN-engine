@@ -1,6 +1,6 @@
-#include "shader_internal.h"
+#include "shader_int.h"
 
-#include "OCT_Errors.h"
+#include "OCT_Core_eng.h"
 #include <glad/glad.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,19 +19,23 @@ GLuint iOCT_shader_load(char* path, int type) {
 	}
 	
 	file = fopen(path, "rb");
+	if (!file) {
+		OCT_ERROR_LOG(OCT_EXIT_FAILED_TO_OPEN_FILE, "Could not open shader file");
+		return 0;
+	}
 	fseek(file, 0, SEEK_END);
 	size = ftell(file);
 	rewind(file);
 
 	src = malloc(size + 1);
 	if (!src) {
-		OCT_logError(EXIT_FAILED_TO_ALLOCATE);
+		OCT_ERROR_LOG(OCT_EXIT_FAILED_TO_ALLOCATE, "Failed to allocate shader source");
 		return 0;
 	}
 	read = fread(src, 1, size, file);
 	src[read] = '\0';
 
-	glShaderSource(shader, 1, &src, NULL);
+	glShaderSource(shader, 1, (const char *const *)&src, NULL);
 	glCompileShader(shader);
 
 	GLint success;
@@ -47,9 +51,9 @@ GLuint iOCT_shader_load(char* path, int type) {
 	return shader;
 }
 
-GLuint iOCT_shader_createProgram(char* vert, char* frag) {
-	GLuint vertShader = iOCT_shader_load(vert, true);
-	GLuint fragShader = iOCT_shader_load(frag, false);
+GLuint iOCT_shader_createProgram(char* vertPath, char* fragPath) {
+	GLuint vertShader = iOCT_shader_load(vertPath, iOCT_SHADER_VERT);
+	GLuint fragShader = iOCT_shader_load(fragPath, iOCT_SHADER_FRAG);
 
 	GLuint program = glCreateProgram();
 	glAttachShader(program, vertShader);
@@ -66,8 +70,6 @@ GLuint iOCT_shader_createProgram(char* vert, char* frag) {
 	}
 
 	glUseProgram(program);
-	GLuint texUniform = glGetUniformLocation(program, "tex");
-	glUniform1i(texUniform, 0);
 
 	printf("Shader program created\n");
 	return program;

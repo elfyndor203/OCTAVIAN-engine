@@ -23,6 +23,9 @@ add_library(Core STATIC
         internal/resources/resources.c
         engine/errors/types_eng.h
         engine/errors/errors_eng.h
+        internal/scheduler/scheduler_int.h
+        internal/scheduler/types_int.h
+        internal/scheduler/scheduler.c
 )
 
 target_include_directories(Core

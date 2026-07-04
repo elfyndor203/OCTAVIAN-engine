@@ -36,4 +36,5 @@ typedef enum eOCT_fieldTypes eOCT_fieldTypes;
 typedef enum eOCT_fieldAccess eOCT_fieldAccess;
 
 typedef void (*eOCT_systemInitFx)(void);
+typedef void (*eOCT_systemUpdateFx)(OCT_handle);
 

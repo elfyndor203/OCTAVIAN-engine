@@ -42,7 +42,7 @@ void system_register_WINDOW() {
         .providedDataPools = eOCT_generateDataPoolDescriptionPool(dataPools, 2),
         .providedComponents = eOCT_POOL_EMPTY,
         .requestedFields = eOCT_POOL_EMPTY,
-        .initFx = iOCT_windowSystem_init
+        .initFx = system_init_WINDOW
     };
 
     iOCT_windowSystem_inst.windowSystem = windowSystem;
