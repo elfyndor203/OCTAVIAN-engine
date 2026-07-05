@@ -37,9 +37,9 @@ OCT_mat3 OCT_mat3_generate(OCT_vec2 translation, OCT_vec2 scale, float rotation)
     float cosRot = cosf(rotation);
     float sinRot = sinf(rotation);
     OCT_mat3 result = {
-        scale.x * cosRot, -scale.y * sinRot, translation.x,  // c0: r0, r1, r2
-        scale.x * sinRot,  scale.y * cosRot, translation.y,  // c1: r0, r1, r2
-        0,                 0,                1               // c2: r0, r1, r2
+        scale.x * cosRot,  scale.x * sinRot, 0,   // column 0
+       -scale.y * sinRot,  scale.y * cosRot, 0,   // column 1
+        translation.x,     translation.y,    1     // column 2
     };
     return result;
 }

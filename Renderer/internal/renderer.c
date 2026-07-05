@@ -134,6 +134,7 @@ void iOCT_renderer_uploadAll(OCT_handle contextHandle) {
         else {
             entityTransform = *entityTransformPtr;
         }
+        OCT_mat3_print(entityTransform);
         OCT_mat3 finalTransform = OCT_mat3_mul(entityTransform, sprite.spriteTransform);
 
         spriteData.texArrayLayer = (GLuint)texArrayLayer;
