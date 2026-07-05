@@ -13,7 +13,7 @@
 #include "scheduler/scheduler_int.h"
 
 static bool iOCT_registry_findField(const char* fieldName, eOCT_fieldDescription* fieldOut);
-static OCT_index iOCT_registry_registerFields(eOCT_pool providedFields, OCT_ID systemID, eOCT_fieldProvider providerType, OCT_index providerIndex);
+static OCT_index iOCT_registry_registerFields(eOCT_pool providedFields, OCT_ID systemID, eOCT_fieldProvider providerType, OCT_index providerIndex, bool global);
 iOCT_registry iOCT_registry_inst = { 0 }; 
 
 #pragma region internal
@@ -55,8 +55,9 @@ void init_OCT_registry_distributeFields() {
 		for (int requestCtr = 0; requestCtr < requestPool.count; requestCtr++) {
 			request = &requestArray[requestCtr];
 			if (iOCT_registry_findField(request->name, &match)) {	// if there is a match
-				request->componentTypeIndex_reg = match.providerIndex_reg;
+				request->providerTypeIndex_reg = match.providerIndex_reg;
 				request->fieldOffset_reg = match.offset;
+				request->global_reg = match.global_reg;
 				request->fulfilled_reg = true;
 				if (request->cacheLocation) {
 					*request->cacheLocation = *request;
@@ -145,7 +146,7 @@ void init_OCT_registry_check() {
 		for (requestCtr = 0; requestCtr < requestPool.count; requestCtr++) {
 			request = requestArray[requestCtr];
 			if (request.fulfilled_reg) {
-				printf("%02zu[%02zu]", request.componentTypeIndex_reg, request.fieldOffset_reg);
+				printf("%02zu[%02zu]", request.providerTypeIndex_reg, request.fieldOffset_reg);
 			}
 			else if (request.optional) {
 				printf("XX[XX]");
@@ -238,7 +239,7 @@ void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription) {
 			component->componentTypeIndex_reg = iOCT_ECS_addComponentType(component); // tells the ECS the index of the component's pool
 
 			printf("%02"PRIu64".%02zu.--| %2cComponent %zu: %-15s\n", systemID, component->componentTypeIndex_reg, ' ', component->componentTypeIndex_reg, component->name);
-			OCT_index registeredFields = iOCT_registry_registerFields(component->providedFields, systemID, eOCT_FIELDPROVIDER_COMPONENT, component->componentTypeIndex_reg);
+			OCT_index registeredFields = iOCT_registry_registerFields(component->providedFields, systemID, eOCT_FIELDPROVIDER_COMPONENT, component->componentTypeIndex_reg, false);
 
 			if (component->cacheLocation) {
 				*component->cacheLocation = *component;	// cache the component optionally
@@ -263,7 +264,7 @@ void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription) {
 			dataPool->dataPoolTypeIndex_reg = iOCT_ECS_addDataPool(*dataPool, dataPool->global);
 
 			printf("%02"PRIu64".%02zu.--| %2cData Pool %zu: %-15s\n", systemID, dataPool->dataPoolTypeIndex_reg, ' ', dataPool->dataPoolTypeIndex_reg, dataPool->name);
-			OCT_index registeredFields = iOCT_registry_registerFields(dataPool->providedFields, systemID, eOCT_FIELDPROVIDER_DATAPOOL, dataPool->dataPoolTypeIndex_reg);
+			OCT_index registeredFields = iOCT_registry_registerFields(dataPool->providedFields, systemID, eOCT_FIELDPROVIDER_DATAPOOL, dataPool->dataPoolTypeIndex_reg, dataPool->global);
 
 			if (dataPool->cacheLocation) {
 				*dataPool->cacheLocation = *dataPool;
@@ -294,7 +295,7 @@ static bool iOCT_registry_findField(const char* fieldName, eOCT_fieldDescription
 	}
 	return false;
 }
-static OCT_index iOCT_registry_registerFields(eOCT_pool providedFields, OCT_ID systemID, eOCT_fieldProvider providerType, OCT_index providerIndex) {
+static OCT_index iOCT_registry_registerFields(eOCT_pool providedFields, OCT_ID systemID, eOCT_fieldProvider providerType, OCT_index providerIndex, bool global) {
 	if (eOCT_pool_isEmpty(providedFields)) {
 		printf("%13c No public fields\n", ' ');
 		return 0;
@@ -315,6 +316,7 @@ static OCT_index iOCT_registry_registerFields(eOCT_pool providedFields, OCT_ID s
 
 		else {
 			field->providerIndex_reg = providerIndex;
+			field->global_reg = global;
 
 			fieldDestination = (eOCT_fieldDescription*)eOCT_pool_addEntry(&iOCT_registry_inst.fields, NULL);	// add field to the registry
 			*fieldDestination = *field;

@@ -6,10 +6,18 @@
 #include "windowSystem/windowSystem_int.h"
 
 void system_register_WINDOW() {
+
+    eOCT_fieldDescription VAO = {
+        .name = "windowVAO",
+        .offset = offsetof(iOCT_window, VAO),
+        .provider = eOCT_FIELDPROVIDER_DATAPOOL,
+        .type = eOCT_FIELDTYPE_UINT64,
+    };
+    eOCT_fieldDescription windowFields[] = {VAO};
     eOCT_dataPoolDescription window = {
         .name = "Window",
         .stride = sizeof(iOCT_window),
-        .providedFields = eOCT_POOL_EMPTY,
+        .providedFields = eOCT_generateFieldDescriptionPool(windowFields, 1),
         .global = true,
         .cacheLocation = &iOCT_windowSystem_inst.windowCache
     };
@@ -35,7 +43,7 @@ void system_register_WINDOW() {
         .cacheLocation = &iOCT_windowSystem_inst.keyCache
     };
 
-    eOCT_dataPoolDescription dataPools[] = { window, glfwKeyData };
+    eOCT_dataPoolDescription dataPools[] = { glfwKeyData, window };
 
     eOCT_systemDescription windowSystem = {
         .name = "Window",

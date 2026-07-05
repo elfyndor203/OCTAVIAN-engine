@@ -76,7 +76,7 @@ eOCT_pool* eOCT_getComponentPool(OCT_handle contextHandle, eOCT_componentDescrip
 }
 eOCT_pool* eOCT_getFieldSourcePool(OCT_handle contextHandle, eOCT_fieldRequest field) {
 	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, contextHandle.objectID);
-	return iOCT_getComponentPool(context, field.componentTypeIndex_reg);
+	return iOCT_getComponentPool(context, field.providerTypeIndex_reg);
 }
 eOCT_pool* eOCT_getDataPool_context(OCT_handle contextHandle, eOCT_dataPoolDescription dataPoolDescription) {
 	if (dataPoolDescription.global) {

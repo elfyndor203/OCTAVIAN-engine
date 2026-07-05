@@ -47,23 +47,37 @@ void system_init_WINDOW() {
 	iOCT_windowSystem_inst.rootWindow = initWindow;
 }
 
-void system_update_WINDOW(OCT_handle contextHandle) {
+void eOCT_WINDOW_update_start(OCT_handle contextHandle) {
 	iOCT_window* window;
 	eOCT_pool* windowPool = eOCT_getDataPool_global(iOCT_windowSystem_inst.windowCache, NULL);
 	iOCT_window* windowArray = (iOCT_window*)windowPool->array;
 
 	for (OCT_index windowCtr = 0; windowCtr < windowPool->count; windowCtr++) {
 		window = &windowArray[windowCtr];
+		glfwMakeContextCurrent(window->windowPtr);
 		iOCT_window_poll(window);
 
 		glClear(GL_COLOR_BUFFER_BIT);
-		glfwSwapBuffers(window->windowPtr);
 
 		// check if windows should close
 		if (glfwWindowShouldClose(window->windowPtr)) {
 			iOCT_window_close(window, windowCtr);
 			windowCtr--;
 		}
+
+	}
+}
+
+void eOCT_WINDOW_update_finish(OCT_handle contextHandle) {
+	iOCT_window* window;
+	eOCT_pool* windowPool = eOCT_getDataPool_global(iOCT_windowSystem_inst.windowCache, NULL);
+	iOCT_window* windowArray = (iOCT_window*)windowPool->array;
+
+	for (OCT_index windowCtr = 0; windowCtr < windowPool->count; windowCtr++) {
+		window = &windowArray[windowCtr];
+		glfwMakeContextCurrent(window->windowPtr);
+
+		glfwSwapBuffers(window->windowPtr);
 
 	}
 

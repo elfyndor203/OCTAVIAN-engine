@@ -13,6 +13,8 @@ struct iOCT_window {
     OCT_vec2 currentResolution;
 
     OCT_vec2 cursorDelta;
+
+    GLuint VAO;
 };
 
 struct iOCT_keyEvent {

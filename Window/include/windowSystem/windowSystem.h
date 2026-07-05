@@ -9,4 +9,5 @@
 //
 // void OCT_WDWModule_free();
 
-void system_update_WINDOW(OCT_handle contextHandle);
+void eOCT_WINDOW_update_start(OCT_handle contextHandle);
+void eOCT_WINDOW_update_finish(OCT_handle contextHandle);

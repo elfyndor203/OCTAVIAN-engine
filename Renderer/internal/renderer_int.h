@@ -15,6 +15,7 @@ struct iOCT_spriteFullData {
 struct iOCT_renderer {
     eOCT_systemDescription systemDescription;
     eOCT_fieldRequest transform2DCache;
+    eOCT_fieldRequest windowVAOCache;
     eOCT_componentDescription sprite2DCache;
 
     eOCT_IDMap textureGroupMap;

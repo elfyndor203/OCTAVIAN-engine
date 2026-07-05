@@ -80,7 +80,7 @@ void* eOCT_entity_getField(OCT_handle entity, eOCT_fieldRequest field) {
 	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, entity.containerID);
 	OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
 
-	void* componentLoc = iOCT_entity_getComponent(context, entityIndex, field.componentTypeIndex_reg);
+	void* componentLoc = iOCT_entity_getComponent(context, entityIndex, field.providerTypeIndex_reg);
 
 	if (componentLoc == NULL) {
 		return NULL;

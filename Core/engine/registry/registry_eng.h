@@ -42,6 +42,7 @@ struct eOCT_fieldDescription {
 
 	eOCT_fieldProvider provider;
 	OCT_index providerIndex_reg;
+	bool global_reg;
 };
 
 struct eOCT_componentDescription {
@@ -72,8 +73,9 @@ struct eOCT_fieldRequest {
 	//eOCT_fieldAccess access;
 	bool optional;
 
-	OCT_index componentTypeIndex_reg;
+	OCT_index providerTypeIndex_reg;
 	size_t fieldOffset_reg;
+	bool global_reg;
 	bool fulfilled_reg;
 };
 

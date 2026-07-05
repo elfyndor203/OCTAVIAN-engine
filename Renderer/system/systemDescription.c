@@ -21,15 +21,21 @@ void system_register_RENDERER() {
         .cacheLocation = &iOCT_renderer_inst.transform2DCache,
         .optional = false,
     };
+    eOCT_fieldRequest windowVAO = {
+        .name = "windowVAO",
+        .type = eOCT_FIELDTYPE_UINT64,
+        .cacheLocation = &iOCT_renderer_inst.windowVAOCache,
+        .optional = false
+    };
 
     eOCT_componentDescription components[1] = { sprite2D };
-    eOCT_fieldRequest fieldRequests[1] = { transform2D };
+    eOCT_fieldRequest fieldRequests[2] = { transform2D, windowVAO };
 
     eOCT_systemDescription rendererSystem = {
         .name = "Renderer",
         .providedComponents = eOCT_generateComponentDescriptionPool(components, 1),
         .providedDataPools = eOCT_POOL_EMPTY,
-        .requestedFields = eOCT_generateFieldRequestPool(fieldRequests, 1),
+        .requestedFields = eOCT_generateFieldRequestPool(fieldRequests, 2),
         .initFx = system_init_RENDERER};
 
     iOCT_renderer_inst.systemDescription = rendererSystem;

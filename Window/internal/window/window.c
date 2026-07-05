@@ -13,23 +13,29 @@ OCT_handle OCT_window_open(const char* name, unsigned int sizeX, unsigned int si
     GLFWwindow* windowPtr = glfwCreateWindow(sizeX, sizeY, name, NULL, iOCT_windowSystem_inst.rootWindow);
     glfwMakeContextCurrent(windowPtr);
 
+    int frameBufferX;
+    int frameBufferY;
     glfwSwapInterval(1);
     glfwSetKeyCallback(windowPtr, iOCT_window_keyCallback);
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // __NOTE__ PASS AS PARAM
+    glfwGetFramebufferSize(windowPtr, &frameBufferX, &frameBufferY);
+    glViewport(0, 0, frameBufferX, frameBufferY);
+    glClearColor(1.0f, 0.5f, 0.0f, 1.0f); // __NOTE__ PASS AS PARAM
 
+    GLuint newVAO;
     OCT_ID newID;
     iOCT_window* newWindow = eOCT_addGlobalDataEntry(iOCT_windowSystem_inst.windowCache, true, &newID);
     newWindow->windowID = newID;
     newWindow->windowPtr = windowPtr;
     newWindow->targetResolution = (OCT_vec2){ (float)sizeX, (float)sizeY };
     newWindow->currentResolution = (OCT_vec2){ (float)sizeX, (float)sizeY };
+    glGenVertexArrays(1, &newVAO);
+    newWindow->VAO = newVAO;
     OCT_handle windowHandle = {
         .containerID = OCT_ID_ECS,
         .objectID = newID,
     };
 
-    glfwMakeContextCurrent(iOCT_windowSystem_inst.rootWindow);
-
+    printf("Created window %s %p\n", name, windowPtr);
     return windowHandle;
 }
 

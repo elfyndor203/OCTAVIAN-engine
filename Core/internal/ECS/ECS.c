@@ -56,6 +56,7 @@ OCT_index iOCT_ECS_addDataPool(eOCT_dataPoolDescription desc, bool global) {
 eOCT_pool* eOCT_getDataPool_global(eOCT_dataPoolDescription dataPoolDescription, eOCT_IDMap** IDMapOut) {
 	if (!dataPoolDescription.global) {
 		printf("Data pool %s is context local\n", dataPoolDescription.name);
+		OCT_ERROR_LOG(OCT_EXIT_ACCESS_DENIED, "");
 		return NULL;
 	}
 	if (IDMapOut) {
@@ -94,6 +95,22 @@ void* eOCT_getGlobalDataEntry(eOCT_dataPoolDescription dataPoolDescription, OCT_
 	OCT_index dataIndex = eOCT_IDMap_getIndex(&iOCT_ECS_inst.globalDataMap, dataID);
 
 	if (dataIndex >= dataPool->count) {
+		return NULL;
+	}
+
+	void* dataLoc = eOCT_pool_access(dataPool, dataIndex, 0);
+	return dataLoc;
+}
+
+void* eOCT_getGlobalDataField(eOCT_fieldRequest fieldRequest, OCT_ID dataID) {
+	if (!fieldRequest.global_reg) {
+		printf("Data pool %s is context local\n", fieldRequest.name);
+		return NULL;
+	}
+	eOCT_pool* dataPool = (eOCT_pool*)eOCT_pool_access(&iOCT_ECS_inst.globalDataPools, fieldRequest.providerTypeIndex_reg, 0);
+	OCT_index dataIndex = eOCT_IDMap_getIndex(&iOCT_ECS_inst.globalDataMap, dataID);
+
+	if (!dataPool || dataIndex >= dataPool->count) {
 		return NULL;
 	}
 

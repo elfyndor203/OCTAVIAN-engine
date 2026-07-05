@@ -44,6 +44,7 @@ static unsigned int spriteIndices[] = {
 };
 
 static void iOCT_setInstanceOffset(GLuint VAO, GLuint VBO, size_t byteOffset);
+static void iOCT_setupNewSpriteVAO(GLuint VAO, GLuint quadVBO,  GLuint quadEBO, GLuint spriteVBO);
 
 void system_init_RENDERER() {
     OCT_ID systemID = iOCT_renderer_inst.systemDescription.systemID_reg;
@@ -67,9 +68,9 @@ void system_init_RENDERER() {
     glVertexAttribPointer(attrib_quadUV, 2, GL_FLOAT, GL_FALSE, sizeof(quadVertex), (void*)(2 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    GLuint spriteEBO;
-    glGenBuffers(1, &spriteEBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, spriteEBO);
+    GLuint quadEBO;
+    glGenBuffers(1, &quadEBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadEBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(spriteIndices), spriteIndices, GL_STATIC_DRAW);
 #pragma endregion
 
@@ -86,21 +87,8 @@ void system_init_RENDERER() {
     // glVertexAttribPointer(attrib_transformCol0, 3, GL_FLOAT, GL_FALSE, sizeof(iOCT_spriteFullData), (void*)(transformBase + offsetof(OCT_mat3, c0r0)));
     // glVertexAttribPointer(attrib_transformCol1, 3, GL_FLOAT, GL_FALSE, sizeof(iOCT_spriteFullData), (void*)(transformBase + offsetof(OCT_mat3, c1r0)));
     // glVertexAttribPointer(attrib_transformCol2, 3, GL_FLOAT, GL_FALSE, sizeof(iOCT_spriteFullData), (void*)(transformBase + offsetof(OCT_mat3, c2r0)));
-    iOCT_setInstanceOffset(spriteVAO, spriteDataVBO, 0); // replaced attribPointers
-    glEnableVertexAttribArray(attrib_uv);
-    glEnableVertexAttribArray(attrib_color);
-    glEnableVertexAttribArray(attrib_dimensions);
-    glEnableVertexAttribArray(attrib_arrayLayer);
-    glEnableVertexAttribArray(attrib_transformCol0);
-    glEnableVertexAttribArray(attrib_transformCol1);
-    glEnableVertexAttribArray(attrib_transformCol2);
-    glVertexAttribDivisor(attrib_uv, 1);
-    glVertexAttribDivisor(attrib_color, 1);
-    glVertexAttribDivisor(attrib_dimensions, 1);
-    glVertexAttribDivisor(attrib_arrayLayer, 1);
-    glVertexAttribDivisor(attrib_transformCol0, 1);
-    glVertexAttribDivisor(attrib_transformCol1, 1);
-    glVertexAttribDivisor(attrib_transformCol2, 1);
+    iOCT_setupNewSpriteVAO(spriteVAO, quadVBO, quadEBO, spriteDataVBO);
+
 
 #pragma endregion
 
@@ -112,7 +100,7 @@ void system_init_RENDERER() {
 #pragma endregion
     glBindVertexArray(0);
     iOCT_renderer_inst.spriteVAO = spriteVAO;
-    iOCT_renderer_inst.quadEBO = spriteEBO;
+    iOCT_renderer_inst.quadEBO = quadEBO;
     iOCT_renderer_inst.quadVBO = quadVBO;
     iOCT_renderer_inst.spriteDataVBO = spriteDataVBO;
     iOCT_renderer_inst.spriteDataVBOCapacity = iOCT_SPRITES_INITIAL_CAPACITY;
@@ -127,7 +115,9 @@ void iOCT_renderer_uploadAll(OCT_handle contextHandle) {
     iOCT_sprite2D* spriteArray = (iOCT_sprite2D*)spritePool->array;
     // Buffer
     eOCT_pool* spriteBufferPool = &iOCT_renderer_inst.spriteFullDataBuffer;
-    eOCT_pool_expand(spriteBufferPool, spritePool->count);
+    if (spritePool->count > spriteBufferPool->capacity) {
+        eOCT_pool_expand(spriteBufferPool, spritePool->count);
+    }
 
     for (OCT_index spriteCtr = 0; spriteCtr < spritePool->count; spriteCtr++) {
         iOCT_sprite2D sprite = spriteArray[spriteCtr];
@@ -208,7 +198,7 @@ void iOCT_renderer_drawAll(OCT_handle contextHandle) {
     }
 }
 
-void system_update_RENDERER(OCT_handle contextHandle) {
+void eOCT_RENDERER_update(OCT_handle contextHandle) {
     iOCT_renderer_uploadAll(contextHandle);
     iOCT_renderer_drawAll(contextHandle);
 }
@@ -226,4 +216,43 @@ static void iOCT_setInstanceOffset(GLuint VAO, GLuint VBO, size_t byteOffset) {
     glVertexAttribPointer(attrib_transformCol0, 3, GL_FLOAT, GL_FALSE, sizeof(iOCT_spriteFullData), (void*)(transformBase + offsetof(OCT_mat3, c0r0) + byteOffset));
     glVertexAttribPointer(attrib_transformCol1, 3, GL_FLOAT, GL_FALSE, sizeof(iOCT_spriteFullData), (void*)(transformBase + offsetof(OCT_mat3, c1r0) + byteOffset));
     glVertexAttribPointer(attrib_transformCol2, 3, GL_FLOAT, GL_FALSE, sizeof(iOCT_spriteFullData), (void*)(transformBase + offsetof(OCT_mat3, c2r0) + byteOffset));
+}
+
+static void iOCT_setupNewSpriteVAO(GLuint VAO, GLuint quadVBO,  GLuint quadEBO, GLuint spriteVBO) {
+    glBindVertexArray(VAO);
+
+    // quad VBO
+    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+    glVertexAttribPointer(attrib_quadXY, 2, GL_FLOAT, GL_FALSE, sizeof(quadVertex), (void*)0);
+    glEnableVertexAttribArray(0);
+        // quad uv
+    glVertexAttribPointer(attrib_quadUV, 2, GL_FLOAT, GL_FALSE, sizeof(quadVertex), (void*)(2 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+    // quad EBO
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadEBO);
+
+    // spriteVBO
+    glBindBuffer(GL_ARRAY_BUFFER, spriteVBO);
+    iOCT_setInstanceOffset(VAO, spriteVBO, 0);
+    glEnableVertexAttribArray(attrib_uv);
+    glEnableVertexAttribArray(attrib_color);
+    glEnableVertexAttribArray(attrib_dimensions);
+    glEnableVertexAttribArray(attrib_arrayLayer);
+    glEnableVertexAttribArray(attrib_transformCol0);
+    glEnableVertexAttribArray(attrib_transformCol1);
+    glEnableVertexAttribArray(attrib_transformCol2);
+    glVertexAttribDivisor(attrib_uv, 1);
+    glVertexAttribDivisor(attrib_color, 1);
+    glVertexAttribDivisor(attrib_dimensions, 1);
+    glVertexAttribDivisor(attrib_arrayLayer, 1);
+    glVertexAttribDivisor(attrib_transformCol0, 1);
+    glVertexAttribDivisor(attrib_transformCol1, 1);
+    glVertexAttribDivisor(attrib_transformCol2, 1);
+}
+
+void OCT_renderToNewWindow(OCT_handle window) {
+    GLuint windowVAO = (GLuint)*(uint64_t*)eOCT_getGlobalDataField(iOCT_renderer_inst.windowVAOCache, window.objectID);
+
+    iOCT_setupNewSpriteVAO(windowVAO, iOCT_renderer_inst.quadVBO, iOCT_renderer_inst.quadEBO, iOCT_renderer_inst.spriteDataVBO);
 }
