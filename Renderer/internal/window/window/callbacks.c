@@ -1,9 +1,10 @@
 #include "window_int.h"
+#include "window/types_int.h"
 
 #include <GLFW/glfw3.h>
 #include <stdio.h>
 
-#include "windowSystem/windowSystem_int.h"
+#include "window/windowSystem_int.h"
 
 void iOCT_window_keyCallback(GLFWwindow* window, int key, int scancode, int action, int modifiers) {
     if (!(action == GLFW_PRESS || action == GLFW_RELEASE)) {

@@ -18,10 +18,10 @@ iOCT_registry iOCT_registry_inst = { 0 };
 
 #pragma region internal
 void init_OCT_registry_init() {
-	eOCT_pool systems = eOCT_pool_init(OCT_ID_REGISTRY, eOCT_POOL_SIZE_DEFAULT, sizeof(eOCT_systemDescription*)); // store system pointers
-	eOCT_pool components = eOCT_pool_init(OCT_ID_REGISTRY, eOCT_POOL_SIZE_DEFAULT, sizeof(eOCT_componentDescription));
-	eOCT_pool dataPools = eOCT_pool_init(OCT_ID_REGISTRY, eOCT_POOL_SIZE_DEFAULT, sizeof(eOCT_dataPoolDescription));
-	eOCT_pool fields = eOCT_pool_init(OCT_ID_REGISTRY, eOCT_POOL_SIZE_DEFAULT, sizeof(eOCT_fieldDescription));
+	eOCT_pool systems = eOCT_pool_init(OCT_ID_REGISTRY, eOCT_POOL_CAPACITY_DEFAULT, sizeof(eOCT_systemDescription*)); // store system pointers
+	eOCT_pool components = eOCT_pool_init(OCT_ID_REGISTRY, eOCT_POOL_CAPACITY_DEFAULT, sizeof(eOCT_componentDescription));
+	eOCT_pool dataPools = eOCT_pool_init(OCT_ID_REGISTRY, eOCT_POOL_CAPACITY_DEFAULT, sizeof(eOCT_dataPoolDescription));
+	eOCT_pool fields = eOCT_pool_init(OCT_ID_REGISTRY, eOCT_POOL_CAPACITY_DEFAULT, sizeof(eOCT_fieldDescription));
 	iOCT_registry_inst.systems = systems;
 	iOCT_registry_inst.components = components;
 	iOCT_registry_inst.dataPools = dataPools;

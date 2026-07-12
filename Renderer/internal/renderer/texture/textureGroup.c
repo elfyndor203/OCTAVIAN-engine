@@ -1,4 +1,5 @@
 #include "textureGroup_int.h"
+#include "renderer/types_int.h"
 
 #include "OCT_Core_eng.h"
 #include <glad/glad.h>
@@ -6,14 +7,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "renderer_int.h"
+#include "renderer/renderer_int.h"
 
 #define TEXTURE_BASE_LEVEL 0
 #define TEMP_MIPMAPS 1
 
 OCT_handle OCT_textureGroup_open(OCT_vec2 dimensions, OCT_index maxCount) {
     OCT_ID systemID = iOCT_renderer_inst.systemDescription.systemID_reg;
-    eOCT_IDMap texMap = eOCT_IDMap_init(systemID, eOCT_POOL_SIZE_DEFAULT);
+    eOCT_IDMap texMap = eOCT_IDMap_init(systemID, maxCount);
 
     GLuint texArray;
     glGenTextures(1, &texArray);
@@ -57,7 +58,7 @@ OCT_handle OCT_textureGroup_open(OCT_vec2 dimensions, OCT_index maxCount) {
 OCT_handle OCT_texture_new(OCT_handle textureGroup, const char* path) {
     const unsigned char* pixels = eOCT_image_load(path);
     if (!pixels) {
-        printf("Texture load failed\n");
+        OCT_ERROR_LOG(OCT_EXIT_FAILED_TO_OPEN_FILE, "Failed to load image");
         return OCT_HANDLE_NULL;
     }
 

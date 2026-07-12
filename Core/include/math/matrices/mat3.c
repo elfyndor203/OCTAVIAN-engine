@@ -6,7 +6,7 @@
 #include <assert.h>
 #include <stdio.h>
 
-OCT_mat3 OCT_mat3_identity = {1, 0, 0, 0, 1, 0, 0, 0, 1};
+const OCT_mat3 OCT_mat3_identity = {1, 0, 0, 0, 1, 0, 0, 0, 1};
 
 OCT_mat3 OCT_mat3_mul(OCT_mat3 matA, OCT_mat3 matB) {
     OCT_mat3 result = {
@@ -44,6 +44,7 @@ OCT_mat3 OCT_mat3_generate(OCT_vec2 translation, OCT_vec2 scale, float rotation)
     return result;
 }
 
+// Claude generated
 OCT_mat3 OCT_mat3_inverse(OCT_mat3 m) {
     // Scale squared from each column
     float sx2 = m.c0r0 * m.c0r0 + m.c0r1 * m.c0r1;
@@ -54,8 +55,8 @@ OCT_mat3 OCT_mat3_inverse(OCT_mat3 m) {
 
     // Transposed 2x2 with inverse scale applied
     float r00 = m.c0r0 * inv_sx2;
-    float r01 = m.c0r1 * inv_sx2;
-    float r10 = m.c1r0 * inv_sy2;
+    float r01 = m.c1r0 * inv_sy2;   // fixed
+    float r10 = m.c0r1 * inv_sx2;   // fixed
     float r11 = m.c1r1 * inv_sy2;
 
     // Inverse translation

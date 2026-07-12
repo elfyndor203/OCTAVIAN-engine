@@ -2,7 +2,6 @@
 
 #include "systemDescription_sysEx.h"
 #include "systemDescription_world.h"
-#include "systemDescription_window.h"
 #include "systemDescription_renderer.h"
 
 void init_OCT_registerAllSystems() {

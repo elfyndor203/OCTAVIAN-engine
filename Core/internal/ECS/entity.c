@@ -116,6 +116,23 @@ void* iOCT_entity_getComponent(iOCT_entityContext* context, OCT_index entityInde
 	return dataLoc;
 }
 
+bool OCT_entity_sameContext(OCT_handle entity1, OCT_handle entity2) {
+	if (entity1.containerID == entity2.containerID) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+bool OCT_entity_fromContext(OCT_handle entity, OCT_handle context) {
+	if (entity.containerID == context.objectID) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
 /// <summary>
 /// Returns the address of the first component index in the entity pool; essentially the start of the entity
 /// </summary>

@@ -1,5 +1,5 @@
 #pragma once
-#include "types_int.h"
+#include "renderer/types_int.h"
 
 #include "OCT_Core_eng.h"
 #include <glad/glad.h>
@@ -14,12 +14,14 @@ struct iOCT_spriteData {
 struct iOCT_sprite2D {
     OCT_handle entity;
 
+    OCT_ID windowID;
+    OCT_index drawLayer;
     OCT_ID texGroupID;
     OCT_ID texID;
-    OCT_index drawLayer;
     OCT_index sortKey;
 
     OCT_mat3 spriteTransform;
     iOCT_spriteData spriteData;
 };
 
+void iOCT_sprite2D_root(OCT_handle rootEntity);

@@ -32,7 +32,6 @@ OCT_vec2 OCT_transform2D_moveTo(OCT_handle entity, OCT_vec2 destination) {
 	iOCT_transform2D* transform = (iOCT_transform2D*)eOCT_entity_getComponent(entity, iOCT_world_inst.transform2DCache);
 	transform->position = destination;
 
-	printf("%f %f\n", transform->position.x, transform->position.y);
 	return transform->position;
 }
 OCT_vec2 OCT_transform2D_moveBy(OCT_handle entity, OCT_vec2 deltaXY);

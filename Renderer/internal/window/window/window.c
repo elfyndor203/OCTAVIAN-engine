@@ -1,18 +1,21 @@
 #include "window_int.h"
-#include "OCT_Core_eng.h"
+#include "window/types_int.h"
 
+#include "OCT_Core_eng.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <stdbool.h>
 #include <stdio.h>
 
-#include "windowSystem/windowSystem_int.h"
+#include "window/windowSystem_int.h"
+#include "renderer/renderer_int.h"
 
 OCT_handle OCT_window_open(const char* name, unsigned int sizeX, unsigned int sizeY, OCT_vec4 color) {
     printf("\nOpening window %s\n", name);
     GLFWwindow* windowPtr = glfwCreateWindow(sizeX, sizeY, name, NULL, iOCT_windowSystem_inst.rootWindow);
     glfwMakeContextCurrent(windowPtr);
 
+    // set initial framebuffer size
     int frameBufferX;
     int frameBufferY;
     glfwSwapInterval(1);
@@ -21,13 +24,19 @@ OCT_handle OCT_window_open(const char* name, unsigned int sizeX, unsigned int si
     glViewport(0, 0, frameBufferX, frameBufferY);
     glClearColor(1.0f, 0.5f, 0.0f, 1.0f); // __NOTE__ PASS AS PARAM
 
+    // init
     GLuint newVAO;
     OCT_ID newID;
-    iOCT_window* newWindow = eOCT_addGlobalDataEntry(iOCT_windowSystem_inst.windowCache, true, &newID);
+    OCT_index newIndex;
+    iOCT_window* newWindow = (iOCT_window*)eOCT_pool_addEntry(&iOCT_windowSystem_inst.windowPool, &newIndex);
+    newID = eOCT_IDMap_register(&iOCT_windowSystem_inst.windowMap, newIndex);
     newWindow->windowID = newID;
     newWindow->windowPtr = windowPtr;
     newWindow->targetResolution = (OCT_vec2){ (float)sizeX, (float)sizeY };
     newWindow->currentResolution = (OCT_vec2){ (float)sizeX, (float)sizeY };
+    newWindow->activeCameraSourceEntity = OCT_HANDLE_NULL;
+    newWindow->cameraUniformLocation = glGetUniformLocation(iOCT_renderer_inst.spriteShaderProgram, "cameraProj");
+
     glGenVertexArrays(1, &newVAO);
     newWindow->VAO = newVAO;
     OCT_handle windowHandle = {
@@ -35,12 +44,15 @@ OCT_handle OCT_window_open(const char* name, unsigned int sizeX, unsigned int si
         .objectID = newID,
     };
 
+    iOCT_setupNewSpriteVAO(newWindow->VAO);
+    glBindVertexArray(0);
+
     printf("Created window %s %p\n", name, windowPtr);
     return windowHandle;
 }
 
 bool OCT_window_isOpen(OCT_handle windowHandle) {
-    iOCT_window* window = (iOCT_window*)eOCT_getGlobalDataEntry(iOCT_windowSystem_inst.windowCache, windowHandle.objectID);
+    iOCT_window* window = (iOCT_window*)eOCT_getByID(&iOCT_windowSystem_inst.windowMap, &iOCT_windowSystem_inst.windowPool, windowHandle.objectID);
     if (!window) {
         return false;
     }
@@ -48,12 +60,12 @@ bool OCT_window_isOpen(OCT_handle windowHandle) {
 }
 
 bool OCT_window_anyOpen() {
-    eOCT_pool* windowPool = (eOCT_pool*)eOCT_getDataPool_global(iOCT_windowSystem_inst.windowCache, NULL);
+    eOCT_pool* windowPool = &iOCT_windowSystem_inst.windowPool;
     return windowPool->count;
 }
 
 void iOCT_window_close(iOCT_window* window, OCT_index windowIndex) {
-    eOCT_pool* windowPool = eOCT_getDataPool_global(iOCT_windowSystem_inst.windowCache, NULL);
+    eOCT_pool* windowPool = &iOCT_windowSystem_inst.windowPool;
 
     glfwDestroyWindow(window->windowPtr);
     eOCT_pool_deleteEntry(windowPool, windowIndex, true); // remove the window
@@ -62,6 +74,24 @@ void iOCT_window_close(iOCT_window* window, OCT_index windowIndex) {
 void iOCT_window_poll(iOCT_window* window) {
     window->cursorDelta = OCT_vec2_zero;
     glfwPollEvents();
+}
+
+void iOCT_window_activate(iOCT_window window) {
+    glfwMakeContextCurrent(window.windowPtr);
+    glBindVertexArray(window.VAO);
+}
+
+OCT_mat3 iOCT_window_getCameraProj(iOCT_window window) {
+    if (OCT_handle_isNULL(window.activeCameraSourceEntity)) {
+        return OCT_mat3_identity;
+    }
+    iOCT_camera2D camera = *(iOCT_camera2D*)eOCT_entity_getComponent(window.activeCameraSourceEntity, iOCT_renderer_inst.camera2DCache);
+    OCT_mat3 entityGlobalTransform = *(OCT_mat3*)eOCT_entity_getField(window.activeCameraSourceEntity, iOCT_renderer_inst.transform2DCache);
+
+    return OCT_mat3_mul(entityGlobalTransform, camera.cameraMatrix);
+}
+static void iOCT_window_setWorldResolution(OCT_vec2 XY) {
+
 }
 // void OCT_window_wipe() {
 // 	iOCT_window_wipe();

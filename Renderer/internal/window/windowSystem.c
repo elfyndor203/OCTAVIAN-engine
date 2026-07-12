@@ -44,12 +44,17 @@ void system_init_WINDOW() {
 	// iOCT_window_viewport(width, height);
 	// iOCT_keyMap_init();
 	// iOCT_mouseMap_init();
+
+	// happens after registry init so using systemID is safe
+	iOCT_windowSystem_inst.windowMap = eOCT_IDMap_init(iOCT_windowSystem_inst.windowSystem.systemID_reg, eOCT_POOL_CAPACITY_DEFAULT);
+	iOCT_windowSystem_inst.windowPool = eOCT_pool_init(iOCT_windowSystem_inst.windowSystem.systemID_reg, eOCT_POOL_CAPACITY_DEFAULT, sizeof(iOCT_window));
 	iOCT_windowSystem_inst.rootWindow = initWindow;
 }
 
+
 void eOCT_WINDOW_update_start(OCT_handle contextHandle) {
 	iOCT_window* window;
-	eOCT_pool* windowPool = eOCT_getDataPool_global(iOCT_windowSystem_inst.windowCache, NULL);
+	eOCT_pool* windowPool = &iOCT_windowSystem_inst.windowPool;
 	iOCT_window* windowArray = (iOCT_window*)windowPool->array;
 
 	for (OCT_index windowCtr = 0; windowCtr < windowPool->count; windowCtr++) {
@@ -69,16 +74,14 @@ void eOCT_WINDOW_update_start(OCT_handle contextHandle) {
 }
 
 void eOCT_WINDOW_update_finish(OCT_handle contextHandle) {
-	iOCT_window* window;
-	eOCT_pool* windowPool = eOCT_getDataPool_global(iOCT_windowSystem_inst.windowCache, NULL);
+	eOCT_pool* windowPool = &iOCT_windowSystem_inst.windowPool;
 	iOCT_window* windowArray = (iOCT_window*)windowPool->array;
 
 	for (OCT_index windowCtr = 0; windowCtr < windowPool->count; windowCtr++) {
-		window = &windowArray[windowCtr];
-		glfwMakeContextCurrent(window->windowPtr);
+		iOCT_window window = windowArray[windowCtr];
+		glfwMakeContextCurrent(window.windowPtr);
 
-		glfwSwapBuffers(window->windowPtr);
-
+		glfwSwapBuffers(window.windowPtr);
 	}
 
 	eOCT_pool* keyPool = eOCT_getDataPool_global(iOCT_windowSystem_inst.keyCache, NULL);

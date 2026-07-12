@@ -18,7 +18,7 @@ OCT_handle OCT_entityContext_open(OCT_handle* rootOut) {
 	newID = eOCT_IDMap_register(&iOCT_ECS_inst.contextMap, newIndex);
 	newContext->contextID = newID;
 		// init entity pool
-	OCT_index entityCapacity = eOCT_POOL_SIZE_DEFAULT;
+	OCT_index entityCapacity = eOCT_POOL_CAPACITY_DEFAULT;
 	newContext->entityIDMap = eOCT_IDMap_init(newID, entityCapacity);
 	newContext->entityPool = eOCT_pool_init(newID, entityCapacity, iOCT_ECS_inst.entitySize);
 	eOCT_pool_fillSetting noComponent = {
@@ -36,7 +36,7 @@ OCT_handle OCT_entityContext_open(OCT_handle* rootOut) {
 		eOCT_componentDescription* component = *(eOCT_componentDescription**)eOCT_pool_access(&iOCT_ECS_inst.componentDescPtrList, componentCtr, 0);
 
 		eOCT_pool* newPool = eOCT_pool_addEntry(&newContext->componentPools, &indexCheck);
-		*newPool = eOCT_pool_init(newID, eOCT_POOL_SIZE_DEFAULT, component->stride);	// init actual component pool
+		*newPool = eOCT_pool_init(newID, eOCT_POOL_CAPACITY_DEFAULT, component->stride);	// init actual component pool
 		if (component->sortValueOffset != eOCT_POOL_SORT_NONE) {
 			eOCT_pool_setSort(newPool, component->sortValueOffset);
 		}

@@ -18,3 +18,6 @@ typedef struct OCT_handle {
 
 extern OCT_handle OCT_HANDLE_NULL;
 
+bool OCT_handle_isNULL(OCT_handle handle);
+bool OCT_handle_isEqual(OCT_handle handle1, OCT_handle handle2);
+

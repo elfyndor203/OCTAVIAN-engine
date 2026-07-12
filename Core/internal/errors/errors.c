@@ -12,16 +12,16 @@ void iOCT_logError(OCT_ERROR_CODES errorCode) {
 
 	printf("\n!!!\n");
 	if (errorLevel == iOCT_FATAL) {
-		printf("FATAL Error %d:", errorCode);
+		printf("FATAL Error %d: ", errorCode);
 	}
 	else if (errorLevel == iOCT_ERROR) {
-		printf("ERROR %d:", errorCode);
+		printf("ERROR %d: ", errorCode);
 	}
 	else if (errorLevel == iOCT_WARNING) {
-		printf("WARNING %d:", errorCode);
+		printf("WARNING %d: ", errorCode);
 	}
 	else {
-		printf("NOTE %d:", errorCode);
+		printf("NOTE %d: ", errorCode);
 	}
 	printf("%s\n", message);
 }

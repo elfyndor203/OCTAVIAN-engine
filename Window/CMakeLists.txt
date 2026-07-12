@@ -1,9 +1,9 @@
-
+#[[
 add_library(Window STATIC
         system/systemDescription.c
-        internal/window/window.c
-        internal/window/callbacks.c
-        internal/windowSystem/windowSystem.c
+        ../Renderer/internal/window/window/window.c
+        ../Renderer/internal/window/window/callbacks.c
+        ../Renderer/internal/window/windowSystem/windowSystem.c
 )
 
 target_include_directories(Window
@@ -24,3 +24,4 @@ add_library(WindowSystem INTERFACE)
 target_include_directories(WindowSystem INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/system)
 
 target_link_libraries(Window PUBLIC Core PRIVATE glfw glad)
+#]]

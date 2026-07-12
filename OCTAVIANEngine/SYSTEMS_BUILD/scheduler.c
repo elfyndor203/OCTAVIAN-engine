@@ -1,6 +1,5 @@
 
 #include "OCT_Core_eng.h"
-#include "systemDescription_window.h"
 #include "systemDescription_renderer.h"
 #include "systemDescription_world.h"
 

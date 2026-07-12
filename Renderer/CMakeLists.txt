@@ -2,12 +2,19 @@ add_library(Renderer STATIC
         internal/rendererOld/spriteData/spriteData.c
         internal/rendererOld/texture/texture.c
         system/systemDescription.c
-        internal/renderer.c
-        internal/textureGroup.c
-        internal/sprite2D.c
-        internal/shader/shader/shader.c
-        include/sprite2D.h
-        # __NOTE__
+        internal/renderer/renderer.c
+        internal/renderer/texture/textureGroup.c
+        internal/renderer/sprite2D/sprite2D.c
+        internal/renderer/shader/shader.c
+        include/renderer/sprite2D.h
+
+        internal/window/window/window.c
+        internal/window/window/callbacks.c
+        internal/window/windowSystem.c
+        internal/window/types_int.h
+        internal/renderer/camera2D/camera2D_int.h
+        internal/renderer/camera2D/camera2D.c
+        include/renderer/camera2D.h
 )
 
 target_include_directories(Renderer

@@ -13,16 +13,16 @@ static OCT_index iOCT_ECS_addGlobalDataPool(eOCT_dataPoolDescription desc);
 iOCT_ECS iOCT_ECS_inst = { 0 };
 
 void init_OCT_ECS_init() {
-	iOCT_ECS_inst.contextMap = eOCT_IDMap_init(OCT_ID_ECS, eOCT_POOL_SIZE_DEFAULT);
-	iOCT_ECS_inst.contextPool = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_SIZE_DEFAULT, sizeof(iOCT_entityContext));
+	iOCT_ECS_inst.contextMap = eOCT_IDMap_init(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT);
+	iOCT_ECS_inst.contextPool = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, sizeof(iOCT_entityContext));
 
-	iOCT_ECS_inst.componentDescPtrList = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_SIZE_DEFAULT, sizeof(eOCT_componentDescription*));
-	iOCT_ECS_inst.componentRootInitList = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_SIZE_DEFAULT, sizeof(eOCT_rootAttachmentFx));
+	iOCT_ECS_inst.componentDescPtrList = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, sizeof(eOCT_componentDescription*));
+	iOCT_ECS_inst.componentRootInitList = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, sizeof(eOCT_rootAttachmentFx));
 	eOCT_pool_setFill(&iOCT_ECS_inst.componentRootInitList, eOCT_POOL_FILLSETTING_ZEROS);
-	iOCT_ECS_inst.dataPoolSizeAndOrderList = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_SIZE_DEFAULT, sizeof(size_t));
+	iOCT_ECS_inst.dataPoolSizeAndOrderList = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, sizeof(size_t));
 
-	iOCT_ECS_inst.globalDataMap = eOCT_IDMap_init(OCT_ID_ECS, eOCT_POOL_SIZE_DEFAULT);
-	iOCT_ECS_inst.globalDataPools = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_SIZE_DEFAULT, sizeof(eOCT_pool));
+	iOCT_ECS_inst.globalDataMap = eOCT_IDMap_init(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT);
+	iOCT_ECS_inst.globalDataPools = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, sizeof(eOCT_pool));
 
 	printf("| ECS initialized\n");
 }
@@ -138,7 +138,7 @@ static OCT_index iOCT_ECS_addGlobalDataPool(eOCT_dataPoolDescription desc) {
 	OCT_index index;
 
 	eOCT_pool* poolDestination = eOCT_pool_addEntry(&iOCT_ECS_inst.globalDataPools, &index);
-	*poolDestination = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_SIZE_DEFAULT, desc.stride);
+	*poolDestination = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, desc.stride);
 
 	return index;
 }

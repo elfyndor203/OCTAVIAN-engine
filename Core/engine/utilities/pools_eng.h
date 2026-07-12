@@ -6,7 +6,7 @@
 
 #include <stdbool.h>
 
-#define eOCT_POOL_SIZE_DEFAULT 4
+#define eOCT_POOL_CAPACITY_DEFAULT 4
 
 #define eOCT_BYTE_ONES 0xFF
 #define eOCT_BYTE_ZEROES 0x00

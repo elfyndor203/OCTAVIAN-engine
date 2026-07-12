@@ -20,7 +20,7 @@ typedef struct OCT_mat3 {
 	float c2r2;
 } OCT_mat3;
 
-extern OCT_mat3 OCT_mat3_identity;
+extern const OCT_mat3 OCT_mat3_identity;
 
 OCT_mat3 OCT_mat3_mul(OCT_mat3 parentMat, OCT_mat3 childMat);
 OCT_vec3 OCT_mat3_mulVec3(OCT_mat3 matrix, OCT_vec3 vector);

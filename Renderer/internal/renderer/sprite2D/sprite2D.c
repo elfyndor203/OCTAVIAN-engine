@@ -1,17 +1,22 @@
+#include "renderer/sprite2D.h"
+
 #include "sprite2D_int.h"
-#include "types_int.h"
+#include "renderer/types_int.h"
 
 #include "OCT_Core_eng.h"
 #include <stdio.h>
 #include <assert.h>
 #include <inttypes.h>
 
-#include "renderer_int.h"
-#include "textureGroup_int.h"
+#include "renderer/renderer_int.h"
+#include "renderer/texture/textureGroup_int.h"
+#include "window/windowSystem_int.h"
+
+#define iOCT_LAYER_MAX (UINT32_MAX - 1)
 
 uint64_t generateSortKey(OCT_index drawLayer, OCT_index texGroupIndex);
 
-void OCT_sprite2D_attach(OCT_handle entity, OCT_handle texture, OCT_vec4 uv, OCT_vec4 color, OCT_vec2 dimensions, OCT_index drawLayer) {
+void OCT_sprite2D_attach(OCT_handle entity, OCT_handle texture, OCT_vec4 uv, OCT_vec4 tintColor, OCT_vec2 dimensions, OCT_index drawLayer) {
     OCT_index texGroupIndex = eOCT_IDMap_getIndex(&iOCT_renderer_inst.textureGroupMap, texture.containerID);
     iOCT_sprite2D* newSprite = eOCT_entity_attachComponent(entity, iOCT_renderer_inst.sprite2DCache);
     newSprite->entity = entity;
@@ -20,7 +25,7 @@ void OCT_sprite2D_attach(OCT_handle entity, OCT_handle texture, OCT_vec4 uv, OCT
     newSprite->spriteTransform = OCT_mat3_identity;
     // resolve spriteData texArrayLayer at draw time
     newSprite->spriteData.uv = uv;
-    newSprite->spriteData.color = color;
+    newSprite->spriteData.color = tintColor;
     newSprite->spriteData.dimensions = dimensions;
     newSprite->sortKey = generateSortKey(drawLayer, texGroupIndex);
 
@@ -29,7 +34,7 @@ void OCT_sprite2D_attach(OCT_handle entity, OCT_handle texture, OCT_vec4 uv, OCT
     iOCT_textureGroup* texGroup = (iOCT_textureGroup*)eOCT_getByID(&iOCT_renderer_inst.textureGroupMap, &iOCT_renderer_inst.textureGroupPool, texture.containerID);
 }
 
-/// assumes layer and texGroup don't exceed 32 bit max, because it'd better not
+/// assumes layer and texGroup don't exceed 16 bit max, because it'd better not
 uint64_t generateSortKey(OCT_index drawLayer, OCT_index texGroupIndex) {
     assert(drawLayer <= UINT32_MAX);
     assert(texGroupIndex <= UINT32_MAX);
@@ -39,3 +44,8 @@ uint64_t generateSortKey(OCT_index drawLayer, OCT_index texGroupIndex) {
 
     return ((uint64_t)layerBits << 32) | (uint64_t)texBits;
 }
+
+void iOCT_sprite2D_root(OCT_handle rootEntity) {
+    OCT_sprite2D_attach(rootEntity, iOCT_renderer_inst.gizmoTex, (OCT_vec4){0.0, 0.0, 1.0, 1.0}, OCT_TINT_COLOR_NONE, (OCT_vec2){100.0f, 100.0f}, 1); // skips layers in between
+}
+

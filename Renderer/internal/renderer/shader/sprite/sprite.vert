@@ -11,6 +11,8 @@ layout(location = 6) in vec3 transformCol0;
 layout(location = 7) in vec3 transformCol1;
 layout(location = 8) in vec3 transformCol2;
 
+uniform mat3 cameraProj;
+
 //uniform mat3 worldProj;
 //uniform mat3 cameraProj;
 
@@ -19,8 +21,9 @@ out vec4 fragColor;
 out float fragArrayLayer;
 
 void main() {
+    mat3 cameraInverse = inverse(cameraProj);
     mat3 transform = mat3(transformCol0, transformCol1, transformCol2);
-    vec3 position = transform * vec3(quadXY * dimensions, 1.0);
+    vec3 position = cameraInverse * transform * vec3(quadXY * dimensions, 1.0);
     //vec3 view = cameraProj * position;
     //vec3 final = worldProj * view;
 

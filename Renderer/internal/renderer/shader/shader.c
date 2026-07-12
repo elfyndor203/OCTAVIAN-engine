@@ -20,7 +20,8 @@ GLuint iOCT_shader_load(char* path, int type) {
 	
 	file = fopen(path, "rb");
 	if (!file) {
-		OCT_ERROR_LOG(OCT_EXIT_FAILED_TO_OPEN_FILE, "Could not open shader file");
+		printf("Attempted path: %s\n", path);
+		OCT_ERROR_LOG(OCT_EXIT_FAILED_TO_OPEN_FILE, "Could not open shader file at path");
 		return 0;
 	}
 	fseek(file, 0, SEEK_END);
