@@ -15,7 +15,6 @@ void eOCT_WORLD_update(OCT_handle contextHandle) {
     for (OCT_index transformCtr = 0; transformCtr < transformPool->count; transformCtr++) {
         iOCT_transform2D* transform = &transformArray[transformCtr];
 
-        transform->localMatrix = OCT_mat3_generate(transform->position, transform->scale, transform->rotation);
-        transform->globalMatrix = transform->localMatrix; //__NOTE__ DO PARENTING __
+        iOCT_transform2D_propagate(contextHandle);
     }
 }

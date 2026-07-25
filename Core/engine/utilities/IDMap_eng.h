@@ -17,6 +17,6 @@ struct eOCT_IDMap {
 eOCT_IDMap eOCT_IDMap_init(OCT_ID ownerID, OCT_index capacity);
 OCT_ID eOCT_IDMap_register(eOCT_IDMap* map, OCT_index inIndex);
 OCT_index eOCT_IDMap_deregister(eOCT_IDMap* map, OCT_ID ID);
-OCT_ID eOCT_IDMap_remap(eOCT_IDMap* map, OCT_ID ID, OCT_index newIndex);
+bool eOCT_IDMap_remap(eOCT_IDMap* map, OCT_ID ID, OCT_index newIndex);
 OCT_index eOCT_IDMap_getIndex(eOCT_IDMap* map, OCT_ID ID);
 void eOCT_IDMap_free(eOCT_IDMap* map);

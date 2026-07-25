@@ -25,6 +25,7 @@ bool OCT_transform2D_attach(OCT_handle entity, OCT_handle parentEntity) {
 	transform->globalMatrix = parentTransform.globalMatrix;
 	transform->depth = parentTransform.depth + 1;
 
+	printf("Attached transform with depth %zu\n", transform->depth);
 	return true;
 }
 
@@ -62,7 +63,38 @@ void iOCT_transform2D_generateRoot(OCT_handle rootEntity) {
 	rootTransform->scale = (OCT_vec2){1.0f, 1.0f};
 	rootTransform->localMatrix = OCT_mat3_identity;
 	rootTransform->globalMatrix = OCT_mat3_identity;
-	rootTransform->depth = 0;
+	rootTransform->depth = iOCT_TRANSFORM_ROOT_DEPTH;
 
 	printf("Attached transform2D to ROOT\n");
+}
+
+// resolves local and global matrices
+void iOCT_transform2D_propagate(OCT_handle context) {
+	eOCT_pool* transformPool = eOCT_getComponentPool(context, iOCT_world_inst.transform2DCache);
+	iOCT_transform2D* transformArray = (iOCT_transform2D*)transformPool->array;
+
+	if (!transformPool || !transformArray) {
+		OCT_ERROR_LOG(OCT_EXIT_REFERENCE_DOES_NOT_EXIST, "Transform array or pool DNE");
+		return;
+	}
+	if (transformPool->count == 0) {	// no transforms -> guaranteed early return
+		return;
+	}
+
+	iOCT_transform2D* parent;
+	iOCT_transform2D* target;
+	for (OCT_index transformCtr = 0; transformCtr < transformPool->count; transformCtr++) {
+		target = &transformArray[transformCtr];
+		target->localMatrix = OCT_mat3_generate(target->position, target->scale, target->rotation);	// resolve local
+
+		if (target->depth == iOCT_TRANSFORM_ROOT_DEPTH) {
+			// no parent to handle
+			target->globalMatrix = target->localMatrix;
+			continue;
+		}
+		parent = (iOCT_transform2D*)eOCT_entity_getComponent(eOCT_entity_getHandle(context, target->parentEntityID), iOCT_world_inst.transform2DCache);
+		target->globalMatrix = OCT_mat3_mul(parent->globalMatrix, target->localMatrix);		// resolve global
+	}
+
+	//eOCT_pool_dump(transformPool);
 }

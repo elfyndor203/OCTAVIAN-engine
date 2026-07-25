@@ -37,9 +37,9 @@ void system_register_WORLD() {
 		.provider = eOCT_FIELDPROVIDER_COMPONENT
 	};
 	eOCT_fieldDescription matrix2D = {
-		.name = "transform2D",
+		.name = "globalTransform2D",
 		.type = eOCT_FIELDTYPE_FLOAT32,
-		.offset = offsetof(iOCT_transform2D, localMatrix),
+		.offset = offsetof(iOCT_transform2D, globalMatrix),
 		.provider = eOCT_FIELDPROVIDER_COMPONENT
 	};
 

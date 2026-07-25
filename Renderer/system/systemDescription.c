@@ -29,7 +29,7 @@ void system_register_RENDERER() {
     eOCT_componentDescription components[2] = { sprite2D, camera2D };
 
     eOCT_fieldRequest transform2D = {
-        .name = "transform2D",
+        .name = "globalTransform2D",
         .type = eOCT_FIELDTYPE_MAT3,
         .cacheLocation = &iOCT_renderer_inst.transform2DCache,
         .optional = false,

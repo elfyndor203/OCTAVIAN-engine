@@ -6,6 +6,7 @@
 #include <glfw/glfw3.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "renderer/renderer_int.h"
 
@@ -58,6 +59,7 @@ OCT_handle OCT_textureGroup_open(OCT_vec2 dimensions, OCT_index maxCount) {
 OCT_handle OCT_texture_new(OCT_handle textureGroup, const char* path) {
     const unsigned char* pixels = eOCT_image_load(path);
     if (!pixels) {
+        perror("Can't open");
         OCT_ERROR_LOG(OCT_EXIT_FAILED_TO_OPEN_FILE, "Failed to load image");
         return OCT_HANDLE_NULL;
     }

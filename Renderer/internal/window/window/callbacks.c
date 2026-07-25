@@ -22,3 +22,5 @@ void iOCT_window_keyCallback(GLFWwindow* window, int key, int scancode, int acti
         //printf("Key %c released\n", key);
     }
 }
+
+void iOCT_window_resizeCallback(GLFWwindow* window, int width, int height) {}

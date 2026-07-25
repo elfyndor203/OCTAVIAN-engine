@@ -65,7 +65,11 @@ OCT_index eOCT_IDMap_deregister(eOCT_IDMap* map, OCT_ID ID) {
 }
 
 
-OCT_ID eOCT_IDMap_remap(eOCT_IDMap* map, OCT_ID ID, OCT_index newIndex) {
+bool eOCT_IDMap_remap(eOCT_IDMap* map, OCT_ID ID, OCT_index newIndex) {
+	if (!map) {
+		OCT_ERROR_LOG(OCT_EXIT_REFERENCE_DOES_NOT_EXIST, "IDMap is NULL");
+		return false;
+	}
 	map->array[ID] = newIndex;
 	return ID;
 }

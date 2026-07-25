@@ -15,6 +15,7 @@ OCT_handle OCT_window_open(const char* name, unsigned int sizeX, unsigned int si
     GLFWwindow* windowPtr = glfwCreateWindow(sizeX, sizeY, name, NULL, iOCT_windowSystem_inst.rootWindow);
     glfwMakeContextCurrent(windowPtr);
 
+    glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
     // set initial framebuffer size
     int frameBufferX;
     int frameBufferY;

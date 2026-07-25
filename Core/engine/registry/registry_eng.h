@@ -52,6 +52,7 @@ struct eOCT_componentDescription {
 	eOCT_componentDescription* cacheLocation;
 	eOCT_rootAttachmentFx rootAttachmentFx;
 	OCT_index sortValueOffset;
+	OCT_index entitySlotValueOffset;
 
 	OCT_index componentTypeIndex_reg; // where the component is located in the ECS
 };

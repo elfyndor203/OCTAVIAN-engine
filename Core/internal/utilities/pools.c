@@ -1,5 +1,6 @@
 #include "utilities/pools_eng.h"
 #include "utilities/types_eng.h"
+#include "utilities/types_eng.h"
 
 #include "OCT_Core_eng.h"
 
@@ -10,6 +11,7 @@
 #include <stdbool.h>
 #include <inttypes.h>
 
+// opt-outs and presets
 eOCT_pool eOCT_POOL_EMPTY = {
 	.array = NULL,
 	.capacity = 0,
@@ -17,7 +19,6 @@ eOCT_pool eOCT_POOL_EMPTY = {
 	.elementSize = 0,
 	.ownerID = OCT_ID_NULL
 };
-
 eOCT_pool_fillSetting eOCT_POOL_FILLSETTING_NONE = {
 	.fillStyle = eOCT_POOL_FILLSTYLE_NONE,
 	.value = 0
@@ -59,30 +60,6 @@ void* eOCT_pool_addEntry(eOCT_pool* pool, OCT_index* outIndex) {
 	pool->count++;
 	return slot;
 }
-
-void* eOCT_pool_addEntrySorted(eOCT_pool* pool, OCT_index sortValue, OCT_index* outIndex) {
-	if (pool->sortValueOffset == eOCT_POOL_SORT_NONE) {
-		OCT_ERROR_LOG(OCT_ERR_CREATION_FAILED, "Cannot add sorted item to a pool without a sort setting");
-		return NULL;
-	}
-	if (pool->count == pool->capacity) {
-		iOCT_pool_expand(pool, 2);
-	}
-
-	// shift logic
-	OCT_index slotIndex;
-	void* slot = iOCT_findDestination(pool, sortValue, &slotIndex);
-	void* displaceBase = (char*)slot + pool->elementSize;
-	size_t displaceSize = pool->elementSize * (pool->count - slotIndex);
-	memmove(displaceBase, slot, displaceSize);
-
-	if (outIndex) {
-		*outIndex = slotIndex;
-	}
-	pool->count++;
-	return slot;
-}
-
 void* eOCT_pool_access(eOCT_pool* pool, OCT_index index, size_t offset) {
 	if (!pool) {
 		OCT_ERROR_LOG(OCT_EXIT_REFERENCE_DOES_NOT_EXIST, "Pool DNE");
@@ -119,13 +96,20 @@ void eOCT_pool_deleteEntry(eOCT_pool* pool, OCT_index index, bool compact) {
 	pool->count--;
 	// return swappedID;
 }
+void eOCT_pool_clear(eOCT_pool* pool) {
+	memset(pool->array, 0, pool->capacity * pool->elementSize);
+	// if (pool->count) {
+	// 	printf("Cleared %zu entries\n", pool->count);
+	// }
+	pool->count = 0;
+}
 void eOCT_pool_free(eOCT_pool* pool) {
 	free(pool->array);
 	pool->array = NULL;
 }
 #pragma endregion
 
-#pragma region batch functions
+#pragma region custom functions
 // void* eOCT_pool_addBatch(eOCT_pool* pool, OCT_index count, OCT_index* outIndex_last) {
 // 	while (pool->count + count >= pool->capacity) {
 // 		iOCT_pool_expand(pool, 2);
@@ -139,6 +123,38 @@ void eOCT_pool_free(eOCT_pool* pool) {
 // 	pool->count += count;
 // 	return slot;
 // }
+void* eOCT_pool_addEntrySorted(eOCT_pool* pool, OCT_index sortValue, OCT_index* outIndex) {
+	if (pool->sortValueOffset == eOCT_POOL_SORT_NONE) {
+		OCT_ERROR_LOG(OCT_ERR_CREATION_FAILED, "Cannot add sorted item to a pool without a sort setting");
+		return NULL;
+	}
+	if (pool->count == pool->capacity) {
+		iOCT_pool_expand(pool, 2);
+	}
+
+	// shift logic: shifts everything from the displaced slot to the end by 1
+	OCT_index slotIndex;		// slot of the added value
+	void* slot = iOCT_findDestination(pool, sortValue, &slotIndex);
+	void* displaceBase = (char*)slot + pool->elementSize;					// destination of the first displaced value
+	const OCT_index displaceCount = pool->count - slotIndex;
+	size_t displaceSize = pool->elementSize * displaceCount;	// size of everything after the added value
+	memmove(displaceBase, slot, displaceSize);
+
+	// // idmap update logic: calls a map update function for each entry displaced
+	// if (pool->mapSetting.shuffleCallback) {
+	// 	for (OCT_index updateCount = 0; updateCount < displaceCount; updateCount++) {
+	// 		OCT_index entryNewIndex = slotIndex + updateCount;
+	// 		OCT_ID entryID = *(OCT_ID*)(displaceBase + (updateCount * pool->elementSize) + pool->mapSetting.IDValueOffset); // base -> entry -> ID
+	// 		pool->mapSetting.shuffleCallback(pool->mapSetting.IDMap, entryID, entryNewIndex);	// can send a NULL IDMap if the callback does not need it, the standard remap can catch if necessary
+	// 	}
+	// }
+
+	if (outIndex) {
+		*outIndex = slotIndex;
+	}
+	pool->count++;
+	return slot;
+}
 bool eOCT_pool_fill(const eOCT_pool* pool, eOCT_pool_fillSetting fillSetting) {
 	if (fillSetting.fillStyle == eOCT_POOL_FILLSTYLE_NONE) {
 		printf("No fill setting chosen\n");
@@ -180,13 +196,6 @@ bool eOCT_pool_fill(const eOCT_pool* pool, eOCT_pool_fillSetting fillSetting) {
 	printf("Filled pool\n");
 	return 1;
 }
-void eOCT_pool_clear(eOCT_pool* pool) {
-	memset(pool->array, 0, pool->capacity * pool->elementSize);
-	// if (pool->count) {
-	// 	printf("Cleared %zu entries\n", pool->count);
-	// }
-	pool->count = 0;
-}
 bool eOCT_pool_combine(eOCT_pool* destination, eOCT_pool* source, bool freeSource) {
 	if (destination->elementSize != source->elementSize) {
 		return false;
@@ -209,12 +218,12 @@ bool eOCT_pool_combine(eOCT_pool* destination, eOCT_pool* source, bool freeSourc
 }
 #pragma endregion
 
-#pragma region settings
+#pragma region custom config settings
 void eOCT_pool_setFill(eOCT_pool* pool, eOCT_pool_fillSetting fillSetting) {
 	pool->fillSetting = fillSetting;
 
 	eOCT_pool_fill(pool, pool->fillSetting);
-};
+}
 void eOCT_pool_setSort(eOCT_pool* pool, size_t sortValueOffset) {
 	pool->sortValueOffset = sortValueOffset;
 
@@ -222,6 +231,15 @@ void eOCT_pool_setSort(eOCT_pool* pool, size_t sortValueOffset) {
 		OCT_ERROR_LOG(OCT_NOTE_POOL_NOT_EMPTY, "Adding sort setting does not sort existing items");
 	}
 }
+
+// void eOCT_pool_setMap(eOCT_pool* pool, eOCT_IDMap* IDMap, size_t IDValueOffset, eOCT_pool_shuffleCallback shuffleCallback) {
+// 	eOCT_pool_mapSetting mapSetting = {
+// 		.IDMap = IDMap,
+// 		.IDValueOffset = IDValueOffset,
+// 		.shuffleCallback = shuffleCallback
+// 	};
+// 	pool->mapSetting = mapSetting;
+// }
 #pragma endregion
 
 #pragma region control functions
@@ -329,6 +347,3 @@ static void* iOCT_findDestination(eOCT_pool* pool, OCT_index target, OCT_index* 
 	void* destination = array + (destinationIndex * pool->elementSize);
 	return destination;
 }
-
-
-

@@ -138,11 +138,11 @@ void iOCT_renderer_uploadAll(OCT_handle contextHandle) {
 
         // resolve final transform
         iOCT_spriteData spriteData = spriteArray[spriteCtr].spriteData;
-        OCT_mat3* entityTransformPtr = (OCT_mat3*)eOCT_entity_getField(sprite.entity, iOCT_renderer_inst.transform2DCache);
+        OCT_mat3* entityTransformPtr = (OCT_mat3*)eOCT_entity_getField(eOCT_entity_getHandle(contextHandle, sprite.entityID), iOCT_renderer_inst.transform2DCache);
         OCT_mat3 entityTransform;
         if (entityTransformPtr == NULL) {
             entityTransform = OCT_mat3_identity;
-            //printf("Has no transform\n");
+            printf("Has no transform\n");
         }
         else {
             entityTransform = *entityTransformPtr;
@@ -155,12 +155,16 @@ void iOCT_renderer_uploadAll(OCT_handle contextHandle) {
         iOCT_spriteFullData* fullData = (iOCT_spriteFullData*)eOCT_pool_addEntry(spriteBufferPool, NULL);
         fullData->spriteData = spriteData;
         fullData->transform = finalTransform;
+
+        printf("Uploaded sprite #%zu with final transform from entity with ID %d\n", spriteCtr, sprite.entityID);
+        OCT_mat3_print(finalTransform);
+        printf("Matrix source: %p\n", entityTransformPtr);
     }
 
     // expand buffer if necessary, then upload
     glBindBuffer(GL_ARRAY_BUFFER, iOCT_renderer_inst.spriteDataVBO);
     if (spriteBufferPool->count > iOCT_renderer_inst.spriteDataVBOCapacity) {
-        glBufferData(GL_ARRAY_BUFFER, iOCT_SPRITES_EXPANSION_FACTOR * sizeof(iOCT_spriteFullData) * iOCT_renderer_inst.spriteDataVBOCapacity, iOCT_renderer_inst.spriteFullDataBuffer.array, GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, iOCT_SPRITES_EXPANSION_FACTOR * sizeof(iOCT_spriteFullData) * iOCT_renderer_inst.spriteDataVBOCapacity, spriteBufferPool->array, GL_DYNAMIC_DRAW);
         iOCT_renderer_inst.spriteDataVBOCapacity *= iOCT_SPRITES_EXPANSION_FACTOR;
     }
     else {
@@ -183,7 +187,6 @@ void iOCT_renderer_drawAll(OCT_handle contextHandle) {
 
     // for each window, draw everything based on its camera
     for (OCT_index windowCtr = 0; windowCtr < windowPool->count; windowCtr++) {
-
         // per window (context)
         iOCT_window window = windowArray[windowCtr];
         iOCT_window_activate(window);

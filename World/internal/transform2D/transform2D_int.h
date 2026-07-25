@@ -3,6 +3,8 @@
 
 #include "OCT_Core_eng.h"
 
+#define iOCT_TRANSFORM_ROOT_DEPTH 0
+
 struct iOCT_transform2D {
 	OCT_ID entityID;
 
@@ -18,4 +20,5 @@ struct iOCT_transform2D {
 };
 
 void iOCT_transform2D_generateRoot(OCT_handle rootEntity);
+void iOCT_transform2D_propagate(OCT_handle context);
 
