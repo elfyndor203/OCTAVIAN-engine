@@ -17,6 +17,7 @@ void system_register_RENDERER() {
         .stride = sizeof(iOCT_sprite2D),
         .cacheLocation = &iOCT_renderer_inst.sprite2DCache,
         .sortValueOffset = offsetof(iOCT_sprite2D, sortKey),
+        .entitySlotValueOffset = offsetof(iOCT_sprite2D, entityID)
     };
     eOCT_componentDescription camera2D = {
         .name = "camera2D",
@@ -24,7 +25,8 @@ void system_register_RENDERER() {
         .rootAttachmentFx = NULL,
         .cacheLocation = &iOCT_renderer_inst.camera2DCache,
         .sortValueOffset = eOCT_POOL_SORT_NONE,
-        .stride = sizeof(iOCT_camera2D)
+        .stride = sizeof(iOCT_camera2D),
+        .entitySlotValueOffset = offsetof(iOCT_camera2D, entityID)
     };
     eOCT_componentDescription components[2] = { sprite2D, camera2D };
 

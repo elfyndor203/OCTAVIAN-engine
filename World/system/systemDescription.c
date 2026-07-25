@@ -51,6 +51,7 @@ void system_register_WORLD() {
 		.cacheLocation = &iOCT_world_inst.transform2DCache,
 		.rootAttachmentFx = iOCT_transform2D_generateRoot,
 		.sortValueOffset = offsetof(iOCT_transform2D, depth),
+		.entitySlotValueOffset = offsetof(iOCT_transform2D, entityID)
 	};
 
 	eOCT_componentDescription worldComponents[] = { transform2D };

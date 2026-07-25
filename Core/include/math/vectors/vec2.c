@@ -99,7 +99,9 @@ OCT_vec2 OCT_vec2_div(OCT_vec2 vectorA, float scalar) {
 	};
 	return resultantVector;
 }
-OCT_vec2 OCT_vec2_rotate(OCT_vec2 vectorA, float radians) {
+OCT_vec2 OCT_vec2_rotate(OCT_vec2 vectorA, float degrees) {
+	float radians = OCT_deg2rad(degrees);
+
 	OCT_vec2 resultantVector = OCT_vec2_zero;
 	float cosTheta = cosf(radians);
 	float sinTheta = sinf(radians);

@@ -23,7 +23,7 @@ OCT_handle OCT_window_open(const char* name, unsigned int sizeX, unsigned int si
     glfwSetKeyCallback(windowPtr, iOCT_window_keyCallback);
     glfwGetFramebufferSize(windowPtr, &frameBufferX, &frameBufferY);
     glViewport(0, 0, frameBufferX, frameBufferY);
-    glClearColor(1.0f, 0.5f, 0.0f, 1.0f); // __NOTE__ PASS AS PARAM
+    glClearColor(color.x, color.y, color.z, color.a); // __NOTE__ PASS AS PARAM
 
     // init
     GLuint newVAO;

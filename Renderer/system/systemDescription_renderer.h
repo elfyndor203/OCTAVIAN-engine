@@ -6,5 +6,11 @@ void system_register_RENDERER();
 void eOCT_RENDERER_update(OCT_handle contextHandle);
 
 void system_register_WINDOW();
-void eOCT_WINDOW_update_start(OCT_handle contextHandle);
-void eOCT_WINDOW_update_finish(OCT_handle contextHandle);
+/*!
+ * Checks if any windows should close. Clears all windows.
+ */
+void eOCT_WINDOW_startFrame();
+/*!
+ * Swaps all window buffers, displaying the new frame.
+ */
+void eOCT_WINDOW_finishFrame();

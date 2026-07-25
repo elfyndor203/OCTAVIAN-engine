@@ -4,6 +4,7 @@
 #include "OCT_Core_eng.h"
 #include <inttypes.h>
 #include <stdio.h>
+#include <assert.h>
 
 #include "ECS/ECS_int.h"
 #include "entity_int.h"
@@ -40,7 +41,7 @@ OCT_handle OCT_entityContext_open(OCT_handle* rootOut) {
 		if (component->sortValueOffset != eOCT_POOL_SORT_NONE) {
 			eOCT_pool_setSort(newPool, component->sortValueOffset);
 		}
-		//printf("Allocated component #%zu with size %zu\n", indexCheck, componentSize);
+		printf("Allocated component %s with size %zu at %p\n", component->name, component->stride, newPool);
 	}
 		// finalize
 	OCT_handle contextHandle = {

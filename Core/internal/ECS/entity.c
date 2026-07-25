@@ -7,8 +7,28 @@
 #include "ECS/ECS_int.h"
 #include "entityContext_int.h"
 
+/*!
+ * Gets a pointer to the start of a given entity in the form of the first component slot
+ * @param context
+ * @param entityIndex
+ * @return entityBasePtr
+ */
 static OCT_index* iOCT_entity_get(iOCT_entityContext* context, OCT_index entityIndex);
-static bool iOCT_entity_poolShuffleCallback(eOCT_IDMap* map, OCT_ID entityID, OCT_index newIndex);
+/*!
+ * Returns the slot in the entity where the given component's index is stored.
+ * @param context
+ * @param entityIndex
+ * @param component
+ * @return componentSlotPtr
+ */
+static OCT_index* iOCT_entity_getComponentSlot(iOCT_entityContext* context, OCT_index entityIndex, eOCT_componentDescription component);
+/*!
+ * Re-resolves all indices stored in entities. Run after any component pool shuffling.
+ * @param context
+ * @param componentPool
+ * @param component
+ */
+static void iOCT_entity_resolveIndices(iOCT_entityContext* context, eOCT_pool* componentPool, eOCT_componentDescription component, OCT_index skip);
 
 OCT_handle OCT_entity_new(OCT_handle contextHandle) {
 	printf("Context ID: %zu\n", contextHandle.objectID);
@@ -31,25 +51,25 @@ void* eOCT_entity_attachComponent(OCT_handle entity, eOCT_componentDescription c
 	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, entity.containerID);
 	OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
 
-	return iOCT_entity_attachComponent(context, entityIndex, component.componentTypeIndex_reg, false, 0);
+	return iOCT_entity_attachComponent(context, entityIndex, component, false, 0);
 }
 void* eOCT_entity_attachComponentSorted(OCT_handle entity, eOCT_componentDescription component, OCT_index sortValue) {		// __NOTE__ DOESNT UPDATE OTHER ENTRIES
 	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, entity.containerID);
 	OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
 
-	return iOCT_entity_attachComponent(context, entityIndex, component.componentTypeIndex_reg, true, sortValue);
+	return iOCT_entity_attachComponent(context, entityIndex, component, true, sortValue);
 }
-void* iOCT_entity_attachComponent(iOCT_entityContext* context, OCT_index entityIndex, OCT_index componentTypeIndex, bool sort, OCT_index sortValue) {
+void* iOCT_entity_attachComponent(iOCT_entityContext* context, OCT_index entityIndex, eOCT_componentDescription component, bool sort, OCT_index sortValue) {
 	// goes to the slot in the entity pool
-	OCT_index* entityBase = iOCT_entity_get(context, entityIndex);
-	OCT_index* entityKeyEntry = entityBase + componentTypeIndex; // moves componentIndex elements to the pool index for that component type, of that entity
+	OCT_index* entityKeyEntry = iOCT_entity_getComponentSlot(context, entityIndex, component);
 
 	// gets the index within the component's pool
-	eOCT_pool* componentPool = iOCT_getComponentPool(context, componentTypeIndex);
+	eOCT_pool* componentPool = iOCT_getComponentPool(context, component.componentTypeIndex_reg);
 	OCT_index destinationIndex;
 	void* dataLoc;
 	if (sort) {
 		dataLoc = eOCT_pool_addEntrySorted(componentPool, sortValue, &destinationIndex);
+		iOCT_entity_resolveIndices(context, componentPool, component, destinationIndex);	// sorting may shuffle other entries
 	}
 	else {
 		dataLoc = eOCT_pool_addEntry(componentPool, &destinationIndex);
@@ -90,8 +110,8 @@ void* eOCT_entity_getField(OCT_handle entity, eOCT_fieldRequest field) {
 
 	void* componentLoc = iOCT_entity_getComponent(context, entityIndex, field.providerTypeIndex_reg);
 
-	printf("Entity index requested: %zu\n", entityIndex);
-	printf("Got component loc %p\n", componentLoc);
+	// printf("Entity index requested: %zu\n", entityIndex);
+	// printf("Got component loc %p\n", componentLoc);
 
 	if (componentLoc == NULL) {
 		OCT_ERROR_LOG(OCT_EXIT_REFERENCE_DOES_NOT_EXIST, "Bad Field Access");
@@ -116,7 +136,7 @@ void* iOCT_entity_getComponent(iOCT_entityContext* context, OCT_index entityInde
 	OCT_index* entityBase = iOCT_entity_get(context, entityIndex);
 	OCT_index componentIndex = *(entityBase + componentTypeIndex);
 
-	printf("Component index: %zu\n", componentIndex);
+	// printf("Component index: %zu\n", componentIndex);
 
 	if (componentIndex == OCT_INDEX_NULL) {
 		return NULL;
@@ -176,6 +196,25 @@ static OCT_index* iOCT_entity_get(iOCT_entityContext* context, OCT_index entityI
 	return &array[entityIndex * iOCT_ECS_inst.componentDescPtrList.count];
 }
 
-static void iOCT_entity_resolveIDs(eOCT_pool* pool, eOCT_componentDescription component) {
+static OCT_index* iOCT_entity_getComponentSlot(iOCT_entityContext* context, OCT_index entityIndex, eOCT_componentDescription component) {
+	if (!context) {
+		OCT_ERROR_LOG(OCT_EXIT_REFERENCE_DOES_NOT_EXIST, "Bad context ID");
+	}
+	OCT_index* entityBase = iOCT_entity_get(context, entityIndex);
+	OCT_index* componentSlot = entityBase + component.componentTypeIndex_reg;
 
+	return componentSlot;
 }
+static void iOCT_entity_resolveIndices(iOCT_entityContext* context, eOCT_pool* componentPool, eOCT_componentDescription component, OCT_index skip) {
+	for (OCT_index compIndex = 0; compIndex < componentPool->count; compIndex++) {
+		if (compIndex == skip) {	// for when creating a new entry, the ID will already be resolved by itself later
+			continue;
+		}
+		OCT_ID entityID = *(OCT_ID*)eOCT_pool_access(componentPool, compIndex, component.entitySlotValueOffset);
+		OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entityID);
+		OCT_index* componentSlot = iOCT_entity_getComponentSlot(context, entityIndex, component);
+
+		*componentSlot = compIndex;
+	}
+}
+

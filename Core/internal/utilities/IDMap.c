@@ -78,6 +78,10 @@ OCT_index eOCT_IDMap_getIndex(eOCT_IDMap* map, OCT_ID ID) {
 	if (ID == OCT_ID_NULL) {
 		return OCT_INDEX_NULL;
 	}
+	if (ID > map->count) {
+		OCT_ERROR_LOG(OCT_EXIT_OUT_OF_BOUNDS, "ID does not exist");
+		return OCT_INDEX_NULL;
+	}
 	return map->array[ID];
 }
 

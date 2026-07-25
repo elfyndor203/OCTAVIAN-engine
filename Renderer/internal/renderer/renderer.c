@@ -156,9 +156,9 @@ void iOCT_renderer_uploadAll(OCT_handle contextHandle) {
         fullData->spriteData = spriteData;
         fullData->transform = finalTransform;
 
-        printf("Uploaded sprite #%zu with final transform from entity with ID %d\n", spriteCtr, sprite.entityID);
-        OCT_mat3_print(finalTransform);
-        printf("Matrix source: %p\n", entityTransformPtr);
+        // printf("Uploaded sprite #%zu with final transform from entity with ID %d\n", spriteCtr, sprite.entityID);
+        // OCT_mat3_print(finalTransform);
+        // printf("Matrix source: %p\n", entityTransformPtr);
     }
 
     // expand buffer if necessary, then upload

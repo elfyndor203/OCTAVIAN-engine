@@ -52,7 +52,7 @@ void system_init_WINDOW() {
 }
 
 
-void eOCT_WINDOW_update_start(OCT_handle contextHandle) {
+void eOCT_WINDOW_startFrame() {
 	iOCT_window* window;
 	eOCT_pool* windowPool = &iOCT_windowSystem_inst.windowPool;
 	iOCT_window* windowArray = (iOCT_window*)windowPool->array;
@@ -73,7 +73,7 @@ void eOCT_WINDOW_update_start(OCT_handle contextHandle) {
 	}
 }
 
-void eOCT_WINDOW_update_finish(OCT_handle contextHandle) {
+void eOCT_WINDOW_finishFrame() {
 	eOCT_pool* windowPool = &iOCT_windowSystem_inst.windowPool;
 	iOCT_window* windowArray = (iOCT_window*)windowPool->array;
 

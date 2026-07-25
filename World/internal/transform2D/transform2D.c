@@ -31,12 +31,22 @@ bool OCT_transform2D_attach(OCT_handle entity, OCT_handle parentEntity) {
 
 OCT_vec2 OCT_transform2D_moveTo(OCT_handle entity, OCT_vec2 destination) {
 	iOCT_transform2D* transform = (iOCT_transform2D*)eOCT_entity_getComponent(entity, iOCT_world_inst.transform2DCache);
+	OCT_vec2 originalPosition = transform->position;
+
 	transform->position = destination;
 
-	return transform->position;
+	return OCT_vec2_sub(transform->position, originalPosition);
 }
 OCT_vec2 OCT_transform2D_moveBy(OCT_handle entity, OCT_vec2 deltaXY);
 
+float OCT_transform2D_rotateTo(OCT_handle entity, float degrees) {
+	iOCT_transform2D* transform = (iOCT_transform2D*)eOCT_entity_getComponent(entity, iOCT_world_inst.transform2DCache);
+	float originalRotation = OCT_rad2deg(transform->rotation);
+
+	transform->rotation = OCT_deg2rad(degrees);
+
+	return transform->rotation - originalRotation;
+}
 
 OCT_vec2 iOCT_transform2D_setPosition(iOCT_transform2D* transform, OCT_vec2 xy) {
 	transform->position = xy;
@@ -57,7 +67,7 @@ OCT_vec2 OCT_transform2D_read(OCT_handle entity, float* rotationOut, OCT_vec2* s
 void iOCT_transform2D_generateRoot(OCT_handle rootEntity) {
 	iOCT_transform2D* rootTransform = (iOCT_transform2D*)eOCT_entity_attachComponent(rootEntity, iOCT_world_inst.transform2DCache);
 	rootTransform->entityID = rootEntity.objectID;
-	rootTransform->parentEntityID = OCT_ID_NULL;
+	rootTransform->parentEntityID = rootEntity.objectID;
 	rootTransform->position = OCT_vec2_zero;
 	rootTransform->rotation = 0.0f;
 	rootTransform->scale = (OCT_vec2){1.0f, 1.0f};
