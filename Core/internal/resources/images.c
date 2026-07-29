@@ -27,7 +27,7 @@ const unsigned char* eOCT_image_load(const char* path) {
     unsigned char* pixels = stbi_load(path, &width, &height, &channels, iOCT_RGBA);
     if (!pixels) {
         printf("Failed load\n");
-        printf(stbi_failure_reason());
+        printf("%s", stbi_failure_reason());
         return NULL;
     }
 

@@ -16,9 +16,9 @@ void init_OCT_ECS_init() {
 	iOCT_ECS_inst.contextMap = eOCT_IDMap_init(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT);
 	iOCT_ECS_inst.contextPool = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, sizeof(iOCT_entityContext));
 
-	iOCT_ECS_inst.componentDescPtrList = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, sizeof(eOCT_componentDescription*));
-	iOCT_ECS_inst.componentRootInitList = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, sizeof(eOCT_rootAttachmentFx));
-	eOCT_pool_setFill(&iOCT_ECS_inst.componentRootInitList, eOCT_POOL_FILLSETTING_ZEROS);
+	//iOCT_ECS_inst.componentDescPtrList = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, sizeof(eOCT_componentDescription*));
+	//iOCT_ECS_inst.componentRootInitList = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, sizeof(eOCT_rootAttachmentFx));
+	//eOCT_pool_setFill(&iOCT_ECS_inst.componentRootInitList, eOCT_POOL_FILLSETTING_ZEROS);
 	iOCT_ECS_inst.dataPoolSizeAndOrderList = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, sizeof(size_t));
 
 	iOCT_ECS_inst.globalDataMap = eOCT_IDMap_init(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT);
@@ -27,19 +27,16 @@ void init_OCT_ECS_init() {
 	printf("| ECS initialized\n");
 }
 
-OCT_index iOCT_ECS_addComponentType(eOCT_componentDescription* desc) {
-	OCT_index index;
-	eOCT_componentDescription** descPtr = (eOCT_componentDescription**)eOCT_pool_addEntry(&iOCT_ECS_inst.componentDescPtrList, &index);
-	*descPtr = desc;
+void iOCT_ECS_addComponentType() {
+	// eOCT_componentDescription** descPtr = (eOCT_componentDescription**)eOCT_pool_addEntry(&iOCT_ECS_inst.componentDescPtrList, &index);
+	// *descPtr = desc;
 
 	iOCT_ECS_inst.entitySize += sizeof(OCT_index);
-
-	if (desc->rootAttachmentFx) {
-		eOCT_rootAttachmentFx* rootAttachDestination = (eOCT_rootAttachmentFx*)eOCT_pool_addEntry(&iOCT_ECS_inst.componentRootInitList, NULL);
-		*rootAttachDestination = desc->rootAttachmentFx;
-	}
-
-	return index;
+	//
+	// if (desc->rootAttachmentFx) {
+	// 	eOCT_rootAttachmentFx* rootAttachDestination = (eOCT_rootAttachmentFx*)eOCT_pool_addEntry(&iOCT_ECS_inst.componentRootInitList, NULL);
+	// 	*rootAttachDestination = desc->rootAttachmentFx;
+	// }
 }
 
 OCT_index iOCT_ECS_addDataPool(eOCT_dataPoolDescription desc, bool global) {

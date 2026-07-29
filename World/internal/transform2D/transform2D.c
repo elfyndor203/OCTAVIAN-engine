@@ -74,8 +74,6 @@ void iOCT_transform2D_generateRoot(OCT_handle rootEntity) {
 	rootTransform->localMatrix = OCT_mat3_identity;
 	rootTransform->globalMatrix = OCT_mat3_identity;
 	rootTransform->depth = iOCT_TRANSFORM_ROOT_DEPTH;
-
-	printf("Attached transform2D to ROOT\n");
 }
 
 // resolves local and global matrices

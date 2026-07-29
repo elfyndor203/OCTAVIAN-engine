@@ -1,6 +1,5 @@
 add_library(Input STATIC
     system/systemDescription.c
-        system/systemDescription.c
 )
 
 target_include_directories(Input

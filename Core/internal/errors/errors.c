@@ -32,7 +32,7 @@ bool iOCT_handleError(OCT_ERROR_CODES errorCode) {
 		exit(errorCode);
 	}
 
-	if (errorCode == iOCT_ERROR) {
+	if (errorLevel == iOCT_ERROR) {
 		return true;
 	}
 

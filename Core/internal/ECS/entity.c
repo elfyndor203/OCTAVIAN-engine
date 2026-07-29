@@ -6,6 +6,7 @@
 
 #include "ECS/ECS_int.h"
 #include "entityContext_int.h"
+#include "registry/registry_int.h"
 
 /*!
  * Gets a pointer to the start of a given entity in the form of the first component slot
@@ -193,7 +194,7 @@ OCT_handle eOCT_entity_getHandle(OCT_handle context, OCT_ID entityID) {
 /// <returns></returns>
 static OCT_index* iOCT_entity_get(iOCT_entityContext* context, OCT_index entityIndex) {
 	OCT_index* array = (OCT_index*)context->entityPool.array;
-	return &array[entityIndex * iOCT_ECS_inst.componentDescPtrList.count];
+	return &array[entityIndex * iOCT_registry_inst.components.count];
 }
 
 static OCT_index* iOCT_entity_getComponentSlot(iOCT_entityContext* context, OCT_index entityIndex, eOCT_componentDescription component) {

@@ -13,6 +13,8 @@
 #include "scheduler/scheduler_int.h"
 
 static bool iOCT_registry_findField(const char* fieldName, eOCT_fieldDescription* fieldOut);
+static void iOCT_registry_registerComponent(eOCT_componentDescription* componentDesc);
+static void iOCT_registry_registerDataPool(eOCT_dataPoolDescription* dataPoolDesc);
 static OCT_index iOCT_registry_registerFields(eOCT_pool providedFields, OCT_ID systemID, eOCT_fieldProvider providerType, OCT_index providerIndex, bool global);
 iOCT_registry iOCT_registry_inst = { 0 }; 
 
@@ -135,7 +137,7 @@ void init_OCT_registry_check() {
 			printf("%02zu.    | %s\n", component.componentTypeIndex_reg, component.name);
 		}
 	}
-	printf("ECS Component Count: %zu\n", iOCT_ECS_inst.componentDescPtrList.count);
+	printf("ECS Component Count: %zu\n", iOCT_registry_inst.components.count);
 	printf("ECS Entity Size: %zu\n", iOCT_ECS_inst.entitySize);
 
 	printf("\nFields requested:\n");
@@ -214,6 +216,10 @@ eOCT_pool eOCT_generateFieldRequestPool(eOCT_fieldRequest* array, size_t count) 
 	return pool;
 }
 
+/*!
+ * Registers each system's components, data pools, and events into the registry. For each component, data pool, and event, registers each of its fields. Engine init fails if any duplicate fields are found.
+ * @param systemDescription
+ */
 void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription) {
 	OCT_ID systemID = iOCT_registry_inst.systems.count + OCT_ID_SYSTEM_START;
 
@@ -228,22 +234,13 @@ void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription) {
 		printf("No provided components\n");
 	}
 	else {
-		OCT_index componentCtr = 0;
-		eOCT_componentDescription* componentArray = (eOCT_componentDescription*)systemDescription->providedComponents.array;
-		eOCT_componentDescription* component = NULL;				// pointer to return index to
-		eOCT_componentDescription* componentDestination;
-		for (componentCtr = 0; componentCtr < systemDescription->providedComponents.count; componentCtr++) {		// ensures that provided fields do not already exist, then adds them to the field pool
-			component = &componentArray[componentCtr];
-			componentDestination = (eOCT_componentDescription*)eOCT_pool_addEntry(&iOCT_registry_inst.components, NULL);
-			*componentDestination = *component;
-			component->componentTypeIndex_reg = iOCT_ECS_addComponentType(component); // tells the ECS the index of the component's pool
+		eOCT_componentDescription* componentArray = (eOCT_componentDescription*)systemDescription->providedComponents.array;	// register all components and all of their fields
+		for (OCT_index componentCtr = 0; componentCtr < systemDescription->providedComponents.count; componentCtr++) {
+			eOCT_componentDescription* component = &componentArray[componentCtr];
+			iOCT_registry_registerComponent(component);
+			iOCT_registry_registerFields(component->providedFields, systemID, eOCT_FIELDPROVIDER_COMPONENT, component->componentTypeIndex_reg, false);
 
 			printf("%02"PRIu64".%02zu.--| %2cComponent %zu: %-15s\n", systemID, component->componentTypeIndex_reg, ' ', component->componentTypeIndex_reg, component->name);
-			OCT_index registeredFields = iOCT_registry_registerFields(component->providedFields, systemID, eOCT_FIELDPROVIDER_COMPONENT, component->componentTypeIndex_reg, false);
-
-			if (component->cacheLocation) {
-				*component->cacheLocation = *component;	// cache the component optionally
-			}
 		}
 	}
 
@@ -253,22 +250,13 @@ void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription) {
 		printf("No additional provided data\n");
 	}
 	else {
-		OCT_index dataPoolCtr = 0;
 		eOCT_dataPoolDescription* dataPoolArray = (eOCT_dataPoolDescription*)systemDescription->providedDataPools.array;
-		eOCT_dataPoolDescription* dataPool = NULL;
-		eOCT_dataPoolDescription* dataPoolDestination;
-		for (dataPoolCtr = 0; dataPoolCtr < systemDescription->providedDataPools.count; dataPoolCtr++) {
-			dataPool = &dataPoolArray[dataPoolCtr];
-			dataPoolDestination = (eOCT_dataPoolDescription*)eOCT_pool_addEntry(&iOCT_registry_inst.dataPools, NULL);
-			*dataPoolDestination = *dataPool;
-			dataPool->dataPoolTypeIndex_reg = iOCT_ECS_addDataPool(*dataPool, dataPool->global);
+		for (OCT_index dataPoolCtr = 0; dataPoolCtr < systemDescription->providedDataPools.count; dataPoolCtr++) {
+			eOCT_dataPoolDescription* dataPool = &dataPoolArray[dataPoolCtr];
+			iOCT_registry_registerDataPool(dataPool);
+			iOCT_registry_registerFields(dataPool->providedFields, systemID, eOCT_FIELDPROVIDER_DATAPOOL, dataPool->dataPoolTypeIndex_reg, dataPool->global);
 
 			printf("%02"PRIu64".%02zu.--| %2cData Pool %zu: %-15s\n", systemID, dataPool->dataPoolTypeIndex_reg, ' ', dataPool->dataPoolTypeIndex_reg, dataPool->name);
-			OCT_index registeredFields = iOCT_registry_registerFields(dataPool->providedFields, systemID, eOCT_FIELDPROVIDER_DATAPOOL, dataPool->dataPoolTypeIndex_reg, dataPool->global);
-
-			if (dataPool->cacheLocation) {
-				*dataPool->cacheLocation = *dataPool;
-			}
 		}
 	}
 	printf("--------------------------------\n\n");
@@ -277,6 +265,30 @@ void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription) {
 #pragma endregion
 
 #pragma region static
+static void iOCT_registry_registerComponent(eOCT_componentDescription* componentDesc) {
+	OCT_index componentIndex;
+	eOCT_componentDescription* registryEntry = (eOCT_componentDescription*)eOCT_pool_addEntry(&iOCT_registry_inst.components, &componentIndex);	// store a stable copy in the registry
+	componentDesc->componentTypeIndex_reg = componentIndex;	// inform the system of its component's index
+	*registryEntry = *componentDesc;						// THEN copy
+
+	if (componentDesc->cacheLocation) {
+		*componentDesc->cacheLocation = *componentDesc;
+	}
+
+	iOCT_ECS_addComponentType();
+}
+
+static void iOCT_registry_registerDataPool(eOCT_dataPoolDescription* dataPoolDesc) {
+	dataPoolDesc->dataPoolTypeIndex_reg = iOCT_ECS_addDataPool(*dataPoolDesc, dataPoolDesc->global);
+
+	eOCT_dataPoolDescription* registryEntry = (eOCT_dataPoolDescription*)eOCT_pool_addEntry(&iOCT_registry_inst.dataPools, NULL);
+	*registryEntry = *dataPoolDesc;
+
+	if (dataPoolDesc->cacheLocation) {
+		*dataPoolDesc->cacheLocation = *dataPoolDesc;
+	}
+}
+
 static bool iOCT_registry_findField(const char* fieldName, eOCT_fieldDescription* fieldOut) {
 	eOCT_pool* fields = &iOCT_registry_inst.fields;
 	//printf("Number of fields in registry: %d\n", fields->count);

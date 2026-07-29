@@ -67,6 +67,19 @@ struct eOCT_dataPoolDescription {
 	OCT_index dataPoolTypeIndex_reg;
 };
 
+struct eOCT_eventData {
+	OCT_handle entity;
+};
+
+struct eOCT_eventDescription { // for cross module communication, but what about for the user __NOTE__
+	const char* name;
+	size_t stride;
+	eOCT_pool providedFields;
+	eOCT_dataPoolDescription* cacheLocation;
+
+	OCT_index eventPoolTypeIndex_reg;
+};
+
 struct eOCT_fieldRequest {
 	const char* name;
 	eOCT_fieldTypes type;

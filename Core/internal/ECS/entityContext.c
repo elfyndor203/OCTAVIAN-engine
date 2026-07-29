@@ -8,6 +8,9 @@
 
 #include "ECS/ECS_int.h"
 #include "entity_int.h"
+#include "registry/registry_int.h"
+
+static eOCT_pool iOCT_entityContext_initComponentPools(OCT_ID contextID);
 
 OCT_handle OCT_entityContext_open(OCT_handle* rootOut) {
 	// init context details
@@ -27,22 +30,25 @@ OCT_handle OCT_entityContext_open(OCT_handle* rootOut) {
 		.value.valueFill = 0xFF
 	};
 	eOCT_pool_setFill(&newContext->entityPool, noComponent); 	// mark all component indices as unset
-		// init component pools-pool
-	const OCT_index componentTotal = iOCT_ECS_inst.componentDescPtrList.count;
-	newContext->componentPools = eOCT_pool_init(newID, componentTotal, sizeof(eOCT_pool));
-		// init component pools
-	OCT_index componentCtr;
-	OCT_index indexCheck;
-	for (componentCtr = 0; componentCtr < componentTotal; componentCtr++) {
-		eOCT_componentDescription* component = *(eOCT_componentDescription**)eOCT_pool_access(&iOCT_ECS_inst.componentDescPtrList, componentCtr, 0);
+	//
+	// 	// init component pools-pool
+	// const OCT_index componentTotal = iOCT_registry_inst.components.count;
+	// newContext->componentPools = eOCT_pool_init(newID, componentTotal, sizeof(eOCT_pool));
+	// 	// init component pools
+	// OCT_index componentCtr;
+	// OCT_index indexCheck;
+	// for (componentCtr = 0; componentCtr < componentTotal; componentCtr++) {
+	// 	eOCT_componentDescription* component = (eOCT_componentDescription*)eOCT_pool_access(&iOCT_registry_inst.components, componentCtr, 0);
+	//
+	// 	eOCT_pool* newPool = eOCT_pool_addEntry(&newContext->componentPools, &indexCheck);
+	// 	*newPool = eOCT_pool_init(newID, eOCT_POOL_CAPACITY_DEFAULT, component->stride);	// init actual component pool
+	// 	if (component->sortValueOffset != eOCT_POOL_SORT_NONE) {
+	// 		eOCT_pool_setSort(newPool, component->sortValueOffset);
+	// 	}
+	// 	printf("Allocated component %s with size %zu at %p\n", component->name, component->stride, newPool);
+	// }
 
-		eOCT_pool* newPool = eOCT_pool_addEntry(&newContext->componentPools, &indexCheck);
-		*newPool = eOCT_pool_init(newID, eOCT_POOL_CAPACITY_DEFAULT, component->stride);	// init actual component pool
-		if (component->sortValueOffset != eOCT_POOL_SORT_NONE) {
-			eOCT_pool_setSort(newPool, component->sortValueOffset);
-		}
-		printf("Allocated component %s with size %zu at %p\n", component->name, component->stride, newPool);
-	}
+	newContext->componentPools = iOCT_entityContext_initComponentPools(newID);
 		// finalize
 	OCT_handle contextHandle = {
 		.containerID = OCT_ID_NULL,
@@ -52,16 +58,13 @@ OCT_handle OCT_entityContext_open(OCT_handle* rootOut) {
 
 	// init root entity
 	OCT_handle rootEntity = iOCT_entity_new(newContext);
-	const OCT_index attachTotal = iOCT_ECS_inst.componentRootInitList.count;
-	eOCT_rootAttachmentFx* attachFx;
-	for (componentCtr = 0; componentCtr < attachTotal; componentCtr++) {
-		attachFx = (eOCT_rootAttachmentFx*)eOCT_pool_access(&iOCT_ECS_inst.componentRootInitList, componentCtr, 0);
+	const OCT_index componentsTotal = iOCT_registry_inst.components.count;
+	for (OCT_index componentCtr = 0; componentCtr < componentsTotal; componentCtr++) {
+		eOCT_componentDescription* component = (eOCT_componentDescription*)eOCT_pool_access(&iOCT_registry_inst.components, componentCtr, 0);
+		eOCT_rootAttachmentFx attachFx = component->rootAttachmentFx;
 		if (attachFx) {
-			//printf("Trying to attach\n");
+			printf("Attached component %s to ROOT\n", component->name);
 			(*attachFx)(rootEntity);
-		}
-		else {
-			//printf("No attachment\n");
 		}
 	}
 
@@ -69,6 +72,24 @@ OCT_handle OCT_entityContext_open(OCT_handle* rootOut) {
 		*rootOut = rootEntity;
 	}
 	return contextHandle;
+}
+
+static eOCT_pool iOCT_entityContext_initComponentPools(OCT_ID contextID) {
+	OCT_index totalComponents = iOCT_registry_inst.components.count;
+	eOCT_pool containerPool = eOCT_pool_init(contextID, totalComponents, sizeof(eOCT_pool));
+
+	for (OCT_index componentCtr = 0; componentCtr < totalComponents; componentCtr++) {
+		eOCT_componentDescription* component = (eOCT_componentDescription*)eOCT_pool_access(&iOCT_registry_inst.components, componentCtr, 0);
+
+		eOCT_pool* newPool = eOCT_pool_addEntry(&containerPool, NULL);
+		*newPool = eOCT_pool_init(contextID, eOCT_POOL_CAPACITY_DEFAULT, component->stride);	// init actual component pool
+		if (component->sortValueOffset != eOCT_POOL_SORT_NONE) {
+			eOCT_pool_setSort(newPool, component->sortValueOffset);
+		}
+		printf("Allocated component %s with size %zu at %p\n", component->name, component->stride, newPool);
+	}
+
+	return containerPool;
 }
 
 eOCT_pool* eOCT_getComponentPool(OCT_handle contextHandle, eOCT_componentDescription component) {
