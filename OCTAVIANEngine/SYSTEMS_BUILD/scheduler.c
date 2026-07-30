@@ -7,6 +7,9 @@ void OCT_engine_frame_start() {
     eOCT_WINDOW_startFrame();
 }
 void OCT_engine_update(OCT_handle context) {
+    eOCT_ECS_update();
+    eOCT_entityContext_prepare(context);
+
     eOCT_WORLD_update(context);
     eOCT_RENDERER_update(context);
 }

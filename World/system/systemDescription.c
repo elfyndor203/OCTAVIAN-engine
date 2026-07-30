@@ -8,39 +8,39 @@
 void system_register_WORLD() {
 	eOCT_fieldDescription posX = {
 		.name = "position.x",
-		.type = eOCT_FIELDTYPE_FLOAT32,
+		.type = eOCT_DATATYPE_FLOAT32,
 		.offset = offsetof(iOCT_transform2D, position) + offsetof(OCT_vec2, x),
-		.provider = eOCT_FIELDPROVIDER_COMPONENT
+		.providerType = eOCT_FIELDPROVIDER_COMPONENT
 	};
 	eOCT_fieldDescription posY = {
 		.name = "position.y",
-		.type = eOCT_FIELDTYPE_FLOAT32,
+		.type = eOCT_DATATYPE_FLOAT32,
 		.offset = offsetof(iOCT_transform2D, position) + offsetof(OCT_vec2, y),
-		.provider = eOCT_FIELDPROVIDER_COMPONENT
+		.providerType = eOCT_FIELDPROVIDER_COMPONENT
 	};
 	eOCT_fieldDescription rotation = {
 		.name = "rotation",
-		.type = eOCT_FIELDTYPE_FLOAT32,
+		.type = eOCT_DATATYPE_FLOAT32,
 		.offset = offsetof(iOCT_transform2D, rotation),
-		.provider = eOCT_FIELDPROVIDER_COMPONENT
+		.providerType = eOCT_FIELDPROVIDER_COMPONENT
 	};
 	eOCT_fieldDescription scaleX = {
 		.name = "scale.x",
-		.type = eOCT_FIELDTYPE_FLOAT32,
+		.type = eOCT_DATATYPE_FLOAT32,
 		.offset = offsetof(iOCT_transform2D, rotation),
-		.provider = eOCT_FIELDPROVIDER_COMPONENT
+		.providerType = eOCT_FIELDPROVIDER_COMPONENT
 	};
 	eOCT_fieldDescription scaleY = {
 		.name = "scale.y",
-		.type = eOCT_FIELDTYPE_FLOAT32,
+		.type = eOCT_DATATYPE_FLOAT32,
 		.offset = offsetof(iOCT_transform2D, rotation),
-		.provider = eOCT_FIELDPROVIDER_COMPONENT
+		.providerType = eOCT_FIELDPROVIDER_COMPONENT
 	};
 	eOCT_fieldDescription matrix2D = {
 		.name = "globalTransform2D",
-		.type = eOCT_FIELDTYPE_FLOAT32,
+		.type = eOCT_DATATYPE_FLOAT32,
 		.offset = offsetof(iOCT_transform2D, globalMatrix),
-		.provider = eOCT_FIELDPROVIDER_COMPONENT
+		.providerType = eOCT_FIELDPROVIDER_COMPONENT
 	};
 
 	eOCT_fieldDescription transformFields[] = { posX, posY, rotation, scaleX, scaleY, matrix2D };

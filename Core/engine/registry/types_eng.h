@@ -30,10 +30,9 @@ typedef struct eOCT_fieldRequest eOCT_fieldRequest;
 typedef struct eOCT_componentDescription eOCT_componentDescription;
 
 typedef struct eOCT_dataPoolDescription eOCT_dataPoolDescription;
+typedef struct eOCT_eventDescription eOCT_eventDescription;
 
-typedef enum eOCT_fieldProvider eOCT_fieldProvider;
-typedef enum eOCT_fieldTypes eOCT_fieldTypes;
-typedef enum eOCT_fieldAccess eOCT_fieldAccess;
+typedef union eOCT_dataUnion eOCT_dataUnion;
 
 typedef void (*eOCT_systemInitFx)(void);
 typedef void (*eOCT_systemUpdateFx)(OCT_handle);

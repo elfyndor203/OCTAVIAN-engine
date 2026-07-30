@@ -109,7 +109,7 @@ void* eOCT_entity_getField(OCT_handle entity, eOCT_fieldRequest field) {
 	}
 
 
-	void* componentLoc = iOCT_entity_getComponent(context, entityIndex, field.providerTypeIndex_reg);
+	void* componentLoc = iOCT_entity_getComponent(context, entityIndex, field.providerIndex_reg);
 
 	// printf("Entity index requested: %zu\n", entityIndex);
 	// printf("Got component loc %p\n", componentLoc);

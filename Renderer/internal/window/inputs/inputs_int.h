@@ -2,6 +2,7 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <stdbool.h>
 
 void iOCT_keyMap_init();
 void iOCT_mouseMap_init();

@@ -65,17 +65,17 @@ typedef struct testVel {
 } testVel;
 
 void testDesc_register() {
-	eOCT_fieldDescription posA = { "posA", eOCT_FIELDTYPE_FLOAT32, offsetof(testPos, posA) };
-	eOCT_fieldDescription posB = { "posB", eOCT_FIELDTYPE_FLOAT32, offsetof(testPos, posB) };
-	eOCT_fieldDescription posC = { "posC", eOCT_FIELDTYPE_FLOAT32, offsetof(testPos, posC) };
-	eOCT_fieldDescription posD = { "posD", eOCT_FIELDTYPE_FLOAT32, offsetof(testPos, posD) };
-	eOCT_fieldDescription posE = { "posE", eOCT_FIELDTYPE_FLOAT32, offsetof(testPos, posE) };
-	eOCT_fieldDescription posF = { "posF", eOCT_FIELDTYPE_FLOAT32, offsetof(testPos, posF) };
-	eOCT_fieldDescription posG = { "posG", eOCT_FIELDTYPE_FLOAT32, offsetof(testPos, posG) };
+	eOCT_fieldDescription posA = { "posA", eOCT_DATATYPE_FLOAT32, offsetof(testPos, posA) };
+	eOCT_fieldDescription posB = { "posB", eOCT_DATATYPE_FLOAT32, offsetof(testPos, posB) };
+	eOCT_fieldDescription posC = { "posC", eOCT_DATATYPE_FLOAT32, offsetof(testPos, posC) };
+	eOCT_fieldDescription posD = { "posD", eOCT_DATATYPE_FLOAT32, offsetof(testPos, posD) };
+	eOCT_fieldDescription posE = { "posE", eOCT_DATATYPE_FLOAT32, offsetof(testPos, posE) };
+	eOCT_fieldDescription posF = { "posF", eOCT_DATATYPE_FLOAT32, offsetof(testPos, posF) };
+	eOCT_fieldDescription posG = { "posG", eOCT_DATATYPE_FLOAT32, offsetof(testPos, posG) };
 	eOCT_fieldDescription posFields[] = { posA, posB, posC, posD, posE, posF, posG };
 
-	eOCT_fieldDescription velA = { "velA", eOCT_FIELDTYPE_FLOAT32, offsetof(testVel, velA) };
-	eOCT_fieldDescription velB = { "velB", eOCT_FIELDTYPE_FLOAT32, offsetof(testVel, velB) };
+	eOCT_fieldDescription velA = { "velA", eOCT_DATATYPE_FLOAT32, offsetof(testVel, velA) };
+	eOCT_fieldDescription velB = { "velB", eOCT_DATATYPE_FLOAT32, offsetof(testVel, velB) };
 	eOCT_fieldDescription velFields[] = { velA, velB };
 
 	eOCT_componentDescription posComponent = { "Position", sizeof(testPos), eOCT_generateFieldDescriptionPool(posFields, 7) };
@@ -85,8 +85,8 @@ void testDesc_register() {
 	/* "rotZ" doesn't exist yet at the point SystemA registers -
 	   it's provided later by SystemB. That's fine under deferred
 	   resolution. "posB" is this system's own field. */
-	eOCT_fieldRequest rotZ = { "rotZ", eOCT_FIELDTYPE_FLOAT32 };
-	eOCT_fieldRequest posBReq = { "posB", eOCT_FIELDTYPE_FLOAT32 };
+	eOCT_fieldRequest rotZ = { "rotZ", eOCT_DATATYPE_FLOAT32 };
+	eOCT_fieldRequest posBReq = { "posB", eOCT_DATATYPE_FLOAT32 };
 	eOCT_fieldRequest requests[] = { rotZ, posBReq };
 
 	eOCT_systemDescription systemA = {
@@ -140,29 +140,29 @@ typedef struct testHealth {
 } testHealth;
 
 void systemB_register() {
-	eOCT_fieldDescription rotX = { "rotX", eOCT_FIELDTYPE_FLOAT32, offsetof(testRot, rotX) };
-	eOCT_fieldDescription rotY = { "rotY", eOCT_FIELDTYPE_FLOAT32, offsetof(testRot, rotY) };
-	eOCT_fieldDescription rotW = { "rotW", eOCT_FIELDTYPE_FLOAT32, offsetof(testRot, rotW) };
-	eOCT_fieldDescription rotZ = { "rotZ", eOCT_FIELDTYPE_FLOAT32, offsetof(testRot, rotZ) };
-	eOCT_fieldDescription angVelX = { "angVelX", eOCT_FIELDTYPE_FLOAT32, offsetof(testRot, angVelX) };
-	eOCT_fieldDescription angVelY = { "angVelY", eOCT_FIELDTYPE_FLOAT32, offsetof(testRot, angVelY) };
-	eOCT_fieldDescription angVelZ = { "angVelZ", eOCT_FIELDTYPE_FLOAT32, offsetof(testRot, angVelZ) };
-	eOCT_fieldDescription angAccelX = { "angAccelX", eOCT_FIELDTYPE_FLOAT32, offsetof(testRot, angAccelX) };
-	eOCT_fieldDescription angAccelY = { "angAccelY", eOCT_FIELDTYPE_FLOAT32, offsetof(testRot, angAccelY) };
-	eOCT_fieldDescription angAccelZ = { "angAccelZ", eOCT_FIELDTYPE_FLOAT32, offsetof(testRot, angAccelZ) };
-	eOCT_fieldDescription pivotX = { "pivotX", eOCT_FIELDTYPE_FLOAT32, offsetof(testRot, pivotX) };
-	eOCT_fieldDescription pivotY = { "pivotY", eOCT_FIELDTYPE_FLOAT32, offsetof(testRot, pivotY) };
-	eOCT_fieldDescription pivotZ = { "pivotZ", eOCT_FIELDTYPE_FLOAT32, offsetof(testRot, pivotZ) };
-	eOCT_fieldDescription eulerPitch = { "eulerPitch", eOCT_FIELDTYPE_FLOAT32, offsetof(testRot, eulerPitch) };
-	eOCT_fieldDescription eulerYaw = { "eulerYaw", eOCT_FIELDTYPE_FLOAT32, offsetof(testRot, eulerYaw) };
-	eOCT_fieldDescription eulerRoll = { "eulerRoll", eOCT_FIELDTYPE_FLOAT32, offsetof(testRot, eulerRoll) };
-	eOCT_fieldDescription prevRotX = { "prevRotX", eOCT_FIELDTYPE_FLOAT32, offsetof(testRot, prevRotX) };
-	eOCT_fieldDescription prevRotY = { "prevRotY", eOCT_FIELDTYPE_FLOAT32, offsetof(testRot, prevRotY) };
-	eOCT_fieldDescription prevRotZ = { "prevRotZ", eOCT_FIELDTYPE_FLOAT32, offsetof(testRot, prevRotZ) };
-	eOCT_fieldDescription prevRotW = { "prevRotW", eOCT_FIELDTYPE_FLOAT32, offsetof(testRot, prevRotW) };
-	eOCT_fieldDescription dampening = { "dampening", eOCT_FIELDTYPE_FLOAT32, offsetof(testRot, dampening) };
-	eOCT_fieldDescription lockThreshold = { "lockThreshold", eOCT_FIELDTYPE_FLOAT32, offsetof(testRot, lockThreshold) };
-	eOCT_fieldDescription interpAlpha = { "interpAlpha", eOCT_FIELDTYPE_FLOAT32, offsetof(testRot, interpAlpha) };
+	eOCT_fieldDescription rotX = { "rotX", eOCT_DATATYPE_FLOAT32, offsetof(testRot, rotX) };
+	eOCT_fieldDescription rotY = { "rotY", eOCT_DATATYPE_FLOAT32, offsetof(testRot, rotY) };
+	eOCT_fieldDescription rotW = { "rotW", eOCT_DATATYPE_FLOAT32, offsetof(testRot, rotW) };
+	eOCT_fieldDescription rotZ = { "rotZ", eOCT_DATATYPE_FLOAT32, offsetof(testRot, rotZ) };
+	eOCT_fieldDescription angVelX = { "angVelX", eOCT_DATATYPE_FLOAT32, offsetof(testRot, angVelX) };
+	eOCT_fieldDescription angVelY = { "angVelY", eOCT_DATATYPE_FLOAT32, offsetof(testRot, angVelY) };
+	eOCT_fieldDescription angVelZ = { "angVelZ", eOCT_DATATYPE_FLOAT32, offsetof(testRot, angVelZ) };
+	eOCT_fieldDescription angAccelX = { "angAccelX", eOCT_DATATYPE_FLOAT32, offsetof(testRot, angAccelX) };
+	eOCT_fieldDescription angAccelY = { "angAccelY", eOCT_DATATYPE_FLOAT32, offsetof(testRot, angAccelY) };
+	eOCT_fieldDescription angAccelZ = { "angAccelZ", eOCT_DATATYPE_FLOAT32, offsetof(testRot, angAccelZ) };
+	eOCT_fieldDescription pivotX = { "pivotX", eOCT_DATATYPE_FLOAT32, offsetof(testRot, pivotX) };
+	eOCT_fieldDescription pivotY = { "pivotY", eOCT_DATATYPE_FLOAT32, offsetof(testRot, pivotY) };
+	eOCT_fieldDescription pivotZ = { "pivotZ", eOCT_DATATYPE_FLOAT32, offsetof(testRot, pivotZ) };
+	eOCT_fieldDescription eulerPitch = { "eulerPitch", eOCT_DATATYPE_FLOAT32, offsetof(testRot, eulerPitch) };
+	eOCT_fieldDescription eulerYaw = { "eulerYaw", eOCT_DATATYPE_FLOAT32, offsetof(testRot, eulerYaw) };
+	eOCT_fieldDescription eulerRoll = { "eulerRoll", eOCT_DATATYPE_FLOAT32, offsetof(testRot, eulerRoll) };
+	eOCT_fieldDescription prevRotX = { "prevRotX", eOCT_DATATYPE_FLOAT32, offsetof(testRot, prevRotX) };
+	eOCT_fieldDescription prevRotY = { "prevRotY", eOCT_DATATYPE_FLOAT32, offsetof(testRot, prevRotY) };
+	eOCT_fieldDescription prevRotZ = { "prevRotZ", eOCT_DATATYPE_FLOAT32, offsetof(testRot, prevRotZ) };
+	eOCT_fieldDescription prevRotW = { "prevRotW", eOCT_DATATYPE_FLOAT32, offsetof(testRot, prevRotW) };
+	eOCT_fieldDescription dampening = { "dampening", eOCT_DATATYPE_FLOAT32, offsetof(testRot, dampening) };
+	eOCT_fieldDescription lockThreshold = { "lockThreshold", eOCT_DATATYPE_FLOAT32, offsetof(testRot, lockThreshold) };
+	eOCT_fieldDescription interpAlpha = { "interpAlpha", eOCT_DATATYPE_FLOAT32, offsetof(testRot, interpAlpha) };
 
 	eOCT_fieldDescription rotFields[] = {
 		rotX, rotY, rotW, rotZ,
@@ -180,8 +180,8 @@ void systemB_register() {
 		.providedFields = eOCT_generateFieldDescriptionPool(rotFields, 23),
 	};
 
-	eOCT_fieldDescription healthCurrent = { "healthCurrent", eOCT_FIELDTYPE_FLOAT32, offsetof(testHealth, current) };
-	eOCT_fieldDescription healthMax = { "healthMax", eOCT_FIELDTYPE_FLOAT32, offsetof(testHealth, max) };
+	eOCT_fieldDescription healthCurrent = { "healthCurrent", eOCT_DATATYPE_FLOAT32, offsetof(testHealth, current) };
+	eOCT_fieldDescription healthMax = { "healthMax", eOCT_DATATYPE_FLOAT32, offsetof(testHealth, max) };
 	eOCT_fieldDescription healthFields[] = { healthCurrent, healthMax };
 
 	eOCT_componentDescription healthComponent = {
@@ -194,8 +194,8 @@ void systemB_register() {
 
 	/* "posA" is provided earlier by SystemA. "shieldRegen" is
 	   provided later by SystemD - fine under deferred resolution. */
-	eOCT_fieldRequest reqPosA = { "posA", eOCT_FIELDTYPE_FLOAT32 };
-	eOCT_fieldRequest reqShieldRegen = { "shieldRegen", eOCT_FIELDTYPE_FLOAT32 };
+	eOCT_fieldRequest reqPosA = { "posA", eOCT_DATATYPE_FLOAT32 };
+	eOCT_fieldRequest reqShieldRegen = { "shieldRegen", eOCT_DATATYPE_FLOAT32 };
 	eOCT_fieldRequest requestsB[] = { reqPosA, reqShieldRegen };
 
 	eOCT_systemDescription systemB = {
@@ -234,8 +234,8 @@ typedef struct testRotAlt {
 } testRotAlt;
 
 void systemC_register() {
-	eOCT_fieldDescription rotZ_a = { "rotZ_a", eOCT_FIELDTYPE_FLOAT32, offsetof(testRot2, rotZ) };
-	eOCT_fieldDescription rotSpeed = { "rotSpeed", eOCT_FIELDTYPE_FLOAT32, offsetof(testRot2, rotSpeed) };
+	eOCT_fieldDescription rotZ_a = { "rotZ_a", eOCT_DATATYPE_FLOAT32, offsetof(testRot2, rotZ) };
+	eOCT_fieldDescription rotSpeed = { "rotSpeed", eOCT_DATATYPE_FLOAT32, offsetof(testRot2, rotSpeed) };
 	eOCT_fieldDescription rot2Fields[] = { rotZ_a, rotSpeed };
 
 	eOCT_componentDescription rotation2Component = {
@@ -244,8 +244,8 @@ void systemC_register() {
 		.providedFields = eOCT_generateFieldDescriptionPool(rot2Fields, 2),
 	};
 
-	eOCT_fieldDescription rotZAlt_b = { "rotZAlt", eOCT_FIELDTYPE_FLOAT32, offsetof(testRotAlt, rotZAlt) };
-	eOCT_fieldDescription rotDamping = { "rotDamping", eOCT_FIELDTYPE_FLOAT32, offsetof(testRotAlt, rotDamping) };
+	eOCT_fieldDescription rotZAlt_b = { "rotZAlt", eOCT_DATATYPE_FLOAT32, offsetof(testRotAlt, rotZAlt) };
+	eOCT_fieldDescription rotDamping = { "rotDamping", eOCT_DATATYPE_FLOAT32, offsetof(testRotAlt, rotDamping) };
 	eOCT_fieldDescription rotAltFields[] = { rotZAlt_b, rotDamping };
 
 	eOCT_componentDescription rotationAltComponent = {
@@ -258,8 +258,8 @@ void systemC_register() {
 
 	/* "velA" provided earlier by SystemA, "healthMax" provided
 	   earlier by SystemB. Both resolve fine. */
-	eOCT_fieldRequest reqVelA = { "velA", eOCT_FIELDTYPE_FLOAT32 };
-	eOCT_fieldRequest reqHealthMax = { "healthMax", eOCT_FIELDTYPE_FLOAT32 };
+	eOCT_fieldRequest reqVelA = { "velA", eOCT_DATATYPE_FLOAT32 };
+	eOCT_fieldRequest reqHealthMax = { "healthMax", eOCT_DATATYPE_FLOAT32 };
 	eOCT_fieldRequest requestsC[] = { reqVelA, reqHealthMax };
 
 	eOCT_systemDescription systemC = {
@@ -302,8 +302,8 @@ typedef struct testCreatureHealth {
 
 void systemD_register() {
 	/* --- SystemD1 --- */
-	eOCT_fieldDescription shieldHealth = { "shieldHealth", eOCT_FIELDTYPE_FLOAT32, offsetof(testShield, shieldHealth) };
-	eOCT_fieldDescription shieldRegen = { "shieldRegen", eOCT_FIELDTYPE_FLOAT32, offsetof(testShield, shieldRegen) };
+	eOCT_fieldDescription shieldHealth = { "shieldHealth", eOCT_DATATYPE_FLOAT32, offsetof(testShield, shieldHealth) };
+	eOCT_fieldDescription shieldRegen = { "shieldRegen", eOCT_DATATYPE_FLOAT32, offsetof(testShield, shieldRegen) };
 	eOCT_fieldDescription shieldFields[] = { shieldHealth, shieldRegen };
 
 	eOCT_componentDescription shieldComponent = {
@@ -315,7 +315,7 @@ void systemD_register() {
 	eOCT_componentDescription d1Components[] = { shieldComponent };
 
 	/* "rotSpeed" provided earlier by SystemC. */
-	eOCT_fieldRequest reqRotSpeed = { "rotSpeed", eOCT_FIELDTYPE_FLOAT32 };
+	eOCT_fieldRequest reqRotSpeed = { "rotSpeed", eOCT_DATATYPE_FLOAT32 };
 	eOCT_fieldRequest requestsD1[] = { reqRotSpeed };
 
 	eOCT_systemDescription systemD1 = {
@@ -325,8 +325,8 @@ void systemD_register() {
 	};
 
 	/* --- SystemD2 --- */
-	eOCT_fieldDescription creatureHealth = { "creatureHealth", eOCT_FIELDTYPE_FLOAT32, offsetof(testCreatureHealth, creatureHealth) };
-	eOCT_fieldDescription armor = { "armor", eOCT_FIELDTYPE_FLOAT32, offsetof(testCreatureHealth, armor) };
+	eOCT_fieldDescription creatureHealth = { "creatureHealth", eOCT_DATATYPE_FLOAT32, offsetof(testCreatureHealth, creatureHealth) };
+	eOCT_fieldDescription armor = { "armor", eOCT_DATATYPE_FLOAT32, offsetof(testCreatureHealth, armor) };
 	eOCT_fieldDescription creatureFields[] = { creatureHealth, armor };
 
 	eOCT_componentDescription creatureHealthComponent = {
@@ -340,8 +340,8 @@ void systemD_register() {
 	/* "creatureHealth" is SystemD2's own sibling field (provided
 	   by SystemD1 in this same call, registered just above), and
 	   "posC" is provided earlier by SystemA. Both resolve fine. */
-	eOCT_fieldRequest reqCreatureHealth = { "creatureHealth", eOCT_FIELDTYPE_FLOAT32 };
-	eOCT_fieldRequest reqPosC = { "posC", eOCT_FIELDTYPE_FLOAT32 };
+	eOCT_fieldRequest reqCreatureHealth = { "creatureHealth", eOCT_DATATYPE_FLOAT32 };
+	eOCT_fieldRequest reqPosC = { "posC", eOCT_DATATYPE_FLOAT32 };
 	eOCT_fieldRequest requestsD2[] = { reqCreatureHealth, reqPosC };
 
 	eOCT_systemDescription systemD2 = {

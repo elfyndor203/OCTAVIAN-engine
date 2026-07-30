@@ -32,7 +32,7 @@ static bool iOCT_pool_expand(eOCT_pool* pool, OCT_index factor);
 static void* iOCT_findDestination(eOCT_pool* pool, OCT_index target, OCT_index* outIndex);
 
 #pragma region basic functions
-eOCT_pool eOCT_pool_init(OCT_ID ownerID, OCT_index capacity, size_t elementSize) {
+eOCT_pool eOCT_pool_open(OCT_ID ownerID, OCT_index capacity, size_t elementSize) {
 	eOCT_pool pool = { 0 };
 
 	pool.ownerID = ownerID;					// set default values

@@ -25,6 +25,7 @@ struct iOCT_window {
 struct iOCT_keyEvent {
     int key;
     bool pressed;
+    bool released;
 };
 
 void iOCT_window_wipe();

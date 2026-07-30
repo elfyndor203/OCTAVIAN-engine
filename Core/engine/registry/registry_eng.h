@@ -4,43 +4,61 @@
 
 #include "utilities/utilities_eng.h"
 
-enum eOCT_fieldProvider {
+typedef enum eOCT_fieldProvider {
 	eOCT_FIELDPROVIDER_COMPONENT = 1,
+	eOCT_FIELDPROVIDER_EVENT,
 	eOCT_FIELDPROVIDER_DATAPOOL
+} eOCT_fieldProvider;
+
+typedef enum eOCT_dataTypes { //__NOTE__ typedef all types? or no
+	eOCT_DATATYPE_NULL = 0,
+	eOCT_DATATYPE_INT64,
+	eOCT_DATATYPE_UINT64,
+	eOCT_DATATYPE_FLOAT32,
+	eOCT_DATATYPE_DOUBLE64,
+	eOCT_DATATYPE_CHAR8,
+	eOCT_DATATYPE_PTR64,
+	eOCT_DATATYPE_STRING64,
+	eOCT_DATATYPE_BOOL, // size? include all sizes or just specific?
+
+	eOCT_DATATYPE_ID,
+	eOCT_DATATYPE_INDEX,
+	eOCT_DATATYPE_VEC2,
+	eOCT_DATATYPE_VEC3,
+	eOCT_DATATYPE_VEC4,
+	eOCT_DATATYPE_MAT3,
+	eOCT_DATATYPE_MAT4
+} eOCT_dataTypes;
+
+union eOCT_dataUnion {
+	int int64;
+	uint64_t uint64;
+	float float32;
+	double double64;
+	char char8;
+	void* ptr8;
+	char* string8;
+	OCT_ID ID;
+	OCT_index index;
+	OCT_vec2 vec2;
+	OCT_vec3 vec3;
+	OCT_vec4 vec4;
+	OCT_mat3 mat3;
 };
 
-enum eOCT_fieldTypes {
-	eOCT_FIELDTYPE_NULL = 0,
-	eOCT_FIELDTYPE_INT64,
-	eOCT_FIELDTYPE_UINT64,
-	eOCT_FIELDTYPE_FLOAT32,
-	eOCT_FIELDTYPE_DOUBLE64,
-	eOCT_FIELDTYPE_CHAR8,
-	eOCT_FIELDTYPE_PTR64,
-	eOCT_FIELDTYPE_STRING64,
-
-	eOCT_FIELDTYPE_ID,
-	eOCT_FIELDTYPE_INDEX,
-	eOCT_FIELDTYPE_VEC2,
-	eOCT_FIELDTYPE_VEC3,
-	eOCT_FIELDTYPE_VEC4,
-	eOCT_FIELDTYPE_MAT3,
-	eOCT_FIELDTYPE_MAT4
-};
-
-enum eOCT_fieldAccess {
+typedef enum eOCT_fieldAccess {
 	OCT_FIELD_ACCESS_NONE = 0,	// 00
 	OCT_FIELD_ACCESS_READ = 1 << 0,	 // 01
 	OCT_FIELD_ACCESS_WRITE = 1 << 1, // 10
 	OCT_FIELD_ACCESS_READWRITE = OCT_FIELD_ACCESS_READ | OCT_FIELD_ACCESS_WRITE, // 11
-};
+} eOCT_fieldAccess;
 
 struct eOCT_fieldDescription {
 	const char* name;
-	eOCT_fieldTypes type;	// standard field types defined in fields.h
+	eOCT_dataTypes type;	// standard field types defined in fields.h
 	size_t offset;			// offset from the start of the component struct
 
-	eOCT_fieldProvider provider;
+	eOCT_fieldProvider providerType;
 	OCT_index providerIndex_reg;
 	bool global_reg;
 };
@@ -67,27 +85,25 @@ struct eOCT_dataPoolDescription {
 	OCT_index dataPoolTypeIndex_reg;
 };
 
-struct eOCT_eventData {
-	OCT_handle entity;
-};
-
 struct eOCT_eventDescription { // for cross module communication, but what about for the user __NOTE__
 	const char* name;
 	size_t stride;
 	eOCT_pool providedFields;
-	eOCT_dataPoolDescription* cacheLocation;
+	eOCT_eventDescription* cacheLocation;
+	bool global;
 
-	OCT_index eventPoolTypeIndex_reg;
+	OCT_index eventTypeIndex_reg;
 };
 
 struct eOCT_fieldRequest {
 	const char* name;
-	eOCT_fieldTypes type;
+	eOCT_dataTypes type;
 	eOCT_fieldRequest* cacheLocation;
 	//eOCT_fieldAccess access;
 	bool optional;
 
-	OCT_index providerTypeIndex_reg;
+	eOCT_fieldProvider providerType_reg;
+	OCT_index providerIndex_reg;
 	size_t fieldOffset_reg;
 	bool global_reg;
 	bool fulfilled_reg;
@@ -97,6 +113,7 @@ struct eOCT_systemDescription {
 	const char* name;
 	eOCT_pool providedComponents;
 	eOCT_pool providedDataPools;
+	eOCT_pool providedEvents;
 	eOCT_pool requestedFields;
 	eOCT_systemInitFx initFx;
 	// eOCT_systemUpdateFx updateFx;
@@ -104,9 +121,12 @@ struct eOCT_systemDescription {
 	OCT_ID systemID_reg; // provided by the registry
 };
 
+
+
 void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription);
 //void eOCT_registry_allocateComponents(eOCT_componentDescription* componentDescription);
 eOCT_pool eOCT_generateFieldDescriptionPool(eOCT_fieldDescription* array, size_t count);
 eOCT_pool eOCT_generateComponentDescriptionPool(eOCT_componentDescription* array, size_t count);
 eOCT_pool eOCT_generateDataPoolDescriptionPool(eOCT_dataPoolDescription* array, size_t count);
+eOCT_pool eOCT_generateEventDescriptionPool(eOCT_eventDescription* array, size_t count);
 eOCT_pool eOCT_generateFieldRequestPool(eOCT_fieldRequest* array, size_t count);

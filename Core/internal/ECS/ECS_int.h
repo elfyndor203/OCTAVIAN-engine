@@ -2,6 +2,8 @@
 #include "types_int.h"
 
 #include "OCT_Core_eng.h"
+#include "events/types_int.h"
+#include "events/events_int.h"
 
 struct iOCT_ECS {
 	size_t entitySize;
@@ -9,16 +11,12 @@ struct iOCT_ECS {
 	eOCT_IDMap contextMap;
 	eOCT_pool contextPool;
 
-	// context instructions
-	// eOCT_pool componentDescPtrList;
-	// eOCT_pool componentRootInitList; // functions to call when creating the root entity
 	eOCT_pool dataPoolSizeAndOrderList;
 
 	// global data
 	eOCT_IDMap globalDataMap;
 	eOCT_pool globalDataPools;
-
-	OCT_index contextCyclerCt;
+	iOCT_eventManager globalEvents;
 };
 
 extern iOCT_ECS iOCT_ECS_inst;

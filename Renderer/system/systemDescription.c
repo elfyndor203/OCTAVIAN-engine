@@ -7,7 +7,7 @@
 #include "renderer/camera2D/camera2D_int.h"
 #include "window/window/window_int.h"
 #include "window/windowSystem_int.h"
-
+#include "window/inputs/inputs_int.h"
 
 void system_register_RENDERER() {
     eOCT_componentDescription sprite2D = {
@@ -32,7 +32,7 @@ void system_register_RENDERER() {
 
     eOCT_fieldRequest transform2D = {
         .name = "globalTransform2D",
-        .type = eOCT_FIELDTYPE_MAT3,
+        .type = eOCT_DATATYPE_MAT3,
         .cacheLocation = &iOCT_renderer_inst.transform2DCache,
         .optional = false,
     };
@@ -50,48 +50,41 @@ void system_register_RENDERER() {
 }
 
 void system_register_WINDOW() {
-    // eOCT_fieldDescription VAO = {
-    //     .name = "windowVAO",
-    //     .offset = offsetof(iOCT_window, VAO),
-    //     .provider = eOCT_FIELDPROVIDER_DATAPOOL,
-    //     .type = eOCT_FIELDTYPE_UINT64,
-    // };
-    // eOCT_fieldDescription windowFields[] = {VAO};
-    // eOCT_dataPoolDescription window = {
-    //     .name = "Window",
-    //     .stride = sizeof(iOCT_window),
-    //     .providedFields = eOCT_generateFieldDescriptionPool(windowFields, 1),
-    //     .global = true,
-    //     .cacheLocation = &iOCT_windowSystem_inst.windowCache
-    // };
-
     eOCT_fieldDescription glfwKeyEvent = {
         .name = "glfwKeys",
-        .provider = eOCT_FIELDPROVIDER_DATAPOOL,
+        .providerType = eOCT_FIELDPROVIDER_EVENT,
         .offset = offsetof(iOCT_keyEvent, key),
-        .type = eOCT_FIELDTYPE_INT64
+        .type = eOCT_DATATYPE_INT64
     };
-    eOCT_fieldDescription glfwKeyAction = {
-        .name = "glfwKeyAction",
-        .provider = eOCT_FIELDPROVIDER_DATAPOOL,
-        .offset = 0,
-        .type = eOCT_FIELDTYPE_INT64
+    eOCT_fieldDescription glfwKeyPress = {
+        .name = "glfwKeyPress",
+        .providerType = eOCT_FIELDPROVIDER_EVENT,
+        .offset = offsetof(iOCT_keyEvent, pressed),
+        .type = eOCT_DATATYPE_BOOL
     };
-    eOCT_fieldDescription keyFields[2] = { glfwKeyEvent, glfwKeyAction };
-    eOCT_dataPoolDescription glfwKeyData = {
-        .name = "glfwKeyData",
-        .providedFields = eOCT_generateFieldDescriptionPool(keyFields, 2),
+    eOCT_fieldDescription glfwKeyRelease = {
+        .name = "glfwKeyRelease",
+        .providerType = eOCT_FIELDPROVIDER_EVENT,
+        .offset = offsetof(iOCT_keyEvent, released),
+        .type = eOCT_DATATYPE_BOOL
+    };
+    eOCT_fieldDescription keyFields[3] = { glfwKeyEvent, glfwKeyPress, glfwKeyRelease };
+
+    eOCT_eventDescription keyEvents = {
+        .name = "keysEvents",
+        .providedFields = eOCT_generateFieldDescriptionPool(keyFields, 3),
+        .stride = sizeof(iOCT_keyEvent),
         .global = true,
-        .stride = sizeof(int),
-        .cacheLocation = &iOCT_windowSystem_inst.keyCache
+        .cacheLocation = &iOCT_windowSystem_inst.keyEventCache,
     };
 
-    eOCT_dataPoolDescription dataPools[1] = { glfwKeyData };
+    eOCT_eventDescription events[1] = { keyEvents };
 
     eOCT_systemDescription windowSystem = {
         .name = "Window",
-        .providedDataPools = eOCT_generateDataPoolDescriptionPool(dataPools, 1),
+        .providedDataPools = eOCT_POOL_EMPTY,
         .providedComponents = eOCT_POOL_EMPTY,
+        .providedEvents = eOCT_generateEventDescriptionPool(events, 1),
         .requestedFields = eOCT_POOL_EMPTY,
         .initFx = system_init_WINDOW
     };

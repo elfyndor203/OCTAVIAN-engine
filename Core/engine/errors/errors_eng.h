@@ -21,6 +21,7 @@ X(OCT_EXIT_NULL_HANDLE,                 iOCT_FATAL,		"Null handle") \
 X(OCT_EXIT_NOT_YET_IMPLEMENTED,			iOCT_FATAL,		"Feature is not yet implemented") \
 X(OCT_EXIT_ACCESS_DENIED,				iOCT_FATAL,		"Access denied") \
 X(OCT_EXIT_OUT_OF_BOUNDS, 				iOCT_FATAL,		"Out of bounds") \
+X(OCT_EXIT_SOURCE_MISMATCH,             iOCT_FATAL,		"Source mismatch") \
 \
 X(OCT_ERR_DIVIDE_BY_ZERO,				iOCT_ERROR,		"Division by zero") \
 X(OCT_ERR_CREATION_FAILED,            iOCT_ERROR,       "Intended creation failed")\

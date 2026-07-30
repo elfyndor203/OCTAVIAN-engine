@@ -3,6 +3,8 @@
 
 #include "OCT_Core_eng.h"
 
+#include "events/events_int.h"
+
 #define iOCT_ROOT_ID 1
 
 /// <summary>
@@ -15,12 +17,14 @@ struct iOCT_entityContext {
 	eOCT_pool entityPool;
 	eOCT_pool componentPools;
 	eOCT_pool systemDataPools;
+
+	iOCT_eventManager eventManager;
 };
 
 //iOCT_entityContext* iOCT_entityContext_get(OCT_ID entityContextID);
 //eOCT_pool* iOCT_pool_get(iOCT_entityContext* context, OCT_ECSTypes componentType);
+iOCT_entityContext* iOCT_entityContext_get(OCT_ID contextID);
 
-OCT_handle iOCT_entityContext_open(OCT_handle* rootOut);
 eOCT_pool* iOCT_getComponentPool(iOCT_entityContext* context, OCT_index componentIndex);
 eOCT_pool* iOCT_getDataPool(iOCT_entityContext* context, OCT_index dataPoolTypeIndex);
 

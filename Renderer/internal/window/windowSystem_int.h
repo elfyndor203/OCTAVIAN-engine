@@ -7,7 +7,7 @@
 
 struct iOCT_windowSystem {
 	eOCT_systemDescription windowSystem;
-	eOCT_dataPoolDescription keyCache;
+	eOCT_eventDescription keyEventCache;
 
 	eOCT_IDMap windowMap;
 	eOCT_pool windowPool;

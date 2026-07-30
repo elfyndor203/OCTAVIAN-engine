@@ -15,6 +15,7 @@ add_library(Renderer STATIC
         internal/renderer/camera2D/camera2D_int.h
         internal/renderer/camera2D/camera2D.c
         include/renderer/camera2D.h
+        internal/window/inputs/inputs.c
 )
 
 target_include_directories(Renderer

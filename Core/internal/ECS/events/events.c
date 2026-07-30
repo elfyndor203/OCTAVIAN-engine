@@ -1,0 +1,101 @@
+#include "events_int.h"
+
+#include <string.h>
+
+#include "registry/registry_int.h"
+#include "layout/types.h"
+#include "ECS/entityContext_int.h"
+#include "ECS/types_eng.h"
+#include "ECS/ECS_int.h"
+
+static eOCT_pool* iOCT_getEventPool(eOCT_eventDescription eventDesc, OCT_handle contextHandle, eOCT_pool** callbackPoolOut);
+
+iOCT_eventManager iOCT_eventManager_init(OCT_ID ownerID) {
+    eOCT_pool eventDescPool = iOCT_registry_inst.events;
+    eOCT_eventDescription* eventDescArray = (eOCT_eventDescription*)eventDescPool.array;
+
+    eOCT_pool eventPools = eOCT_pool_open(ownerID, eventDescPool.count, sizeof(eOCT_pool));
+    eOCT_pool callbackPools = eOCT_pool_open(ownerID, eventDescPool.count, sizeof(eOCT_pool));
+
+    for (OCT_index eventCtr = 0; eventCtr < eventDescPool.count; eventCtr++) {
+        eOCT_eventDescription eventDesc = eventDescArray[eventCtr];
+        eOCT_pool events = eOCT_pool_open(ownerID, eOCT_POOL_CAPACITY_DEFAULT, eventDesc.stride);
+        eOCT_pool callbacks = eOCT_pool_open(ownerID, eOCT_POOL_CAPACITY_DEFAULT, sizeof(eOCT_eventCallbackFx));
+
+        eOCT_pool* eventSlot = (eOCT_pool*)eOCT_pool_addEntry(&eventPools, NULL);
+        *eventSlot = events;
+        eOCT_pool* callbackSlot = (eOCT_pool*)eOCT_pool_addEntry(&callbackPools, NULL);
+        *callbackSlot = callbacks;
+    }
+
+    iOCT_eventManager manager = {
+        .eventPools = eventPools,
+        .callbackPools = callbackPools
+    };
+
+    return manager;
+}
+
+void iOCT_eventManager_clear(iOCT_eventManager* manager) {
+    for (OCT_index eventTypeCtr = 0; eventTypeCtr < manager->eventPools.count; eventTypeCtr++) {
+        eOCT_pool* eventPool = (eOCT_pool*)eOCT_pool_access(&manager->eventPools, eventTypeCtr, 0);
+        eOCT_pool_clear(eventPool);
+    }
+}
+
+//__NOTE__ maybe make it so callbacks only tell the user where the event is so they can query it, not explicitly passing data
+void eOCT_event_broadcast(eOCT_eventDescription eventDesc, OCT_handle contextHandle, void* event) {
+    eOCT_pool* eventPool;
+    eOCT_pool* callbackPool;
+    eventPool = iOCT_getEventPool(eventDesc, contextHandle, &callbackPool);
+
+    // add to the frame's events
+    OCT_index eventIndex;
+    void* dataLoc = eOCT_pool_addEntry(eventPool, &eventIndex);
+    memcpy(dataLoc, event, eventDesc.stride);
+
+    // call all callbacks
+    eOCT_eventCallbackFx* callbackArray = (eOCT_eventCallbackFx*)callbackPool->array;
+    for (OCT_index callbackCtr = 0; callbackCtr < callbackPool->count; callbackCtr++) {
+        callbackArray[callbackCtr](eventIndex);
+    }
+}
+
+void eOCT_event_subscribe(eOCT_fieldRequest eventField, OCT_handle contextHandle, eOCT_eventCallbackFx callback) {
+    if (eventField.providerType_reg != eOCT_FIELDPROVIDER_EVENT) {
+        OCT_ERROR_LOG(OCT_EXIT_SOURCE_MISMATCH, "Tried to set callback for field that does not come from an event");
+        return;
+    }
+
+    iOCT_eventManager* eventManager;
+    eOCT_pool* callbackPool;
+    iOCT_getEventPool(iOCT_registry_findSourceEventDescription(eventField), contextHandle, &callbackPool);
+    eOCT_eventCallbackFx* destination = (eOCT_eventCallbackFx*)eOCT_pool_addEntry(callbackPool, NULL);
+    *destination = callback;
+}
+
+void* eOCT_event_read(eOCT_fieldRequest eventField, OCT_handle contextHandle, OCT_index eventEntryIndex) {
+    eOCT_pool* eventPool = iOCT_getEventPool(iOCT_registry_findSourceEventDescription(eventField), contextHandle, NULL);
+    return eOCT_pool_access(eventPool, eventEntryIndex, eventField.fieldOffset_reg);
+}
+
+static eOCT_pool* iOCT_getEventPool(eOCT_eventDescription eventDesc, OCT_handle contextHandle, eOCT_pool** callbackPoolOut) {
+    iOCT_eventManager* eventManager;
+    eOCT_pool* eventPool;
+    eOCT_pool* callbackPool;
+    OCT_index providerIndex = eventDesc.eventTypeIndex_reg;
+    if (eventDesc.global) {
+        eventManager = &iOCT_ECS_inst.globalEvents;
+    }
+    else {
+        iOCT_entityContext* context = iOCT_entityContext_get(contextHandle.objectID);
+        eventManager = &context->eventManager;
+    }
+    eventPool = (eOCT_pool*)eOCT_pool_access(&eventManager->eventPools, providerIndex, 0);
+    callbackPool = (eOCT_pool*)eOCT_pool_access(&eventManager->callbackPools, providerIndex, 0);
+
+    if (callbackPoolOut) {
+        *callbackPoolOut = callbackPool;
+    }
+    return eventPool;
+}

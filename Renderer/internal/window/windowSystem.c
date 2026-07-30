@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 #include "window/window_int.h"
-#include "inputs/inputs_internal.h"
+#include "inputs/inputs_int.h"
 
 iOCT_windowSystem iOCT_windowSystem_inst = { 0 };
 
@@ -47,7 +47,7 @@ void system_init_WINDOW() {
 
 	// happens after registry init so using systemID is safe
 	iOCT_windowSystem_inst.windowMap = eOCT_IDMap_init(iOCT_windowSystem_inst.windowSystem.systemID_reg, eOCT_POOL_CAPACITY_DEFAULT);
-	iOCT_windowSystem_inst.windowPool = eOCT_pool_init(iOCT_windowSystem_inst.windowSystem.systemID_reg, eOCT_POOL_CAPACITY_DEFAULT, sizeof(iOCT_window));
+	iOCT_windowSystem_inst.windowPool = eOCT_pool_open(iOCT_windowSystem_inst.windowSystem.systemID_reg, eOCT_POOL_CAPACITY_DEFAULT, sizeof(iOCT_window));
 	iOCT_windowSystem_inst.rootWindow = initWindow;
 }
 
@@ -83,9 +83,6 @@ void eOCT_WINDOW_finishFrame() {
 
 		glfwSwapBuffers(window.windowPtr);
 	}
-
-	eOCT_pool* keyPool = eOCT_getDataPool_global(iOCT_windowSystem_inst.keyCache, NULL);
-	eOCT_pool_clear(keyPool);
 }
 
 // void OCT_WDWModule_update() {

@@ -52,9 +52,9 @@ static OCT_handle iOCT_initGizmoTex();
 
 void system_init_RENDERER() {
     OCT_ID systemID = iOCT_renderer_inst.systemDescription.systemID_reg;
-    iOCT_renderer_inst.textureGroupPool = eOCT_pool_init(systemID, eOCT_POOL_CAPACITY_DEFAULT, sizeof(iOCT_textureGroup));
+    iOCT_renderer_inst.textureGroupPool = eOCT_pool_open(systemID, eOCT_POOL_CAPACITY_DEFAULT, sizeof(iOCT_textureGroup));
     iOCT_renderer_inst.textureGroupMap = eOCT_IDMap_init(systemID, eOCT_POOL_CAPACITY_DEFAULT);
-    iOCT_renderer_inst.spriteFullDataBuffer = eOCT_pool_init(systemID, eOCT_POOL_CAPACITY_DEFAULT,sizeof(iOCT_spriteFullData));
+    iOCT_renderer_inst.spriteFullDataBuffer = eOCT_pool_open(systemID, eOCT_POOL_CAPACITY_DEFAULT,sizeof(iOCT_spriteFullData));
 
     GLuint spriteVAO;
     glGenVertexArrays(1, &spriteVAO);

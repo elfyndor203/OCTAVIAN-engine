@@ -10,6 +10,7 @@ void init_OCT_registerAllSystems() {
 	// systemC_register();
 	// systemD_register();
 	//system_register_systemEx();
+	system_register_systemEx();
 	system_register_WORLD();
 	system_register_WINDOW();
 	system_register_RENDERER();
