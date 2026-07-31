@@ -21,6 +21,7 @@ typedef struct eOCT_fieldDescription eOCT_fieldDescription;
 /// </summary>
 typedef struct eOCT_fieldRequest eOCT_fieldRequest;
 
+typedef struct eOCT_fieldRequestCache eOCT_fieldRequestCache;
 /// <summary>
 /// Describes one component provided by the system. 
 /// Leave all _reg fields blank.
@@ -31,6 +32,7 @@ typedef struct eOCT_componentDescription eOCT_componentDescription;
 
 typedef struct eOCT_dataPoolDescription eOCT_dataPoolDescription;
 typedef struct eOCT_eventDescription eOCT_eventDescription;
+typedef struct eOCT_singleDescription eOCT_singleDescription;
 
 typedef union eOCT_dataUnion eOCT_dataUnion;
 

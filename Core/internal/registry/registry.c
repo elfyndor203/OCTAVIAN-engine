@@ -6,6 +6,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <inttypes.h>
+#include <assert.h>
 
 #include "ECS/ECS_int.h"
 #include "utilities/utilities_eng.h"
@@ -16,6 +17,7 @@ static bool iOCT_registry_findField(const char* fieldName, eOCT_fieldDescription
 static void iOCT_registry_registerComponent(eOCT_componentDescription* componentDesc);
 static void iOCT_registry_registerEvent(eOCT_eventDescription* eventDesc);
 static void iOCT_registry_registerDataPool(eOCT_dataPoolDescription* dataPoolDesc);
+static void iOCT_registry_registerSingle(eOCT_singleDescription* singleDesc);
 static OCT_index iOCT_registry_registerFields(eOCT_pool providedFields, OCT_ID systemID, eOCT_fieldProvider providerType, OCT_index providerIndex, bool global);
 iOCT_registry iOCT_registry_inst = { 0 }; 
 
@@ -25,11 +27,13 @@ void init_OCT_registry_init() {
 	eOCT_pool components = eOCT_pool_open(OCT_ID_REGISTRY, eOCT_POOL_CAPACITY_DEFAULT, sizeof(eOCT_componentDescription));
 	eOCT_pool events = eOCT_pool_open(OCT_ID_REGISTRY, eOCT_POOL_CAPACITY_DEFAULT, sizeof(eOCT_eventDescription));
 	eOCT_pool dataPools = eOCT_pool_open(OCT_ID_REGISTRY, eOCT_POOL_CAPACITY_DEFAULT, sizeof(eOCT_dataPoolDescription));
+	eOCT_pool globalSingles = eOCT_pool_open(OCT_ID_REGISTRY, eOCT_POOL_CAPACITY_DEFAULT, sizeof(eOCT_singleDescription*));
 	eOCT_pool fields = eOCT_pool_open(OCT_ID_REGISTRY, eOCT_POOL_CAPACITY_DEFAULT, sizeof(eOCT_fieldDescription));
 	iOCT_registry_inst.systems = systems;
 	iOCT_registry_inst.components = components;
 	iOCT_registry_inst.dataPools = dataPools;
 	iOCT_registry_inst.events = events;
+	iOCT_registry_inst.globalSingles = globalSingles;
 	iOCT_registry_inst.fields = fields;
 	iOCT_registry_inst.success = true;
 
@@ -96,15 +100,6 @@ void init_OCT_registry_initAllSystems() {
 		else {
 			printf("System %s has no INIT fx\n", system.name);
 		}
-
-		// updateFx = system.updateFx;
-		// if (updateFx) {
-		// 	printf("Init system %s with UPDATE fx %p\n", system.name, updateFx);
-		// 	iOCT_scheduler_addUpdateFx(updateFx);
-		// }
-		// else {
-		// 	printf("System %s has no UPDATE fx\n", system.name);
-		// }
 	}
 }
 
@@ -169,6 +164,7 @@ void init_OCT_registry_check() {
 	}
 	else {
 		printf("Failed\n");
+		OCT_ERROR_LOG(OCT_EXIT_REGISTRATION_FAILED, "Check registration log to find failure");
 	}
 	printf("-----------------------\n\n");
 
@@ -186,7 +182,6 @@ eOCT_pool eOCT_generateFieldDescriptionPool(eOCT_fieldDescription* array, size_t
 	}
 	return pool;
 }
-
 eOCT_pool eOCT_generateComponentDescriptionPool(eOCT_componentDescription* array, size_t count) {
 	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, count, sizeof(eOCT_componentDescription));
 
@@ -197,7 +192,6 @@ eOCT_pool eOCT_generateComponentDescriptionPool(eOCT_componentDescription* array
 	}
 	return pool;
 }
-
 eOCT_pool eOCT_generateDataPoolDescriptionPool(eOCT_dataPoolDescription* array, size_t count) {
 	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, count, sizeof(eOCT_dataPoolDescription));
 
@@ -208,7 +202,6 @@ eOCT_pool eOCT_generateDataPoolDescriptionPool(eOCT_dataPoolDescription* array, 
 	}
 	return pool;
 }
-
 eOCT_pool eOCT_generateEventDescriptionPool(eOCT_eventDescription* array, size_t count) {
 	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, count, sizeof(eOCT_eventDescription));
 
@@ -220,7 +213,17 @@ eOCT_pool eOCT_generateEventDescriptionPool(eOCT_eventDescription* array, size_t
 
 	return pool;
 }
+eOCT_pool eOCT_generateGlobalDescriptionPool(eOCT_singleDescription* array, size_t count) {
+	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, count, sizeof(eOCT_singleDescription));
 
+	eOCT_singleDescription* destination;
+	for (int ctr = 0; ctr < count; ctr++) {
+		destination = (eOCT_singleDescription*)eOCT_pool_addEntry(&pool, NULL);
+		*destination = array[ctr];
+	}
+
+	return pool;
+}
 eOCT_pool eOCT_generateFieldRequestPool(eOCT_fieldRequest* array, size_t count) {
 	eOCT_pool pool = eOCT_pool_open(OCT_ID_NULL, count, sizeof(eOCT_fieldRequest));
 
@@ -261,6 +264,7 @@ void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription) {
 	}
 
 	printf("\n");
+	// EVENTS
 	if (eOCT_pool_isEmpty(systemDescription->providedEvents)) {
 		printf("No provided events\n");
 	}
@@ -288,6 +292,21 @@ void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription) {
 			iOCT_registry_registerFields(dataPool->providedFields, systemID, eOCT_FIELDPROVIDER_DATAPOOL, dataPool->dataPoolTypeIndex_reg, dataPool->global);
 
 			printf("%02"PRIu64".%02zu.--| %2cData Pool %zu: %-15s\n", systemID, dataPool->dataPoolTypeIndex_reg, ' ', dataPool->dataPoolTypeIndex_reg, dataPool->name);
+		}
+	}
+
+	printf("\n");
+	// GLOBALS
+	if (eOCT_pool_isEmpty(systemDescription->providedGlobals)) {
+		printf("No provided globals\n");
+	}
+	else {
+		eOCT_singleDescription* globalsArray = (eOCT_singleDescription*)systemDescription->providedGlobals.array;
+		for (OCT_index globalCtr = 0; globalCtr < systemDescription->providedGlobals.count; globalCtr++) {
+			eOCT_singleDescription* global = &globalsArray[globalCtr];
+			iOCT_registry_registerSingle(global);
+
+			printf("%02"PRIu64".%02zu.--| %2cGlobal %zu: %-15s\n", systemID, global->singleTypeIndex_reg, ' ', global->singleTypeIndex_reg, global->name);
 		}
 	}
 	printf("--------------------------------\n\n");
@@ -320,7 +339,7 @@ static void iOCT_registry_registerEvent(eOCT_eventDescription* eventDesc) {
 	eventDesc->eventTypeIndex_reg = eventIndex;
 	*registryEntry = *eventDesc;
 
-	if (registryEntry->cacheLocation) {
+	if (eventDesc->cacheLocation) {
 		*eventDesc->cacheLocation = *eventDesc;
 	}
 }
@@ -333,6 +352,18 @@ static void iOCT_registry_registerDataPool(eOCT_dataPoolDescription* dataPoolDes
 
 	if (dataPoolDesc->cacheLocation) {
 		*dataPoolDesc->cacheLocation = *dataPoolDesc;
+	}
+}
+
+static void iOCT_registry_registerSingle(eOCT_singleDescription* singleDesc) {
+	assert(singleDesc->global && "Context local singles not yet implemented");
+	OCT_index singleIndex;
+	eOCT_singleDescription* registryEntry = (eOCT_singleDescription*)eOCT_pool_addEntry(&iOCT_registry_inst.globalSingles, &singleIndex);
+	singleDesc->singleTypeIndex_reg = singleIndex;
+	*registryEntry = *singleDesc;
+
+	if (singleDesc->cacheLocation) {
+		*singleDesc->cacheLocation = *singleDesc;
 	}
 }
 

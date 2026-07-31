@@ -1,6 +1,4 @@
 add_library(Renderer STATIC
-        internal/rendererOld/spriteData/spriteData.c
-        internal/rendererOld/texture/texture.c
         system/systemDescription.c
         internal/renderer/renderer.c
         internal/renderer/texture/textureGroup.c

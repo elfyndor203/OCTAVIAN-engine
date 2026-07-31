@@ -8,6 +8,8 @@
 struct iOCT_windowSystem {
 	eOCT_systemDescription windowSystem;
 	eOCT_eventDescription keyEventCache;
+	eOCT_eventDescription mouseButtonEventCache;
+	eOCT_eventDescription mouseMoveEventCache;
 
 	eOCT_IDMap windowMap;
 	eOCT_pool windowPool;

@@ -16,7 +16,6 @@ struct iOCT_ECS {
 	// global data
 	eOCT_IDMap globalDataMap;
 	eOCT_pool globalDataPools;
-	iOCT_eventManager globalEvents;
 };
 
 extern iOCT_ECS iOCT_ECS_inst;

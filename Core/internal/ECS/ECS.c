@@ -17,9 +17,6 @@ void init_OCT_ECS_init() {
 	iOCT_ECS_inst.contextMap = eOCT_IDMap_init(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT);
 	iOCT_ECS_inst.contextPool = eOCT_pool_open(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, sizeof(iOCT_entityContext));
 
-	//iOCT_ECS_inst.componentDescPtrList = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, sizeof(eOCT_componentDescription*));
-	//iOCT_ECS_inst.componentRootInitList = eOCT_pool_init(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, sizeof(eOCT_rootAttachmentFx));
-	//eOCT_pool_setFill(&iOCT_ECS_inst.componentRootInitList, eOCT_POOL_FILLSETTING_ZEROS);
 	iOCT_ECS_inst.dataPoolSizeAndOrderList = eOCT_pool_open(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, sizeof(size_t));
 
 	iOCT_ECS_inst.globalDataMap = eOCT_IDMap_init(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT);
@@ -30,12 +27,11 @@ void init_OCT_ECS_init() {
 
 void init_OCT_ECS_build() {
 	iOCT_ECS_inst.entitySize = iOCT_registry_inst.components.count * sizeof(OCT_index);
-	iOCT_ECS_inst.globalEvents = iOCT_eventManager_init(OCT_ID_ECS);
 }
 
 void eOCT_ECS_update() {
-	iOCT_eventManager_clear(&iOCT_ECS_inst.globalEvents);
 }
+
 OCT_index iOCT_ECS_addDataPool(eOCT_dataPoolDescription desc, bool global) {
 	if (global) {
 		//printf("Added global data pool\n");

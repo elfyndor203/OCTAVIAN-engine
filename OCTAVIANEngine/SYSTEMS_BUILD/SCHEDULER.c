@@ -8,6 +8,7 @@ void OCT_engine_frame_start() {
 }
 void OCT_engine_update(OCT_handle context) {
     eOCT_ECS_update();
+    eOCT_globals_update();
     eOCT_entityContext_prepare(context);
 
     eOCT_WORLD_update(context);

@@ -26,9 +26,15 @@ add_library(Core STATIC
         internal/scheduler/scheduler_int.h
         internal/scheduler/types_int.h
         internal/scheduler/scheduler.c
-        internal/ECS/events/events_int.h
-        internal/ECS/events/events.c
-        internal/ECS/events/types_int.h
+        internal/events/events_int.h
+        internal/events/events.c
+        internal/events/types_int.h
+        engine/hardware/keys.h
+        internal/globals/globals_int.h
+        internal/globals/types_int.h
+        internal/globals/globals.c
+        engine/globals/globals_eng.h
+        engine/globals/types_eng.h
 )
 
 target_include_directories(Core

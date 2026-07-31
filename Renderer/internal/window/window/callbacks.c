@@ -21,4 +21,26 @@ void iOCT_window_keyCallback(GLFWwindow* window, int key, int scancode, int acti
     eOCT_event_broadcast(iOCT_windowSystem_inst.keyEventCache, OCT_HANDLE_NULL, &keyEvent);
 }
 
+void iOCT_window_mouseButtonCallback(GLFWwindow* window, int button, int action, int modifiers) {
+    if (!(action == GLFW_PRESS || action == GLFW_RELEASE)) {
+        return;
+    }
+    iOCT_mouseButtonEvent mouseButtonEvent = {
+        .button = button,
+        .pressed = (action == GLFW_PRESS),
+        .released = (action == GLFW_RELEASE)
+    };
+
+    eOCT_event_broadcast(iOCT_windowSystem_inst.mouseButtonEventCache, OCT_HANDLE_NULL, &mouseButtonEvent);
+}
+
+void iOCT_window_mouseMoveCallback(GLFWwindow* window, double xPos, double yPos) {
+    iOCT_mouseMoveEvent mouseMoveEvent = {
+        .xPos = (float)xPos,
+        .yPos = (float)yPos
+    };
+
+    eOCT_event_broadcast(iOCT_windowSystem_inst.mouseMoveEventCache, OCT_HANDLE_NULL, &mouseMoveEvent);
+}
+
 void iOCT_window_resizeCallback(GLFWwindow* window, int width, int height) {}

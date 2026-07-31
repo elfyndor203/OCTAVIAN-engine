@@ -1,6 +1,14 @@
 add_library(Input STATIC
     system/systemDescription.c
-        system/systemDescription.c
+        internal/inputSystem_int.h
+        internal/types_int.h
+        internal/inputSystem.c
+        internal/input/inputs_int.h
+        internal/input/callbacks.c
+        system/systemDescription_input.h
+        internal/input/inputs.c
+        include/OCT_Inputs.h
+        internal/input/keyStates.c
 )
 
 target_include_directories(Input

@@ -45,12 +45,21 @@ void system_register_systemEx() {
 
 	//
 
+	eOCT_singleDescription testSingle = {
+		.name = "testGlobal",
+		.type = eOCT_DATATYPE_INT64,
+		.cacheLocation = NULL,
+		.global = true
+	};
+	eOCT_singleDescription singles[1] = { testSingle };
+
 	// ensure the correct counts
 	eOCT_systemDescription templateSystem = {
 		.name = "_SystemEx",
 		.providedComponents = eOCT_generateComponentDescriptionPool(components, 1),
 		.requestedFields = eOCT_generateFieldRequestPool(requests, 6),
 		.providedEvents = eOCT_POOL_EMPTY,
+		.providedGlobals = eOCT_generateGlobalDescriptionPool(singles, 1),
 		.providedDataPools = eOCT_POOL_EMPTY,
 		.initFx = system_init_systemEx
 	};

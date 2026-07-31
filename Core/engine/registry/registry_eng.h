@@ -7,7 +7,8 @@
 typedef enum eOCT_fieldProvider {
 	eOCT_FIELDPROVIDER_COMPONENT = 1,
 	eOCT_FIELDPROVIDER_EVENT,
-	eOCT_FIELDPROVIDER_DATAPOOL
+	eOCT_FIELDPROVIDER_DATAPOOL,
+	eOCT_FIELDPROVIDER_GLOBAL
 } eOCT_fieldProvider;
 
 typedef enum eOCT_dataTypes { //__NOTE__ typedef all types? or no
@@ -46,55 +47,15 @@ union eOCT_dataUnion {
 	OCT_mat3 mat3;
 };
 
-typedef enum eOCT_fieldAccess {
-	OCT_FIELD_ACCESS_NONE = 0,	// 00
-	OCT_FIELD_ACCESS_READ = 1 << 0,	 // 01
-	OCT_FIELD_ACCESS_WRITE = 1 << 1, // 10
-	OCT_FIELD_ACCESS_READWRITE = OCT_FIELD_ACCESS_READ | OCT_FIELD_ACCESS_WRITE, // 11
-} eOCT_fieldAccess;
-
-struct eOCT_fieldDescription {
-	const char* name;
-	eOCT_dataTypes type;	// standard field types defined in fields.h
-	size_t offset;			// offset from the start of the component struct
-
+struct eOCT_fieldRequestCache {
+	eOCT_dataTypes type;
+	size_t offsetFromStruct;
 	eOCT_fieldProvider providerType;
-	OCT_index providerIndex_reg;
-	bool global_reg;
-};
+	OCT_index providerIndex;
 
-struct eOCT_componentDescription {
-	const char* name;
-	size_t stride;
-	eOCT_pool providedFields;
-	eOCT_componentDescription* cacheLocation;
-	eOCT_rootAttachmentFx rootAttachmentFx;
-	OCT_index sortValueOffset;
-	OCT_index entitySlotValueOffset;
-
-	OCT_index componentTypeIndex_reg; // where the component is located in the ECS
-};
-
-struct eOCT_dataPoolDescription {
-	const char* name;
-	size_t stride;
-	eOCT_pool providedFields;
-	eOCT_dataPoolDescription* cacheLocation;
 	bool global;
-
-	OCT_index dataPoolTypeIndex_reg;
+	eOCT_pool* globalPool;
 };
-
-struct eOCT_eventDescription { // for cross module communication, but what about for the user __NOTE__
-	const char* name;
-	size_t stride;
-	eOCT_pool providedFields;
-	eOCT_eventDescription* cacheLocation;
-	bool global;
-
-	OCT_index eventTypeIndex_reg;
-};
-
 struct eOCT_fieldRequest {
 	const char* name;
 	eOCT_dataTypes type;
@@ -108,12 +69,58 @@ struct eOCT_fieldRequest {
 	bool global_reg;
 	bool fulfilled_reg;
 };
+struct eOCT_fieldDescription {
+	const char* name;
+	eOCT_dataTypes type;	// standard field types defined in fields.h
+	size_t offset;			// offset from the start of the component struct
 
+	eOCT_fieldProvider providerType;
+	OCT_index providerIndex_reg;
+	bool global_reg;
+};
+struct eOCT_componentDescription {
+	const char* name;
+	size_t stride;
+	eOCT_pool providedFields;
+	eOCT_componentDescription* cacheLocation;
+	eOCT_rootAttachmentFx rootAttachmentFx;
+	OCT_index sortValueOffset;
+	OCT_index entitySlotValueOffset;
+
+	OCT_index componentTypeIndex_reg; // where the component is located in the ECS
+};
+struct eOCT_dataPoolDescription {
+	const char* name;
+	size_t stride;
+	eOCT_pool providedFields;
+	eOCT_dataPoolDescription* cacheLocation;
+	bool global;
+
+	OCT_index dataPoolTypeIndex_reg;
+};
+struct eOCT_eventDescription { // for cross module communication, but what about for the user __NOTE__
+	const char* name;
+	size_t stride;
+	eOCT_pool providedFields;
+	eOCT_eventDescription* cacheLocation;
+	bool global;
+
+	OCT_index eventTypeIndex_reg;
+};
+struct eOCT_singleDescription {
+	const char* name;
+	eOCT_dataTypes type;
+	eOCT_singleDescription* cacheLocation;
+	bool global;
+
+	OCT_index singleTypeIndex_reg;
+};
 struct eOCT_systemDescription {
 	const char* name;
 	eOCT_pool providedComponents;
 	eOCT_pool providedDataPools;
 	eOCT_pool providedEvents;
+	eOCT_pool providedGlobals;
 	eOCT_pool requestedFields;
 	eOCT_systemInitFx initFx;
 	// eOCT_systemUpdateFx updateFx;
@@ -122,11 +129,11 @@ struct eOCT_systemDescription {
 };
 
 
-
 void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription);
 //void eOCT_registry_allocateComponents(eOCT_componentDescription* componentDescription);
 eOCT_pool eOCT_generateFieldDescriptionPool(eOCT_fieldDescription* array, size_t count);
 eOCT_pool eOCT_generateComponentDescriptionPool(eOCT_componentDescription* array, size_t count);
 eOCT_pool eOCT_generateDataPoolDescriptionPool(eOCT_dataPoolDescription* array, size_t count);
 eOCT_pool eOCT_generateEventDescriptionPool(eOCT_eventDescription* array, size_t count);
+eOCT_pool eOCT_generateGlobalDescriptionPool(eOCT_singleDescription* array, size_t count);
 eOCT_pool eOCT_generateFieldRequestPool(eOCT_fieldRequest* array, size_t count);

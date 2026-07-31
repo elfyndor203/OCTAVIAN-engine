@@ -36,7 +36,7 @@ OCT_handle OCT_entityContext_open(OCT_handle* rootOut) {
 	eOCT_pool_setFill(&newContext->entityPool, noComponent); 	// mark all component indices as unset
 
 	newContext->componentPools = iOCT_entityContext_initComponentPools(newID);
-	newContext->eventManager = iOCT_eventManager_init(newID);
+	newContext->eventManager = iOCT_eventManager_open(newID);
 	OCT_handle rootEntity = iOCT_entityContext_initRootEntity(newContext);
 	if (rootOut) {
 		*rootOut = rootEntity;

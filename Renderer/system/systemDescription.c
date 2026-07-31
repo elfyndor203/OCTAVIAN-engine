@@ -50,7 +50,7 @@ void system_register_RENDERER() {
 }
 
 void system_register_WINDOW() {
-    eOCT_fieldDescription glfwKeyEvent = {
+    eOCT_fieldDescription glfwKeys = {
         .name = "glfwKeys",
         .providerType = eOCT_FIELDPROVIDER_EVENT,
         .offset = offsetof(iOCT_keyEvent, key),
@@ -68,8 +68,7 @@ void system_register_WINDOW() {
         .offset = offsetof(iOCT_keyEvent, released),
         .type = eOCT_DATATYPE_BOOL
     };
-    eOCT_fieldDescription keyFields[3] = { glfwKeyEvent, glfwKeyPress, glfwKeyRelease };
-
+    eOCT_fieldDescription keyFields[3] = { glfwKeys, glfwKeyPress, glfwKeyRelease };
     eOCT_eventDescription keyEvents = {
         .name = "keysEvents",
         .providedFields = eOCT_generateFieldDescriptionPool(keyFields, 3),
@@ -78,13 +77,61 @@ void system_register_WINDOW() {
         .cacheLocation = &iOCT_windowSystem_inst.keyEventCache,
     };
 
-    eOCT_eventDescription events[1] = { keyEvents };
+    eOCT_fieldDescription mouseButton = {
+        .name = "glfwMouseButton",
+        .type = eOCT_DATATYPE_INT64,
+        .offset = offsetof(iOCT_mouseButtonEvent, button),
+        .providerType = eOCT_FIELDPROVIDER_EVENT
+    };
+    eOCT_fieldDescription mouseButtonPress = {
+        .name = "glfwMouseButtonPress",
+        .type = eOCT_DATATYPE_BOOL,
+        .offset = offsetof(iOCT_mouseButtonEvent, pressed),
+        .providerType = eOCT_FIELDPROVIDER_EVENT
+    };
+    eOCT_fieldDescription mouseButtonRelease = {
+        .name = "glfwMouseButtonRelease",
+        .type = eOCT_DATATYPE_BOOL,
+        .offset = offsetof(iOCT_mouseButtonEvent, released),
+        .providerType = eOCT_FIELDPROVIDER_EVENT
+    };
+    eOCT_fieldDescription mouseButtonFields[3] = { mouseButton, mouseButtonPress, mouseButtonRelease };
+    eOCT_eventDescription mouseButtonEvents = {
+        .name = "mouseButtonEvents",
+        .providedFields = eOCT_generateFieldDescriptionPool(mouseButtonFields, 3),
+        .stride = sizeof(iOCT_mouseButtonEvent),
+        .global = true,
+        .cacheLocation = &iOCT_windowSystem_inst.mouseButtonEventCache
+    };
+
+    eOCT_fieldDescription mouseXPos = {
+        .name = "glfwMouseXPos",
+        .providerType = eOCT_FIELDPROVIDER_EVENT,
+        .offset = offsetof(iOCT_mouseMoveEvent, xPos),
+        .type = eOCT_DATATYPE_FLOAT32,
+    };
+    eOCT_fieldDescription mouseYPos = {
+        .name = "glfwMouseYPos",
+        .providerType = eOCT_FIELDPROVIDER_EVENT,
+        .offset = offsetof(iOCT_mouseMoveEvent, yPos),
+        .type = eOCT_DATATYPE_FLOAT32,
+    };
+    eOCT_fieldDescription mouseMoveFields[2] = { mouseXPos, mouseYPos };
+    eOCT_eventDescription mouseMoveEvents = {
+        .name = "mouseMoveEvents",
+        .providedFields = eOCT_generateFieldDescriptionPool(mouseMoveFields, 2),
+        .stride = sizeof(iOCT_mouseMoveEvent),
+        .global = true,
+        .cacheLocation = &iOCT_windowSystem_inst.mouseMoveEventCache
+    };
+
+    eOCT_eventDescription events[3] = { keyEvents, mouseButtonEvents, mouseMoveEvents };
 
     eOCT_systemDescription windowSystem = {
         .name = "Window",
         .providedDataPools = eOCT_POOL_EMPTY,
         .providedComponents = eOCT_POOL_EMPTY,
-        .providedEvents = eOCT_generateEventDescriptionPool(events, 1),
+        .providedEvents = eOCT_generateEventDescriptionPool(events, 3),
         .requestedFields = eOCT_POOL_EMPTY,
         .initFx = system_init_WINDOW
     };

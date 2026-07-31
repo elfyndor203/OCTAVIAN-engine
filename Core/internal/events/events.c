@@ -7,10 +7,11 @@
 #include "ECS/entityContext_int.h"
 #include "ECS/types_eng.h"
 #include "ECS/ECS_int.h"
+#include "globals/globals_int.h"
 
 static eOCT_pool* iOCT_getEventPool(eOCT_eventDescription eventDesc, OCT_handle contextHandle, eOCT_pool** callbackPoolOut);
 
-iOCT_eventManager iOCT_eventManager_init(OCT_ID ownerID) {
+iOCT_eventManager iOCT_eventManager_open(OCT_ID ownerID) {
     eOCT_pool eventDescPool = iOCT_registry_inst.events;
     eOCT_eventDescription* eventDescArray = (eOCT_eventDescription*)eventDescPool.array;
 
@@ -85,7 +86,7 @@ static eOCT_pool* iOCT_getEventPool(eOCT_eventDescription eventDesc, OCT_handle 
     eOCT_pool* callbackPool;
     OCT_index providerIndex = eventDesc.eventTypeIndex_reg;
     if (eventDesc.global) {
-        eventManager = &iOCT_ECS_inst.globalEvents;
+        eventManager = &iOCT_globals_inst.globalEvents;
     }
     else {
         iOCT_entityContext* context = iOCT_entityContext_get(contextHandle.objectID);

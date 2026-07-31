@@ -10,6 +10,7 @@ struct iOCT_registry {
 	eOCT_pool components; // stable copies
 	eOCT_pool dataPools;
 	eOCT_pool events;
+	eOCT_pool globalSingles;
 
 	eOCT_pool fields;	  // field copies
 

@@ -20,7 +20,11 @@ OCT_handle OCT_window_open(const char* name, unsigned int sizeX, unsigned int si
     int frameBufferX;
     int frameBufferY;
     glfwSwapInterval(1);
+
     glfwSetKeyCallback(windowPtr, iOCT_window_keyCallback);
+    glfwSetMouseButtonCallback(windowPtr, iOCT_window_mouseButtonCallback);
+    glfwSetCursorPosCallback(windowPtr, iOCT_window_mouseMoveCallback);
+
     glfwGetFramebufferSize(windowPtr, &frameBufferX, &frameBufferY);
     glViewport(0, 0, frameBufferX, frameBufferY);
     glClearColor(color.x, color.y, color.z, color.a); // __NOTE__ PASS AS PARAM

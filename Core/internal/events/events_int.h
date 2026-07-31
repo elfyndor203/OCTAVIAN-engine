@@ -9,5 +9,5 @@ struct iOCT_eventManager {
     eOCT_pool callbackPools;
 };
 
-iOCT_eventManager iOCT_eventManager_init(OCT_ID ownerID);
+iOCT_eventManager iOCT_eventManager_open(OCT_ID ownerID);
 void iOCT_eventManager_clear(iOCT_eventManager* manager);
