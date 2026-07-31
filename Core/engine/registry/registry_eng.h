@@ -59,14 +59,14 @@ struct eOCT_fieldRequestCache {
 struct eOCT_fieldRequest {
 	const char* name;
 	eOCT_dataTypes type;
-	eOCT_fieldRequest* cacheLocation;
+	eOCT_fieldRequestCache* cacheLocation;
 	//eOCT_fieldAccess access;
 	bool optional;
 
-	eOCT_fieldProvider providerType_reg;
-	OCT_index providerIndex_reg;
-	size_t fieldOffset_reg;
-	bool global_reg;
+	// eOCT_fieldProvider providerType_reg;
+	// OCT_index providerIndex_reg;
+	// size_t fieldOffset_reg;
+	// bool global_reg;
 	bool fulfilled_reg;
 };
 struct eOCT_fieldDescription {

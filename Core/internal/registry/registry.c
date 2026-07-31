@@ -43,28 +43,28 @@ void init_OCT_registry_init() {
 void init_OCT_registry_distributeFields() {
 	eOCT_pool systemPool = iOCT_registry_inst.systems;
 	eOCT_systemDescription** systemArray = (eOCT_systemDescription**)systemPool.array;
-	eOCT_systemDescription* system;
 
-	eOCT_pool requestPool;
-	eOCT_fieldRequest* requestArray;
-	eOCT_fieldRequest* request;
-
-	eOCT_fieldDescription match;
-	
 	for (int systemCtr = 0; systemCtr < systemPool.count; systemCtr++) {
-		system = systemArray[systemCtr];
-		requestPool = system->requestedFields;
+		eOCT_systemDescription* system = systemArray[systemCtr];
+		eOCT_pool requestPool = system->requestedFields;
 
 		if (eOCT_pool_isEmpty(requestPool)) {	// ensure pool has contents
 			continue;
 		}
-		requestArray = (eOCT_fieldRequest*)requestPool.array;
+		eOCT_fieldRequest* requestArray = (eOCT_fieldRequest*)requestPool.array;
 
 		// for each request
 		for (int requestCtr = 0; requestCtr < requestPool.count; requestCtr++) {
-			request = &requestArray[requestCtr];
-			if (iOCT_registry_findField(request->name, &match)) {	// if there is a match
-				request->providerIndex_reg = match.providerIndex_reg;
+			eOCT_fieldRequest request = requestArray[requestCtr];
+			eOCT_fieldRequestCache* cache = request.cacheLocation;
+			eOCT_fieldDescription match;
+			if (iOCT_registry_findField(request.name, &match)) {	// if there is a match
+				cache->type = match.type;
+				cache->global = match.global_reg;
+				cache->providerType = match.providerType;
+				cache->offsetFromStruct = match.offset;
+				cache->providerIndex = match.providerIndex_reg;
+				cache->globalPool =
 				request->fieldOffset_reg = match.offset;
 				request->global_reg = match.global_reg;
 				request->fulfilled_reg = true;
@@ -172,7 +172,7 @@ void init_OCT_registry_check() {
 
 #pragma endregion
 
-#pragma region engine
+#pragma region generators
 eOCT_pool eOCT_generateFieldDescriptionPool(eOCT_fieldDescription* array, size_t count) {
 	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, count, sizeof(eOCT_fieldDescription));
 	eOCT_fieldDescription* destination;
@@ -235,6 +235,7 @@ eOCT_pool eOCT_generateFieldRequestPool(eOCT_fieldRequest* array, size_t count) 
 	return pool;
 }
 
+#pragma endregion
 /*!
  * Registers each system's components, data pools, and events into the registry. For each component, data pool, and event, registers each of its fields. Engine init fails if any duplicate fields are found.
  * @param systemDescription
@@ -312,8 +313,6 @@ void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription) {
 	printf("--------------------------------\n\n");
 }
 
-#pragma endregion
-
 #pragma region navigation
 eOCT_eventDescription iOCT_registry_findSourceEventDescription(eOCT_fieldRequest fieldRequest) {
 	eOCT_eventDescription* array = (eOCT_eventDescription*)iOCT_registry_inst.events.array;
@@ -332,7 +331,6 @@ static void iOCT_registry_registerComponent(eOCT_componentDescription* component
 		*componentDesc->cacheLocation = *componentDesc;
 	}
 }
-
 static void iOCT_registry_registerEvent(eOCT_eventDescription* eventDesc) {
 	OCT_index eventIndex;
 	eOCT_eventDescription* registryEntry = (eOCT_eventDescription*)eOCT_pool_addEntry(&iOCT_registry_inst.events, &eventIndex);
@@ -343,7 +341,6 @@ static void iOCT_registry_registerEvent(eOCT_eventDescription* eventDesc) {
 		*eventDesc->cacheLocation = *eventDesc;
 	}
 }
-
 static void iOCT_registry_registerDataPool(eOCT_dataPoolDescription* dataPoolDesc) {
 	dataPoolDesc->dataPoolTypeIndex_reg = iOCT_ECS_addDataPool(*dataPoolDesc, dataPoolDesc->global);
 
@@ -354,7 +351,6 @@ static void iOCT_registry_registerDataPool(eOCT_dataPoolDescription* dataPoolDes
 		*dataPoolDesc->cacheLocation = *dataPoolDesc;
 	}
 }
-
 static void iOCT_registry_registerSingle(eOCT_singleDescription* singleDesc) {
 	assert(singleDesc->global && "Context local singles not yet implemented");
 	OCT_index singleIndex;
@@ -366,7 +362,6 @@ static void iOCT_registry_registerSingle(eOCT_singleDescription* singleDesc) {
 		*singleDesc->cacheLocation = *singleDesc;
 	}
 }
-
 static bool iOCT_registry_findField(const char* fieldName, eOCT_fieldDescription* fieldOut) {
 	eOCT_pool* fields = &iOCT_registry_inst.fields;
 	//printf("Number of fields in registry: %d\n", fields->count);
