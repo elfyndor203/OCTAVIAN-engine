@@ -13,9 +13,13 @@ void system_init_systemEx() {
 }
 
 static void iOCT_input_keyCallback(OCT_index eventIndex) {
-    int key = *(int*)eOCT_event_read(iOCT_systemEx_inst.keyCache, OCT_HANDLE_NULL, eventIndex);
-    bool pressed = *(bool*)eOCT_event_read(iOCT_systemEx_inst.keyPressCache, OCT_HANDLE_NULL, eventIndex);
-    bool released = *(bool*)eOCT_event_read(iOCT_systemEx_inst.keyReleaseCache, OCT_HANDLE_NULL, eventIndex);
+    eOCT_pool keyEventPool = *eOCT_field_getSourcePool(OCT_HANDLE_NULL, iOCT_systemEx_inst.keyCache);
+    eOCT_pool pressEventPool = *eOCT_field_getSourcePool(OCT_HANDLE_NULL, iOCT_systemEx_inst.keyPressCache);
+    eOCT_pool releaseEventPool = *eOCT_field_getSourcePool(OCT_HANDLE_NULL, iOCT_systemEx_inst.keyReleaseCache);
+
+    int key = *(int*)eOCT_field_read(keyEventPool, iOCT_systemEx_inst.keyCache, eventIndex);
+    bool pressed = *(bool*)eOCT_field_read(keyEventPool, iOCT_systemEx_inst.keyPressCache, eventIndex);
+    bool released = *(bool*)eOCT_field_read(keyEventPool, iOCT_systemEx_inst.keyReleaseCache, eventIndex);
 
     if (pressed) {
         printf("Key %c pressed\n", key);

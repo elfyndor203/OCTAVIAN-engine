@@ -27,27 +27,33 @@ void system_register_systemEx() {
 				.name = "glfwKeys",
 				.type = eOCT_DATATYPE_INT64,
 				.optional = false,
-				.cacheLocation = &iOCT_systemEx_inst.keyCache
+				.ticketCacheLocation = &iOCT_systemEx_inst.keyCache
 			};
 			eOCT_fieldRequest keyPress = {
 				.name = "glfwKeyPress",
 				.type = eOCT_DATATYPE_BOOL,
 				.optional = false,
-				.cacheLocation = &iOCT_systemEx_inst.keyPressCache
+				.ticketCacheLocation = &iOCT_systemEx_inst.keyPressCache
 			};
 			eOCT_fieldRequest keyRelease = {
 				.name = "glfwKeyRelease",
 				.type = eOCT_DATATYPE_BOOL,
 				.optional = false,
-				.cacheLocation = &iOCT_systemEx_inst.keyReleaseCache
+				.ticketCacheLocation = &iOCT_systemEx_inst.keyReleaseCache
 			};
 		eOCT_fieldRequest requests[6] = { heightReq, widthReq, mightNeed, keys, keyPress, keyRelease };
 
 	//
 
+	eOCT_fieldDescription testSingleField = {
+		.name = "testSingleField",
+		.type = eOCT_DATATYPE_INT64,
+		.providerType = eOCT_FIELDPROVIDER_SINGLE,
+		.offset = 0
+	};
 	eOCT_singleDescription testSingle = {
 		.name = "testGlobal",
-		.type = eOCT_DATATYPE_INT64,
+		.providedField = testSingleField,
 		.cacheLocation = NULL,
 		.global = true
 	};
@@ -59,7 +65,7 @@ void system_register_systemEx() {
 		.providedComponents = eOCT_generateComponentDescriptionPool(components, 1),
 		.requestedFields = eOCT_generateFieldRequestPool(requests, 6),
 		.providedEvents = eOCT_POOL_EMPTY,
-		.providedGlobals = eOCT_generateGlobalDescriptionPool(singles, 1),
+		.providedSingles = eOCT_generateSingleDescriptionPool(singles, 1),
 		.providedDataPools = eOCT_POOL_EMPTY,
 		.initFx = system_init_systemEx
 	};

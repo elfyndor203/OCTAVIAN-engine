@@ -4,9 +4,9 @@
 
 struct iOCT_systemEx {
 	eOCT_systemDescription system; // stable systemDescription storage
-	eOCT_fieldRequest keyCache;
-	eOCT_fieldRequest keyPressCache;
-	eOCT_fieldRequest keyReleaseCache;
+	eOCT_fieldTicket keyCache;
+	eOCT_fieldTicket keyPressCache;
+	eOCT_fieldTicket keyReleaseCache;
 };
 
 extern iOCT_systemEx iOCT_systemEx_inst;

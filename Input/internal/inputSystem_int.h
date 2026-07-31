@@ -5,14 +5,14 @@
 
 struct iOCT_inputSystem {
     eOCT_systemDescription system;
-    eOCT_fieldRequest keyCache;
-    eOCT_fieldRequest keyPressCache;
-    eOCT_fieldRequest keyReleaseCache;
-    eOCT_fieldRequest mouseButtonCache;
-    eOCT_fieldRequest mouseButtonPressCache;
-    eOCT_fieldRequest mouseButtonReleaseCache;
-    eOCT_fieldRequest mousePositionXCache;
-    eOCT_fieldRequest mousePositionYCache;
+    eOCT_fieldTicket keyCache;
+    eOCT_fieldTicket keyPressCache;
+    eOCT_fieldTicket keyReleaseCache;
+    eOCT_fieldTicket mouseButtonCache;
+    eOCT_fieldTicket mouseButtonPressCache;
+    eOCT_fieldTicket mouseButtonReleaseCache;
+    eOCT_fieldTicket mousePositionXCache;
+    eOCT_fieldTicket mousePositionYCache;
 
     OCT_vec2 mousePosition;
 };

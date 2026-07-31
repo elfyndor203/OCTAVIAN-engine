@@ -33,4 +33,5 @@ target_link_libraries(OCTAVIANEngine
         CoreInit
         RendererSystem
         InputSystem
+        PlatformSystem
 )

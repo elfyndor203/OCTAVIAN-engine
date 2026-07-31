@@ -44,7 +44,6 @@ void iOCT_eventManager_clear(iOCT_eventManager* manager) {
     }
 }
 
-//__NOTE__ maybe make it so callbacks only tell the user where the event is so they can query it, not explicitly passing data
 void eOCT_event_broadcast(eOCT_eventDescription eventDesc, OCT_handle contextHandle, void* event) {
     eOCT_pool* eventPool;
     eOCT_pool* callbackPool;
@@ -62,23 +61,30 @@ void eOCT_event_broadcast(eOCT_eventDescription eventDesc, OCT_handle contextHan
     }
 }
 
-void eOCT_event_subscribe(eOCT_fieldRequest eventField, OCT_handle contextHandle, eOCT_eventCallbackFx callback) {
-    if (eventField.providerType_reg != eOCT_FIELDPROVIDER_EVENT) {
+void eOCT_event_subscribe(eOCT_fieldTicket eventField, OCT_handle contextHandle, eOCT_eventCallbackFx callback) {
+    if (eventField.providerType != eOCT_FIELDPROVIDER_EVENT) {
         OCT_ERROR_LOG(OCT_EXIT_SOURCE_MISMATCH, "Tried to set callback for field that does not come from an event");
         return;
     }
+    if (!eventField.global) {
+        OCT_ERROR_LOG(OCT_EXIT_NOT_YET_IMPLEMENTED, "Context events not yet implemented");
+    }
 
-    iOCT_eventManager* eventManager;
-    eOCT_pool* callbackPool;
-    iOCT_getEventPool(iOCT_registry_findSourceEventDescription(eventField), contextHandle, &callbackPool);
+    eOCT_pool* callbackPool = (eOCT_pool*)eOCT_pool_access(&iOCT_globals_inst.globalEvents.callbackPools, eventField.providerIndex, 0);
     eOCT_eventCallbackFx* destination = (eOCT_eventCallbackFx*)eOCT_pool_addEntry(callbackPool, NULL);
     *destination = callback;
 }
 
-void* eOCT_event_read(eOCT_fieldRequest eventField, OCT_handle contextHandle, OCT_index eventEntryIndex) {
-    eOCT_pool* eventPool = iOCT_getEventPool(iOCT_registry_findSourceEventDescription(eventField), contextHandle, NULL);
-    return eOCT_pool_access(eventPool, eventEntryIndex, eventField.fieldOffset_reg);
-}
+// void* eOCT_event_read(eOCT_fieldTicket eventField, OCT_handle contextHandle, OCT_index eventEntryIndex) {
+//     if (eventField.providerType != eOCT_FIELDPROVIDER_EVENT) {
+//         OCT_ERROR_LOG(OCT_EXIT_SOURCE_MISMATCH, "Tried to read ");
+//         return;
+//     }
+//     if (!eventField.global) {
+//         OCT_ERROR_LOG(OCT_EXIT_NOT_YET_IMPLEMENTED, "Context events not yet implemented");
+//     }
+//     return eOCT_pool_access(eventPool, eventEntryIndex, eventField.fieldOffset_reg);
+// }
 
 static eOCT_pool* iOCT_getEventPool(eOCT_eventDescription eventDesc, OCT_handle contextHandle, eOCT_pool** callbackPoolOut) {
     iOCT_eventManager* eventManager;

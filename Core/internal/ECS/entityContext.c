@@ -65,7 +65,7 @@ static eOCT_pool iOCT_entityContext_initComponentPools(OCT_ID contextID) {
 		if (component->sortValueOffset != eOCT_POOL_SORT_NONE) {
 			eOCT_pool_setSort(newPool, component->sortValueOffset);
 		}
-		printf("Allocated component %s with size %zu at %p\n", component->name, component->stride, newPool);
+		//printf("Allocated component %s with size %zu at %p\n", component->name, component->stride, newPool);
 	}
 
 	return containerPool;

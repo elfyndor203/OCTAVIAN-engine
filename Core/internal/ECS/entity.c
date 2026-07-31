@@ -32,9 +32,9 @@ static OCT_index* iOCT_entity_getComponentSlot(iOCT_entityContext* context, OCT_
 static void iOCT_entity_resolveIndices(iOCT_entityContext* context, eOCT_pool* componentPool, eOCT_componentDescription component, OCT_index skip);
 
 OCT_handle OCT_entity_new(OCT_handle contextHandle) {
-	printf("Context ID: %zu\n", contextHandle.objectID);
+	//printf("Context ID: %zu\n", contextHandle.objectID);
 	iOCT_entityContext* context = eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, contextHandle.objectID);
-	printf("Context: %p\n", context);
+	//printf("Context: %p\n", context);
 	return iOCT_entity_new(context);
 }
 OCT_handle iOCT_entity_new(iOCT_entityContext* context) {
@@ -98,7 +98,7 @@ void* iOCT_entity_attachComponent(iOCT_entityContext* context, OCT_index entityI
 // 	}
 // }
 
-void* eOCT_entity_getField(OCT_handle entity, eOCT_fieldRequest field) {
+void* eOCT_entity_getField(OCT_handle entity, eOCT_fieldTicket field) {
 	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, entity.containerID);
 	if (!context) {
 		OCT_ERROR_LOG(OCT_EXIT_REFERENCE_DOES_NOT_EXIST, "Bad context ID");
@@ -109,7 +109,7 @@ void* eOCT_entity_getField(OCT_handle entity, eOCT_fieldRequest field) {
 	}
 
 
-	void* componentLoc = iOCT_entity_getComponent(context, entityIndex, field.providerIndex_reg);
+	void* componentLoc = iOCT_entity_getComponent(context, entityIndex, field.providerIndex);
 
 	// printf("Entity index requested: %zu\n", entityIndex);
 	// printf("Got component loc %p\n", componentLoc);
@@ -118,7 +118,7 @@ void* eOCT_entity_getField(OCT_handle entity, eOCT_fieldRequest field) {
 		OCT_ERROR_LOG(OCT_EXIT_REFERENCE_DOES_NOT_EXIST, "Bad Field Access");
 		return NULL;
 	}
-	return (char*)componentLoc + field.fieldOffset_reg;
+	return (char*)componentLoc + field.offsetFromStruct;
 }
 void* eOCT_entity_getComponent(OCT_handle entity, eOCT_componentDescription component) {
 	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, entity.containerID);

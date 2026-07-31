@@ -193,7 +193,7 @@ bool eOCT_pool_fill(const eOCT_pool* pool, eOCT_pool_fillSetting fillSetting) {
 		return 0;
 	}
 
-	printf("Filled pool\n");
+	// printf("Filled pool\n");
 	return 1;
 }
 bool eOCT_pool_combine(eOCT_pool* destination, eOCT_pool* source, bool freeSource) {

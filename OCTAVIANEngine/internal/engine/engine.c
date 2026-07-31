@@ -19,6 +19,14 @@
 // 	OCT_WDWModule_free();
 // }
 
+/*
+ * Order:
+ *      Init parts of core with no dependencies
+ *      Register all systems
+ *      Build core systems based on the registry
+ *      Distribute fields to external systems
+ *      Init all external systems
+ */
 void OCT_engine_init() {
     init_OCT_registry_init();
     init_OCT_ECS_init();
@@ -26,11 +34,12 @@ void OCT_engine_init() {
     init_OCT_globals_init();
 
     init_OCT_registerAllSystems();
-    init_OCT_registry_distributeFields();
-    init_OCT_registry_check();
 
     init_OCT_ECS_build();
     init_OCT_globals_build();
+
+    init_OCT_registry_distributeFields();
+    init_OCT_registry_check();
 
     init_OCT_registry_initAllSystems();
 }

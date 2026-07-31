@@ -47,7 +47,7 @@ GLuint iOCT_shader_load(char* path, int type) {
 		printf("Shader error: %s\n", log);
 	}
 
-	printf("Shader loaded\n");
+	//printf("Shader loaded\n");
 	free(src);
 	return shader;
 }
@@ -72,6 +72,6 @@ GLuint iOCT_shader_createProgram(char* vertPath, char* fragPath) {
 
 	glUseProgram(program);
 
-	printf("Shader program created\n");
+	// printf("Shader program created\n");
 	return program;
 }
