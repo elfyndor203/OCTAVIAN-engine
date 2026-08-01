@@ -51,8 +51,6 @@ OCT_handle OCT_entityContext_open(OCT_handle* rootOut) {
 	return contextHandle;
 }
 
-
-
 static eOCT_pool iOCT_entityContext_initComponentPools(OCT_ID contextID) {
 	OCT_index totalComponents = iOCT_registry_inst.components.count;
 	eOCT_pool containerPool = eOCT_pool_open(contextID, totalComponents, sizeof(eOCT_pool));
@@ -87,31 +85,42 @@ static OCT_handle iOCT_entityContext_initRootEntity(iOCT_entityContext* context)
 	return rootEntity;
 }
 
-eOCT_pool* eOCT_getComponentPool(OCT_handle contextHandle, eOCT_componentDescription component) {
-	iOCT_entityContext* context = iOCT_entityContext_get(contextHandle.objectID);
-	return iOCT_getComponentPool(context, component.componentTypeIndex_reg);
-}
-eOCT_pool* eOCT_getFieldSourcePool(OCT_handle contextHandle, eOCT_fieldRequest field) {
-	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, contextHandle.objectID);
-	return iOCT_getComponentPool(context, field.providerIndex_reg);
-}
-eOCT_pool* eOCT_getDataPool_context(OCT_handle contextHandle, eOCT_dataPoolDescription dataPoolDescription) {
-	if (dataPoolDescription.global) {
-		printf("Data pool %s is global\n", dataPoolDescription.name);
-		return NULL;
-	}
-	iOCT_entityContext* context = eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, contextHandle.objectID);
-	return iOCT_getDataPool(context, dataPoolDescription.dataPoolTypeIndex_reg);
-}
+eOCT_contextToken eOCT_context_getToken(OCT_handle contextHandle) {
+	iOCT_entityContext context = *iOCT_entityContext_get(contextHandle.objectID);
 
-eOCT_pool* iOCT_getComponentPool(iOCT_entityContext* context, OCT_index componentIndex) {
+	eOCT_contextToken newToken = {
+		.entities = &context.entityPool,
+		.components = &context.componentPools
+	};
+
+	return newToken;
+}
+eOCT_pool* eOCT_context_getComponentPool(OCT_handle contextHandle, eOCT_componentDescription component) {
+	iOCT_entityContext* context = iOCT_entityContext_get(contextHandle.objectID);
+	return iOCT_context_getComponentPool(context, component.componentTypeIndex_reg);
+}
+eOCT_pool* iOCT_context_getComponentPool(iOCT_entityContext* context, OCT_index componentIndex) {
 	eOCT_pool* poolsArray = (eOCT_pool*)context->componentPools.array;
 	return &poolsArray[componentIndex];
 }
-eOCT_pool* iOCT_getDataPool(iOCT_entityContext* context, OCT_index dataPoolTypeIndex) {
-	eOCT_pool* pool = (eOCT_pool*)eOCT_pool_access(&context->systemDataPools, dataPoolTypeIndex, 0);
-	return pool;
-}
+// eOCT_pool* eOCT_getFieldSourcePool(OCT_handle contextHandle, eOCT_fieldRequest field) {
+// 	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, contextHandle.objectID);
+// 	return iOCT_getComponentPool(context, field.providerIndex_reg);
+// }
+// eOCT_pool* eOCT_getDataPool_context(OCT_handle contextHandle, eOCT_dataPoolDescription dataPoolDescription) {
+// 	if (dataPoolDescription.global) {
+// 		printf("Data pool %s is global\n", dataPoolDescription.name);
+// 		return NULL;
+// 	}
+// 	iOCT_entityContext* context = eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, contextHandle.objectID);
+// 	return iOCT_getDataPool(context, dataPoolDescription.dataPoolTypeIndex_reg);
+// }
+
+
+// eOCT_pool* iOCT_getDataPool(iOCT_entityContext* context, OCT_index dataPoolTypeIndex) {
+// 	eOCT_pool* pool = (eOCT_pool*)eOCT_pool_access(&context->systemDataPools, dataPoolTypeIndex, 0);
+// 	return pool;
+// }
 
 void OCT_entityContext_dumpEntityPool(OCT_handle contextHandle) {
 	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, contextHandle.objectID);

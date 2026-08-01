@@ -43,70 +43,70 @@ OCT_index iOCT_ECS_addDataPool(eOCT_dataPoolDescription desc, bool global) {
 	}
 }
 
-eOCT_pool* eOCT_getDataPool_global(eOCT_dataPoolDescription dataPoolDescription, eOCT_IDMap** IDMapOut) {
-	if (!dataPoolDescription.global) {
-		printf("Data pool %s is context local\n", dataPoolDescription.name);
-		OCT_ERROR_LOG(OCT_EXIT_ACCESS_DENIED, "");
-		return NULL;
-	}
-	if (IDMapOut) {
-		*IDMapOut = &iOCT_ECS_inst.globalDataMap;
-	}
+// eOCT_pool* eOCT_getDataPool_global(eOCT_dataPoolDescription dataPoolDescription, eOCT_IDMap** IDMapOut) {
+// 	if (!dataPoolDescription.global) {
+// 		printf("Data pool %s is context local\n", dataPoolDescription.name);
+// 		OCT_ERROR_LOG(OCT_EXIT_ACCESS_DENIED, "");
+// 		return NULL;
+// 	}
+// 	if (IDMapOut) {
+// 		*IDMapOut = &iOCT_ECS_inst.globalDataMap;
+// 	}
+//
+// 	eOCT_pool* dataPool = (eOCT_pool*)eOCT_pool_access(&iOCT_ECS_inst.globalDataPools, dataPoolDescription.dataPoolTypeIndex_reg, 0);
+// 	return dataPool;
+// }
 
-	eOCT_pool* dataPool = (eOCT_pool*)eOCT_pool_access(&iOCT_ECS_inst.globalDataPools, dataPoolDescription.dataPoolTypeIndex_reg, 0);
-	return dataPool;
-}
+// void* eOCT_addGlobalDataEntry(eOCT_dataPoolDescription dataPoolDescription, bool createID, OCT_ID* IDOut) {
+// 	if (!dataPoolDescription.global) {
+// 		printf("Data pool %s is context local\n", dataPoolDescription.name);
+// 		return NULL;
+// 	}
+//
+// 	eOCT_pool* dataPool = (eOCT_pool*)eOCT_pool_access(&iOCT_ECS_inst.globalDataPools, dataPoolDescription.dataPoolTypeIndex_reg, 0);
+// 	eOCT_IDMap* map = &iOCT_ECS_inst.globalDataMap;
+//
+// 	OCT_index dataIndex;
+// 	void* dataLoc = eOCT_pool_addEntry(dataPool, &dataIndex);
+//
+// 	if (createID && IDOut) {
+// 		*IDOut = eOCT_IDMap_register(map, dataIndex);
+// 	}
+// 	return dataLoc;
+// }
 
-void* eOCT_addGlobalDataEntry(eOCT_dataPoolDescription dataPoolDescription, bool createID, OCT_ID* IDOut) {
-	if (!dataPoolDescription.global) {
-		printf("Data pool %s is context local\n", dataPoolDescription.name);
-		return NULL;
-	}
+// void* eOCT_getGlobalDataEntry(eOCT_dataPoolDescription dataPoolDescription, OCT_ID dataID) {
+// 	if (!dataPoolDescription.global) {
+// 		printf("Data pool %s is context local\n", dataPoolDescription.name);
+// 		return NULL;
+// 	}
+//
+// 	eOCT_pool* dataPool = (eOCT_pool*)eOCT_pool_access(&iOCT_ECS_inst.globalDataPools, dataPoolDescription.dataPoolTypeIndex_reg, 0);
+// 	OCT_index dataIndex = eOCT_IDMap_getIndex(&iOCT_ECS_inst.globalDataMap, dataID);
+//
+// 	if (dataIndex >= dataPool->count) {
+// 		return NULL;
+// 	}
+//
+// 	void* dataLoc = eOCT_pool_access(dataPool, dataIndex, 0);
+// 	return dataLoc;
+// }
 
-	eOCT_pool* dataPool = (eOCT_pool*)eOCT_pool_access(&iOCT_ECS_inst.globalDataPools, dataPoolDescription.dataPoolTypeIndex_reg, 0);
-	eOCT_IDMap* map = &iOCT_ECS_inst.globalDataMap;
-
-	OCT_index dataIndex;
-	void* dataLoc = eOCT_pool_addEntry(dataPool, &dataIndex);
-
-	if (createID && IDOut) {
-		*IDOut = eOCT_IDMap_register(map, dataIndex);
-	}
-	return dataLoc;
-}
-
-void* eOCT_getGlobalDataEntry(eOCT_dataPoolDescription dataPoolDescription, OCT_ID dataID) {
-	if (!dataPoolDescription.global) {
-		printf("Data pool %s is context local\n", dataPoolDescription.name);
-		return NULL;
-	}
-
-	eOCT_pool* dataPool = (eOCT_pool*)eOCT_pool_access(&iOCT_ECS_inst.globalDataPools, dataPoolDescription.dataPoolTypeIndex_reg, 0);
-	OCT_index dataIndex = eOCT_IDMap_getIndex(&iOCT_ECS_inst.globalDataMap, dataID);
-
-	if (dataIndex >= dataPool->count) {
-		return NULL;
-	}
-
-	void* dataLoc = eOCT_pool_access(dataPool, dataIndex, 0);
-	return dataLoc;
-}
-
-void* eOCT_getGlobalDataField(eOCT_fieldRequest fieldRequest, OCT_ID dataID) {
-	if (!fieldRequest.global_reg) {
-		printf("Data pool %s is context local\n", fieldRequest.name);
-		return NULL;
-	}
-	eOCT_pool* dataPool = (eOCT_pool*)eOCT_pool_access(&iOCT_ECS_inst.globalDataPools, fieldRequest.providerIndex_reg, 0);
-	OCT_index dataIndex = eOCT_IDMap_getIndex(&iOCT_ECS_inst.globalDataMap, dataID);
-
-	if (!dataPool || dataIndex >= dataPool->count) {
-		return NULL;
-	}
-
-	void* dataLoc = eOCT_pool_access(dataPool, dataIndex, 0);
-	return dataLoc;
-}
+// void* eOCT_getGlobalDataField(eOCT_fieldRequest fieldRequest, OCT_ID dataID) {
+// 	if (!fieldRequest.global_reg) {
+// 		printf("Data pool %s is context local\n", fieldRequest.name);
+// 		return NULL;
+// 	}
+// 	eOCT_pool* dataPool = (eOCT_pool*)eOCT_pool_access(&iOCT_ECS_inst.globalDataPools, fieldRequest.providerIndex_reg, 0);
+// 	OCT_index dataIndex = eOCT_IDMap_getIndex(&iOCT_ECS_inst.globalDataMap, dataID);
+//
+// 	if (!dataPool || dataIndex >= dataPool->count) {
+// 		return NULL;
+// 	}
+//
+// 	void* dataLoc = eOCT_pool_access(dataPool, dataIndex, 0);
+// 	return dataLoc;
+// }
 
 OCT_handle iOCT_getContextHandle(const iOCT_entityContext* context) {
 	return (OCT_handle) {

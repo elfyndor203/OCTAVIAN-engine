@@ -78,7 +78,7 @@ void iOCT_transform2D_generateRoot(OCT_handle rootEntity) {
 
 // resolves local and global matrices
 void iOCT_transform2D_propagate(OCT_handle context) {
-	eOCT_pool* transformPool = eOCT_getComponentPool(context, iOCT_world_inst.transform2DCache);
+	eOCT_pool* transformPool = eOCT_context_getComponentPool(context, iOCT_world_inst.transform2DCache);
 	iOCT_transform2D* transformArray = (iOCT_transform2D*)transformPool->array;
 
 	if (!transformPool || !transformArray) {

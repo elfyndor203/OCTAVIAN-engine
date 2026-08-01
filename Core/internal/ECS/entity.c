@@ -65,7 +65,7 @@ void* iOCT_entity_attachComponent(iOCT_entityContext* context, OCT_index entityI
 	OCT_index* entityKeyEntry = iOCT_entity_getComponentSlot(context, entityIndex, component);
 
 	// gets the index within the component's pool
-	eOCT_pool* componentPool = iOCT_getComponentPool(context, component.componentTypeIndex_reg);
+	eOCT_pool* componentPool = iOCT_context_getComponentPool(context, component.componentTypeIndex_reg);
 	OCT_index destinationIndex;
 	void* dataLoc;
 	if (sort) {
@@ -143,7 +143,7 @@ void* iOCT_entity_getComponent(iOCT_entityContext* context, OCT_index entityInde
 		return NULL;
 	}
 
-	eOCT_pool* componentPool = iOCT_getComponentPool(context, componentTypeIndex);
+	eOCT_pool* componentPool = iOCT_context_getComponentPool(context, componentTypeIndex);
 	void* dataLoc = eOCT_pool_access(componentPool, componentIndex, 0);
 	return dataLoc;
 }

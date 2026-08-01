@@ -9,7 +9,7 @@ void iOCT_world_init() {
 }
 
 void eOCT_WORLD_update(OCT_handle contextHandle) {
-    eOCT_pool* transformPool = (eOCT_pool*)eOCT_getComponentPool(contextHandle, iOCT_world_inst.transform2DCache);
+    eOCT_pool* transformPool = (eOCT_pool*)eOCT_context_getComponentPool(contextHandle, iOCT_world_inst.transform2DCache);
     iOCT_transform2D* transformArray = (iOCT_transform2D*)transformPool->array;
 
     for (OCT_index transformCtr = 0; transformCtr < transformPool->count; transformCtr++) {
