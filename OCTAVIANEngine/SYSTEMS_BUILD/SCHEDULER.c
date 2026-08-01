@@ -5,10 +5,10 @@
 
 void OCT_engine_frame_start() {
     eOCT_WINDOW_startFrame();
-}
-void OCT_engine_update(OCT_handle context) {
     eOCT_ECS_update();
     eOCT_globals_update();
+}
+void OCT_engine_updateContext(OCT_handle context) {
     eOCT_entityContext_prepare(context);
 
     eOCT_WORLD_update(context);

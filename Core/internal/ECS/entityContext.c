@@ -86,14 +86,22 @@ static OCT_handle iOCT_entityContext_initRootEntity(iOCT_entityContext* context)
 }
 
 eOCT_contextToken eOCT_context_getToken(OCT_handle contextHandle) {
-	iOCT_entityContext context = *iOCT_entityContext_get(contextHandle.objectID);
+	iOCT_entityContext* context = iOCT_entityContext_get(contextHandle.objectID);
 
 	eOCT_contextToken newToken = {
-		.entities = &context.entityPool,
-		.components = &context.componentPools
+		.entityMap = &context->entityIDMap,
+		.entities = &context->entityPool,
+		.components = &context->componentPools,
+		.valid = true
 	};
 
 	return newToken;
+}
+void eOCT_context_invalidateToken(eOCT_contextToken* token) {
+	token->valid = false;
+	token->entityMap = NULL;
+	token->entities = NULL;
+	token->components = NULL;
 }
 eOCT_pool* eOCT_context_getComponentPool(OCT_handle contextHandle, eOCT_componentDescription component) {
 	iOCT_entityContext* context = iOCT_entityContext_get(contextHandle.objectID);

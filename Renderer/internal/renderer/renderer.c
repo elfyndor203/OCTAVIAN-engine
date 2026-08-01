@@ -131,6 +131,7 @@ void iOCT_renderer_uploadAll(OCT_handle contextHandle) {
         eOCT_pool_expand(spriteBufferPool, spritePool->count);
     }
 
+    eOCT_contextToken contextToken = eOCT_context_getToken(contextHandle);
     for (OCT_index spriteCtr = 0; spriteCtr < spritePool->count; spriteCtr++) {
         iOCT_sprite2D sprite = spriteArray[spriteCtr];
         iOCT_textureGroup texGroup = *(iOCT_textureGroup*)eOCT_getByID(&iOCT_renderer_inst.textureGroupMap, &iOCT_renderer_inst.textureGroupPool, sprite.texGroupID);
@@ -138,7 +139,7 @@ void iOCT_renderer_uploadAll(OCT_handle contextHandle) {
 
         // resolve final transform
         iOCT_spriteData spriteData = spriteArray[spriteCtr].spriteData;
-        OCT_mat3* entityTransformPtr = (OCT_mat3*)eOCT_entity_getField(eOCT_entity_getHandle(contextHandle, sprite.entityID), iOCT_renderer_inst.transform2DCache);
+        OCT_mat3* entityTransformPtr = (OCT_mat3*)eOCT_entity_getField(contextToken, sprite.entityID, iOCT_renderer_inst.transform2DTicket);
         OCT_mat3 entityTransform;
         if (entityTransformPtr == NULL) {
             entityTransform = OCT_mat3_identity;

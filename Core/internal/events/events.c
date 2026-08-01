@@ -70,7 +70,7 @@ void eOCT_event_subscribe(eOCT_fieldTicket eventField, OCT_handle contextHandle,
         OCT_ERROR_LOG(OCT_EXIT_NOT_YET_IMPLEMENTED, "Context events not yet implemented");
     }
 
-    eOCT_pool* callbackPool = (eOCT_pool*)eOCT_pool_access(&iOCT_globals_inst.globalEvents.callbackPools, eventField.providerIndex, 0);
+    eOCT_pool* callbackPool = (eOCT_pool*)eOCT_pool_access(&iOCT_globals_inst.globalEvents.callbackPools, eventField.providerTypeIndex, 0);
     eOCT_eventCallbackFx* destination = (eOCT_eventCallbackFx*)eOCT_pool_addEntry(callbackPool, NULL);
     *destination = callback;
 }

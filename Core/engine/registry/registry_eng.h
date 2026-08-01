@@ -52,7 +52,7 @@ struct eOCT_fieldTicket {
 	eOCT_dataTypes type;
 	size_t offsetFromStruct;
 	eOCT_fieldProvider providerType;
-	OCT_index providerIndex;
+	OCT_index providerTypeIndex;
 
 	bool global;
 	eOCT_pool* globalPool;

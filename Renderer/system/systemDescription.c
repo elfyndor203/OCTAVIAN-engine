@@ -33,7 +33,7 @@ void system_register_RENDERER() {
     eOCT_fieldRequest transform2D = {
         .name = "globalTransform2D",
         .type = eOCT_DATATYPE_MAT3,
-        .ticketCacheLocation = &iOCT_renderer_inst.transform2DCache,
+        .ticketCacheLocation = &iOCT_renderer_inst.transform2DTicket,
         .optional = false,
     };
     eOCT_fieldRequest fieldRequests[1] = { transform2D };

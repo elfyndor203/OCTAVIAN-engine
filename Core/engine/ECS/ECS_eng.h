@@ -6,6 +6,7 @@ struct eOCT_contextToken {
     eOCT_IDMap* entityMap;
     eOCT_pool* entities;
     eOCT_pool* components;
+    bool valid;
 };
 
 void eOCT_ECS_update();
@@ -21,6 +22,12 @@ void eOCT_entityContext_prepare(OCT_handle contextHandle);
  * @return
  */
 eOCT_contextToken eOCT_context_getToken(OCT_handle contextHandle);
+
+/*!
+ * After finishing a pass over a context's data, invalidate the held token so it will not be cached and become stale.
+ * @param token
+ */
+void eOCT_context_invalidateToken(eOCT_contextToken* token);
 /*!
  * Use when accessing a self-provided component.
  * @param contextHandle

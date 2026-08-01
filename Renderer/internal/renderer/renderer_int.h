@@ -16,7 +16,7 @@ struct iOCT_spriteFullData {
 struct iOCT_renderer {
     // system information
     eOCT_systemDescription systemDescription;
-    eOCT_fieldTicket transform2DCache;
+    eOCT_fieldTicket transform2DTicket;
     eOCT_fieldTicket windowVAOCache;
     eOCT_componentDescription sprite2DCache;
     eOCT_componentDescription camera2DCache;

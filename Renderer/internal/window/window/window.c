@@ -91,7 +91,9 @@ OCT_mat3 iOCT_window_getCameraProj(iOCT_window window) {
         return OCT_mat3_identity;
     }
     iOCT_camera2D camera = *(iOCT_camera2D*)eOCT_entity_getComponent(window.activeCameraSourceEntity, iOCT_renderer_inst.camera2DCache);
-    OCT_mat3 entityGlobalTransform = *(OCT_mat3*)eOCT_entity_getField(window.activeCameraSourceEntity, iOCT_renderer_inst.transform2DCache);
+
+    eOCT_contextToken activeCameraContext = eOCT_context_getToken(eOCT_entity_getContextHandle(window.activeCameraSourceEntity));
+    OCT_mat3 entityGlobalTransform = *(OCT_mat3*)eOCT_entity_getField(activeCameraContext, window.activeCameraSourceEntity.objectID, iOCT_renderer_inst.transform2DTicket);
 
     return OCT_mat3_mul(entityGlobalTransform, camera.cameraMatrix);
 }

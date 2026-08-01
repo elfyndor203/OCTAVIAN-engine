@@ -4,6 +4,10 @@
 
 #include "inputSystem_int.h"
 
-OCT_vec2 OCT_mouse_readPos() {
+OCT_vec2 OCT_mouse_readPosWindow() {
     return iOCT_inputSystem_inst.mousePosition;
+}
+
+OCT_vec2 OCT_mouse_readPosWorld() {
+    
 }

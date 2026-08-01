@@ -5,4 +5,4 @@ void OCT_engine_init();
 // void OCT_engine_stop();
 void OCT_engine_frame_start();
 void OCT_engine_frame_show();
-void OCT_engine_update(OCT_handle context);
+void OCT_engine_updateContext(OCT_handle context);

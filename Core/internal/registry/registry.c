@@ -68,7 +68,7 @@ void init_OCT_registry_distributeFields() {
 				ticket->global = match.global_reg;
 				ticket->providerType = match.providerType;
 				ticket->offsetFromStruct = match.offset;
-				ticket->providerIndex = match.providerIndex_reg;
+				ticket->providerTypeIndex = match.providerIndex_reg;
 				ticket->globalPool = iOCT_registry_findGlobalPool(match);
 
 				request->fulfilled_reg = true;
@@ -186,6 +186,7 @@ eOCT_pool eOCT_generateFieldDescriptionPool(eOCT_fieldDescription* array, size_t
 	}
 	return pool;
 }
+
 eOCT_pool eOCT_generateComponentDescriptionPool(eOCT_componentDescription* array, size_t count) {
 	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, count, sizeof(eOCT_componentDescription));
 
@@ -458,7 +459,7 @@ eOCT_pool* eOCT_field_getSourcePool(OCT_handle contextHandle, eOCT_fieldTicket f
 
 	if (fieldDetails.providerType == eOCT_FIELDPROVIDER_COMPONENT) {
 		iOCT_entityContext* context = iOCT_entityContext_get(contextHandle.objectID);
-		eOCT_pool* componentPool = &((eOCT_pool*)context->componentPools.array)[fieldDetails.providerIndex];
+		eOCT_pool* componentPool = &((eOCT_pool*)context->componentPools.array)[fieldDetails.providerTypeIndex];
 		return componentPool;
 	}
 
