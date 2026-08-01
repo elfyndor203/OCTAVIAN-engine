@@ -16,7 +16,6 @@ void system_register_PLATFORM() {
         .global = true,
         .cacheLocation = &iOCT_platformSystem_inst.timeCache
     };
-    eOCT_singleDescription singles[1] = { timeSingle };
 
     eOCT_systemDescription platformSystem = {
         .name = "Platform",
@@ -24,7 +23,7 @@ void system_register_PLATFORM() {
         .providedDataPools = eOCT_POOL_EMPTY,
         .providedEvents = eOCT_POOL_EMPTY,
         .requestedFields = eOCT_POOL_EMPTY,
-        .providedSingles = eOCT_generateSingleDescriptionPool(singles, 1),
+        .providedSingles = eOCT_generateSingleDescriptionPool(1, timeSingle),
         .initFx = NULL
     };
 

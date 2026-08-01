@@ -47,17 +47,16 @@ void system_register_WORLD() {
 	eOCT_componentDescription transform2D = {
 		.name = "transform2D",
 		.stride = sizeof(iOCT_transform2D),
-		.providedFields = eOCT_generateFieldDescriptionPool(transformFields, 6),
+		.providedFields = eOCT_generateFieldDescriptionPool(6, posX, posY, rotation, scaleX, scaleY, matrix2D),
 		.cacheLocation = &iOCT_world_inst.transform2DCache,
 		.rootAttachmentFx = iOCT_transform2D_generateRoot,
 		.sortValueOffset = offsetof(iOCT_transform2D, depth),
 		.entitySlotValueOffset = offsetof(iOCT_transform2D, entityID)
 	};
 
-	eOCT_componentDescription worldComponents[] = { transform2D };
 	eOCT_systemDescription world = {
 		.name = "WORLD",
-		.providedComponents = eOCT_generateComponentDescriptionPool(worldComponents, 1),
+		.providedComponents = eOCT_generateComponentDescriptionPool(1, transform2D),
 		.providedDataPools = eOCT_POOL_EMPTY,
 		.requestedFields = eOCT_POOL_EMPTY,
 		.initFx = iOCT_world_init

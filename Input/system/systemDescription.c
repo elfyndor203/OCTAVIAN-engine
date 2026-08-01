@@ -8,58 +8,63 @@ void system_register_INPUT() {
         .name = "glfwKeys",
         .type = eOCT_DATATYPE_INT64,
         .optional = false,
-        .ticketCacheLocation = &iOCT_inputSystem_inst.keyCache
+        .ticketCacheLocation = &iOCT_inputSystem_inst.keyTicket
     };
     eOCT_fieldRequest keyPress = {
         .name = "glfwKeyPress",
         .type = eOCT_DATATYPE_BOOL,
         .optional = false,
-        .ticketCacheLocation = &iOCT_inputSystem_inst.keyPressCache
+        .ticketCacheLocation = &iOCT_inputSystem_inst.keyPressTicket
     };
     eOCT_fieldRequest keyRelease = {
         .name = "glfwKeyRelease",
         .type = eOCT_DATATYPE_BOOL,
         .optional = false,
-        .ticketCacheLocation = &iOCT_inputSystem_inst.keyReleaseCache
+        .ticketCacheLocation = &iOCT_inputSystem_inst.keyReleaseTicket
     };
     eOCT_fieldRequest mouseButton = {
         .name = "glfwMouseButton",
         .type = eOCT_DATATYPE_INT64,
         .optional = false,
-        .ticketCacheLocation = &iOCT_inputSystem_inst.mouseButtonCache
+        .ticketCacheLocation = &iOCT_inputSystem_inst.mouseButtonTicket
     };
     eOCT_fieldRequest mouseButtonPress = {
         .name = "glfwMouseButtonPress",
         .type = eOCT_DATATYPE_BOOL,
         .optional = false,
-        .ticketCacheLocation = &iOCT_inputSystem_inst.mouseButtonPressCache
+        .ticketCacheLocation = &iOCT_inputSystem_inst.mouseButtonPressTicket
     };
     eOCT_fieldRequest mouseButtonRelease = {
         .name = "glfwMouseButtonRelease",
         .type = eOCT_DATATYPE_BOOL,
         .optional = false,
-        .ticketCacheLocation = &iOCT_inputSystem_inst.mouseButtonReleaseCache
+        .ticketCacheLocation = &iOCT_inputSystem_inst.mouseButtonReleaseTicket
     };
     eOCT_fieldRequest mouseMoveX = {
         .name = "glfwMouseXPos",
         .type = eOCT_DATATYPE_FLOAT32,
         .optional = false,
-        .ticketCacheLocation = &iOCT_inputSystem_inst.mousePositionXCache
+        .ticketCacheLocation = &iOCT_inputSystem_inst.mousePositionXTicket
     };
     eOCT_fieldRequest mouseMoveY = {
         .name = "glfwMouseYPos",
         .type = eOCT_DATATYPE_FLOAT32,
         .optional = false,
-        .ticketCacheLocation = &iOCT_inputSystem_inst.mousePositionYCache
+        .ticketCacheLocation = &iOCT_inputSystem_inst.mousePositionYTicket
     };
-    eOCT_fieldRequest inputRequests[8] = { key, keyPress, keyRelease, mouseButton, mouseButtonPress, mouseButtonRelease, mouseMoveX, mouseMoveY };
+    eOCT_fieldRequest activeCamera = {
+        .name = "focusedCameraMatrix",
+        .type = eOCT_DATATYPE_MAT3,
+        .optional = false,
+        .ticketCacheLocation = &iOCT_inputSystem_inst.cameraMatrixTicket
+    };
 
     eOCT_systemDescription inputSystem = {
         .name = "INPUT",
         .providedComponents = eOCT_POOL_EMPTY,
         .providedDataPools = eOCT_POOL_EMPTY,
         .providedEvents = eOCT_POOL_EMPTY,
-        .requestedFields = eOCT_generateFieldRequestPool(inputRequests, 8),
+        .requestedFields = eOCT_generateFieldRequestPool(9, key, keyPress, keyRelease, mouseButton, mouseButtonPress, mouseButtonRelease, mouseMoveX, mouseMoveY, activeCamera),
         .initFx = system_init_INPUT
     };
 

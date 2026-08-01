@@ -71,6 +71,8 @@ void eOCT_WINDOW_startFrame() {
 		}
 
 	}
+
+	// eOCT_pool* singlePool =
 }
 
 void eOCT_WINDOW_finishFrame() {

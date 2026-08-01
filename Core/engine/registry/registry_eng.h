@@ -90,6 +90,7 @@ struct eOCT_componentDescription {
 
 	OCT_index componentTypeIndex_reg; // where the component is located in the ECS
 };
+
 struct eOCT_dataPoolDescription {
 	const char* name;
 	size_t stride;
@@ -135,9 +136,10 @@ void* eOCT_field_read(eOCT_pool sourcePool, eOCT_fieldTicket fieldDetails, OCT_i
 
 void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription);
 //void eOCT_registry_allocateComponents(eOCT_componentDescription* componentDescription);
-eOCT_pool eOCT_generateFieldDescriptionPool(eOCT_fieldDescription* array, size_t count);
-eOCT_pool eOCT_generateComponentDescriptionPool(eOCT_componentDescription* array, size_t count);
-eOCT_pool eOCT_generateDataPoolDescriptionPool(eOCT_dataPoolDescription* array, size_t count);
-eOCT_pool eOCT_generateEventDescriptionPool(eOCT_eventDescription* array, size_t count);
-eOCT_pool eOCT_generateSingleDescriptionPool(eOCT_singleDescription* array, size_t count);
-eOCT_pool eOCT_generateFieldRequestPool(eOCT_fieldRequest* array, size_t count);
+// eOCT_pool eOCT_generateFieldDescriptionPool(eOCT_fieldDescription* array, size_t count);
+eOCT_pool eOCT_generateFieldDescriptionPool(OCT_index count, ...);
+eOCT_pool eOCT_generateComponentDescriptionPool(OCT_index count, ...);
+eOCT_pool eOCT_generateDataPoolDescriptionPool(OCT_index count, ...);
+eOCT_pool eOCT_generateEventDescriptionPool(OCT_index count, ...);
+eOCT_pool eOCT_generateSingleDescriptionPool(OCT_index count, ...);
+eOCT_pool eOCT_generateFieldRequestPool(OCT_index count, ...);

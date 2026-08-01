@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <inttypes.h>
 #include <assert.h>
+#include <stdarg.h>
 
 #include "ECS/ECS_int.h"
 #include "ECS/entityContext_int.h"
@@ -177,66 +178,82 @@ void init_OCT_registry_check() {
 #pragma endregion
 
 #pragma region generators
-eOCT_pool eOCT_generateFieldDescriptionPool(eOCT_fieldDescription* array, size_t count) {
+eOCT_pool eOCT_generateFieldDescriptionPool(OCT_index count, ...) {
+	va_list args;
+	va_start(args, count);
+
 	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, count, sizeof(eOCT_fieldDescription));
-	eOCT_fieldDescription* destination;
 	for (OCT_index ctr = 0; ctr < count; ctr++) {
-		destination = (eOCT_fieldDescription*)eOCT_pool_addEntry(&pool, NULL);
-		*destination = array[ctr];
+		eOCT_fieldDescription* destination = (eOCT_fieldDescription*)eOCT_pool_addEntry(&pool, NULL);
+		*destination = va_arg(args, eOCT_fieldDescription);
 	}
+	va_end(args);
+
 	return pool;
 }
+eOCT_pool eOCT_generateComponentDescriptionPool(OCT_index count, ...) {
+	va_list args;
+	va_start(args, count);
 
-eOCT_pool eOCT_generateComponentDescriptionPool(eOCT_componentDescription* array, size_t count) {
 	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, count, sizeof(eOCT_componentDescription));
-
-	eOCT_componentDescription* destination;
-	for (int ctr = 0; ctr < count; ctr++) {
-		destination = (eOCT_componentDescription*)eOCT_pool_addEntry(&pool, NULL);
-		*destination = array[ctr];
+	for (OCT_index ctr = 0; ctr < count; ctr++) {
+		eOCT_componentDescription* destination = (eOCT_componentDescription*)eOCT_pool_addEntry(&pool, NULL);
+		*destination = va_arg(args, eOCT_componentDescription);
 	}
+	va_end(args);
+
 	return pool;
 }
-eOCT_pool eOCT_generateDataPoolDescriptionPool(eOCT_dataPoolDescription* array, size_t count) {
+eOCT_pool eOCT_generateDataPoolDescriptionPool(OCT_index count, ...) {
+	va_list args;
+	va_start(args, count);
+
 	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, count, sizeof(eOCT_dataPoolDescription));
-
-	eOCT_dataPoolDescription* destination;
-	for (int ctr = 0; ctr < count; ctr++) {
-		destination = (eOCT_dataPoolDescription*)eOCT_pool_addEntry(&pool, NULL);
-		*destination = array[ctr];
+	for (OCT_index ctr = 0; ctr < count; ctr++) {
+		eOCT_dataPoolDescription* destination = (eOCT_dataPoolDescription*)eOCT_pool_addEntry(&pool, NULL);
+		*destination = va_arg(args, eOCT_dataPoolDescription);
 	}
+	va_end(args);
+
 	return pool;
 }
-eOCT_pool eOCT_generateEventDescriptionPool(eOCT_eventDescription* array, size_t count) {
+eOCT_pool eOCT_generateEventDescriptionPool(OCT_index count, ...) {
+	va_list args;
+	va_start(args, count);
+
 	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, count, sizeof(eOCT_eventDescription));
-
-	eOCT_eventDescription* destination;
-	for (int ctr = 0; ctr < count; ctr++) {
-		destination = (eOCT_eventDescription*)eOCT_pool_addEntry(&pool, NULL);
-		*destination = array[ctr];
+	for (OCT_index ctr = 0; ctr < count; ctr++) {
+		eOCT_eventDescription* destination = (eOCT_eventDescription*)eOCT_pool_addEntry(&pool, NULL);
+		*destination = va_arg(args, eOCT_eventDescription);
 	}
+	va_end(args);
 
 	return pool;
 }
-eOCT_pool eOCT_generateSingleDescriptionPool(eOCT_singleDescription* array, size_t count) {
+eOCT_pool eOCT_generateSingleDescriptionPool(OCT_index count, ...) {
+	va_list args;
+	va_start(args, count);
+
 	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, count, sizeof(eOCT_singleDescription));
-
-	eOCT_singleDescription* destination;
-	for (int ctr = 0; ctr < count; ctr++) {
-		destination = (eOCT_singleDescription*)eOCT_pool_addEntry(&pool, NULL);
-		*destination = array[ctr];
+	for (OCT_index ctr = 0; ctr < count; ctr++) {
+		eOCT_singleDescription* destination = (eOCT_singleDescription*)eOCT_pool_addEntry(&pool, NULL);
+		*destination = va_arg(args, eOCT_singleDescription);
 	}
+	va_end(args);
 
 	return pool;
 }
-eOCT_pool eOCT_generateFieldRequestPool(eOCT_fieldRequest* array, size_t count) {
-	eOCT_pool pool = eOCT_pool_open(OCT_ID_NULL, count, sizeof(eOCT_fieldRequest));
+eOCT_pool eOCT_generateFieldRequestPool(OCT_index count, ...) {
+	va_list args;
+	va_start(args, count);
 
-	eOCT_fieldRequest* destination;
-	for (int ctr = 0; ctr < count; ctr++) {
-		destination = eOCT_pool_addEntry(&pool, NULL);
-		*destination = array[ctr];
+	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, count, sizeof(eOCT_fieldRequest));
+	for (OCT_index ctr = 0; ctr < count; ctr++) {
+		eOCT_fieldRequest* destination = (eOCT_fieldRequest*)eOCT_pool_addEntry(&pool, NULL);
+		*destination = va_arg(args, eOCT_fieldRequest);
 	}
+	va_end(args);
+
 	return pool;
 }
 
@@ -310,7 +327,7 @@ void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription) {
 		eOCT_singleDescription* singlesArray = (eOCT_singleDescription*)systemDescription->providedSingles.array;
 		for (OCT_index singleCtr = 0; singleCtr < systemDescription->providedSingles.count; singleCtr++) {
 			eOCT_singleDescription* single = &singlesArray[singleCtr];
-			printf("%02"PRIu64".%02zu.--| %2cGlobal %zu: %-15s\n", systemID, single->singleTypeIndex_reg, ' ', single->singleTypeIndex_reg, single->name);
+			printf("%02"PRIu64".%02zu.--| %2cSingle %zu: %-15s\n", systemID, single->singleTypeIndex_reg, ' ', single->singleTypeIndex_reg, single->name);
 			if (single->providedField.offset != 0) {
 				OCT_ERROR_LOG(OCT_EXIT_REGISTRATION_FAILED, "Singles must have offset 0");
 				return;

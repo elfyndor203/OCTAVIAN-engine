@@ -11,14 +11,10 @@ void system_register_systemEx() {
 			eOCT_fieldDescription field1 = { "someField", eOCT_DATATYPE_INT64, offsetof(iOCT_componentEx, fieldA) };
 			eOCT_fieldDescription field2 = { "someOtherField", eOCT_DATATYPE_INT64, offsetof(iOCT_componentEx, fieldB) };
 		// Create a componentDescription
-		eOCT_fieldDescription componentExFields[] = { field1, field2 };
-		eOCT_componentDescription componentEx = { "componentEx", sizeof(componentEx), eOCT_generateFieldDescriptionPool(componentExFields, 2)};
+		eOCT_componentDescription componentEx = { "componentEx", sizeof(componentEx), eOCT_generateFieldDescriptionPool(2, field1, field2)};
 	//
 
 	// FOR EACH SYSTEM
-		// Collect all components
-		eOCT_componentDescription components[] = { componentEx };
-
 		// Describe each field request:
 			eOCT_fieldRequest heightReq = { "height", eOCT_DATATYPE_FLOAT32, NULL, true };
 			eOCT_fieldRequest widthReq = { "width", eOCT_DATATYPE_FLOAT32, NULL, true };
@@ -41,8 +37,6 @@ void system_register_systemEx() {
 				.optional = false,
 				.ticketCacheLocation = &iOCT_systemEx_inst.keyReleaseCache
 			};
-		eOCT_fieldRequest requests[6] = { heightReq, widthReq, mightNeed, keys, keyPress, keyRelease };
-
 	//
 
 	eOCT_fieldDescription testSingleField = {
@@ -57,15 +51,14 @@ void system_register_systemEx() {
 		.cacheLocation = NULL,
 		.global = true
 	};
-	eOCT_singleDescription singles[1] = { testSingle };
 
 	// ensure the correct counts
 	eOCT_systemDescription templateSystem = {
 		.name = "_SystemEx",
-		.providedComponents = eOCT_generateComponentDescriptionPool(components, 1),
-		.requestedFields = eOCT_generateFieldRequestPool(requests, 6),
+		.providedComponents = eOCT_generateComponentDescriptionPool(1, componentEx),
+		.requestedFields = eOCT_generateFieldRequestPool(6, heightReq, widthReq, mightNeed, keys, keyPress, keyRelease),
 		.providedEvents = eOCT_POOL_EMPTY,
-		.providedSingles = eOCT_generateSingleDescriptionPool(singles, 1),
+		.providedSingles = eOCT_generateSingleDescriptionPool(1, testSingle),
 		.providedDataPools = eOCT_POOL_EMPTY,
 		.initFx = system_init_systemEx
 	};
