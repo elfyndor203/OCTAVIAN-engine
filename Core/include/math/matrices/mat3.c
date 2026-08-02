@@ -60,8 +60,8 @@ OCT_mat3 OCT_mat3_inverse(OCT_mat3 m) {
     float r11 = m.c1r1 * inv_sy2;
 
     // Inverse translation
-    float inv_tx = -(r00 * m.c2r0 + r10 * m.c2r1);
-    float inv_ty = -(r01 * m.c2r0 + r11 * m.c2r1);
+    float inv_tx = -(r00 * m.c2r0 + r01 * m.c2r1);
+    float inv_ty = -(r10 * m.c2r0 + r11 * m.c2r1);
 
     OCT_mat3 result = {
         r00,  r01,  0,
@@ -78,10 +78,15 @@ OCT_mat3 OCT_mat3_translate(OCT_mat3 m, OCT_vec2 translation) {
     return result;
 }
 
-OCT_mat3 OCT_mat3_scale(OCT_mat3 m, OCT_vec2 scale) {
+OCT_mat3 OCT_mat3_scaleBy(OCT_mat3 m, OCT_vec2 scale) {
     OCT_mat3 result = m;
-    result.c0r0 = scale.x;
-    result.c1r1 = scale.y;
+    result.c0r0 *= scale.x;
+    result.c1r0 *= scale.x;
+    result.c2r0 *= scale.x;
+
+    result.c0r1 *= scale.y;
+    result.c1r1 *= scale.y;
+    result.c2r1 *= scale.y;
     return result;
 }
 

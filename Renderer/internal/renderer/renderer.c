@@ -196,7 +196,7 @@ void iOCT_renderer_drawAll(OCT_handle contextHandle) {
         glUseProgram(iOCT_renderer_inst.spriteShaderProgram);
 
         // camera
-        OCT_mat3 cameraProj = iOCT_window_getCameraFinalProj(window);
+        OCT_mat3 cameraProj = iOCT_window_worldToNDC(window);
         glUniformMatrix3fv(window.cameraUniformLocation, 1, GL_FALSE, (float*)&cameraProj);
 
         OCT_index spriteCtr = 0;
