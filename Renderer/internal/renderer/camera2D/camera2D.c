@@ -15,6 +15,7 @@ void OCT_camera2D_attach(OCT_handle entity, OCT_vec2 position, float rotation, O
     iOCT_camera2D* newCamera = eOCT_entity_attachComponent(entity, iOCT_renderer_inst.camera2DKey);
     assert(newCamera && "Camera creation failed");
 
+    newCamera->entityHandle = entity;
     newCamera->position = position;
     newCamera->rotation = rotation;
     newCamera->viewFrameSize = viewFrameSize;

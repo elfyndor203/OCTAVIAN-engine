@@ -44,3 +44,9 @@ void iOCT_window_mouseMoveCallback(GLFWwindow* window, double xPos, double yPos)
 }
 
 void iOCT_window_resizeCallback(GLFWwindow* window, int width, int height) {}
+
+void iOCT_window_focusCallback(GLFWwindow* window, int focused) {
+    if (focused) {
+        iOCT_windowSystem_inst.focusedWindowID = iOCT_window_findByGLFWWindowPtr(window)->windowID;
+    }
+}

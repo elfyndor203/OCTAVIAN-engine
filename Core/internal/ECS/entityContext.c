@@ -89,6 +89,7 @@ eOCT_contextToken eOCT_context_getToken(OCT_handle contextHandle) {
 	iOCT_entityContext* context = iOCT_entityContext_get(contextHandle.objectID);
 
 	eOCT_contextToken newToken = {
+		.contextPtr = context,
 		.entityMap = &context->entityIDMap,
 		.entities = &context->entityPool,
 		.components = &context->componentPools,
@@ -98,6 +99,7 @@ eOCT_contextToken eOCT_context_getToken(OCT_handle contextHandle) {
 	return newToken;
 }
 void eOCT_context_invalidateToken(eOCT_contextToken* token) {
+	token->contextPtr = NULL;
 	token->valid = false;
 	token->entityMap = NULL;
 	token->entities = NULL;

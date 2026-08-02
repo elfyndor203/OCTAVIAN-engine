@@ -11,10 +11,6 @@
 
 iOCT_windowSystem iOCT_windowSystem_inst = { 0 };
 
-void OCT_WDWModule_init(char* name, unsigned int width, unsigned int height, OCT_vec4 color) {
-	// iOCT_windowSystem_init(name, width, height, color);
-}
-
 void system_init_WINDOW() {
 	glfwInit();
 
@@ -71,8 +67,16 @@ void eOCT_WINDOW_startFrame() {
 		}
 
 	}
+	if (iOCT_windowSystem_inst.windowPool.count < 1) {
+		iOCT_windowSystem_inst.focusedWindowID = OCT_ID_NULL;
+	}
 
-	// eOCT_pool* singlePool =
+	if (iOCT_windowSystem_inst.focusedWindowID != OCT_ID_NULL) {
+		iOCT_window focusedWindow = *(iOCT_window*)eOCT_getByID(&iOCT_windowSystem_inst.windowMap, &iOCT_windowSystem_inst.windowPool, iOCT_windowSystem_inst.focusedWindowID);
+		OCT_mat3* matrixSingle = &eOCT_single_get(iOCT_windowSystem_inst.focusedCameraMatrixKey, OCT_HANDLE_NULL)->mat3;
+		*matrixSingle = iOCT_window_getCameraFinalProj(focusedWindow);
+	}
+
 }
 
 void eOCT_WINDOW_finishFrame() {
@@ -85,6 +89,8 @@ void eOCT_WINDOW_finishFrame() {
 
 		glfwSwapBuffers(window.windowPtr);
 	}
+
+	OCT_mat3 cameraMatrix = (eOCT_single_get(iOCT_windowSystem_inst.focusedCameraMatrixKey, OCT_HANDLE_NULL))->mat3;
 }
 
 // void OCT_WDWModule_update() {

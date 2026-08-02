@@ -3,6 +3,7 @@
 #include "registry/registry_eng.h"
 
 struct eOCT_contextToken {
+    void* contextPtr;
     eOCT_IDMap* entityMap;
     eOCT_pool* entities;
     eOCT_pool* components;

@@ -10,3 +10,4 @@ typedef enum OCT_keyStates {
 } OCT_keyStates;
 
 OCT_vec2 OCT_mouse_readPosWindow();
+OCT_vec2 OCT_mouse_readPosWorld();

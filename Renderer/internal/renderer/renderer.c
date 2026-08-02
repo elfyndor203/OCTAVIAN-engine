@@ -140,7 +140,7 @@ void iOCT_renderer_uploadAll(OCT_handle contextHandle) {
 
         // resolve final transform
         iOCT_spriteData spriteData = spriteArray[spriteCtr].spriteData;
-        OCT_mat3* entityTransformPtr = (OCT_mat3*)eOCT_entity_getField(contextToken, sprite.entityID, iOCT_renderer_inst.transform2DTicket);
+        OCT_mat3* entityTransformPtr = (OCT_mat3*)eOCT_entity_getField(contextToken, sprite.entityHandle, iOCT_renderer_inst.transform2DTicket);
         OCT_mat3 entityTransform;
         if (entityTransformPtr == NULL) {
             entityTransform = OCT_mat3_identity;
@@ -162,6 +162,7 @@ void iOCT_renderer_uploadAll(OCT_handle contextHandle) {
         // OCT_mat3_print(finalTransform);
         // printf("Matrix source: %p\n", entityTransformPtr);
     }
+    eOCT_context_invalidateToken(&contextToken);
 
     // expand buffer if necessary, then upload
     glBindBuffer(GL_ARRAY_BUFFER, iOCT_renderer_inst.spriteDataVBO);
@@ -195,7 +196,7 @@ void iOCT_renderer_drawAll(OCT_handle contextHandle) {
         glUseProgram(iOCT_renderer_inst.spriteShaderProgram);
 
         // camera
-        OCT_mat3 cameraProj = iOCT_window_getCameraProj(window);
+        OCT_mat3 cameraProj = iOCT_window_getCameraFinalProj(window);
         glUniformMatrix3fv(window.cameraUniformLocation, 1, GL_FALSE, (float*)&cameraProj);
 
         OCT_index spriteCtr = 0;

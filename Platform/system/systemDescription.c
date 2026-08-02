@@ -14,7 +14,7 @@ void system_register_PLATFORM() {
         .name = "time",
         .providedField = time,
         .global = true,
-        .cacheLocation = &iOCT_platformSystem_inst.timeCache
+        .keyCacheLocation = &iOCT_platformSystem_inst.timeCache
     };
 
     eOCT_systemDescription platformSystem = {

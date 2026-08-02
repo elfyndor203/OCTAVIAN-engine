@@ -12,7 +12,7 @@ struct iOCT_spriteData {
 };
 
 struct iOCT_sprite2D {
-    OCT_ID entityID;
+    OCT_handle entityHandle;
 
     OCT_ID windowID;
     OCT_index drawLayer;

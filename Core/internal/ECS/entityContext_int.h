@@ -17,6 +17,7 @@ struct iOCT_entityContext {
 	eOCT_pool entityPool;
 	eOCT_pool componentPools;
 	eOCT_pool systemDataPools;
+	eOCT_pool singles;
 
 	iOCT_eventManager eventManager;
 };

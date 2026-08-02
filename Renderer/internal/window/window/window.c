@@ -24,6 +24,7 @@ OCT_handle OCT_window_open(const char* name, unsigned int sizeX, unsigned int si
     glfwSetKeyCallback(windowPtr, iOCT_window_keyCallback);
     glfwSetMouseButtonCallback(windowPtr, iOCT_window_mouseButtonCallback);
     glfwSetCursorPosCallback(windowPtr, iOCT_window_mouseMoveCallback);
+    glfwSetWindowFocusCallback(windowPtr, iOCT_window_focusCallback);
 
     glfwGetFramebufferSize(windowPtr, &frameBufferX, &frameBufferY);
     glViewport(0, 0, frameBufferX, frameBufferY);
@@ -52,6 +53,7 @@ OCT_handle OCT_window_open(const char* name, unsigned int sizeX, unsigned int si
     iOCT_setupNewSpriteVAO(newWindow->VAO);
     glBindVertexArray(0);
 
+    iOCT_windowSystem_inst.focusedWindowID = newID;
     printf("Created window %s %p\n", name, windowPtr);
     return windowHandle;
 }
@@ -86,19 +88,42 @@ void iOCT_window_activate(iOCT_window window) {
     glBindVertexArray(window.VAO);
 }
 
-OCT_mat3 iOCT_window_getCameraProj(iOCT_window window) {
+OCT_mat3 iOCT_window_getCameraFinalProj(iOCT_window window) {
     if (OCT_handle_isNULL(window.activeCameraSourceEntity)) {
         return OCT_mat3_identity;
     }
     iOCT_camera2D camera = *(iOCT_camera2D*)eOCT_entity_getComponent(window.activeCameraSourceEntity, iOCT_renderer_inst.camera2DKey);
 
     eOCT_contextToken activeCameraContext = eOCT_context_getToken(eOCT_entity_getContextHandle(window.activeCameraSourceEntity));
-    OCT_mat3 entityGlobalTransform = *(OCT_mat3*)eOCT_entity_getField(activeCameraContext, window.activeCameraSourceEntity.objectID, iOCT_renderer_inst.transform2DTicket);
+    OCT_mat3 entityGlobalTransform = *(OCT_mat3*)eOCT_entity_getField(activeCameraContext, window.activeCameraSourceEntity, iOCT_renderer_inst.transform2DTicket);
+
+    eOCT_context_invalidateToken(&activeCameraContext);
 
     return OCT_mat3_mul(entityGlobalTransform, camera.cameraMatrix);
 }
+
+// OCT_mat3 iOCT_window_getCameraOnlyProj(iOCT_window window) {
+//     if (OCT_handle_isNULL(window.activeCameraSourceEntity)) {
+//         return OCT_mat3_identity;
+//     }
+//     iOCT_camera2D camera = *(iOCT_camera2D*)eOCT_entity_getComponent(window.activeCameraSourceEntity, iOCT_renderer_inst.camera2DKey);
+//
+//     return camera.cameraMatrix;
+// }
 static void iOCT_window_setWorldResolution(OCT_vec2 XY) {
 
+}
+
+iOCT_window* iOCT_window_findByGLFWWindowPtr(GLFWwindow* windowPtr) {
+    eOCT_pool* windowPool = &iOCT_windowSystem_inst.windowPool;
+    for (OCT_index windowCtr = 0; windowCtr < windowPool->count; windowCtr++) {
+        iOCT_window* window = (iOCT_window*)eOCT_pool_access(windowPool, windowCtr, 0);
+        if (window->windowPtr ==  windowPtr) {
+            return window;
+        }
+    }
+    OCT_ERROR_LOG(OCT_EXIT_REFERENCE_DOES_NOT_EXIST, "No window has this windowPtr");
+    return NULL;
 }
 // void OCT_window_wipe() {
 // 	iOCT_window_wipe();

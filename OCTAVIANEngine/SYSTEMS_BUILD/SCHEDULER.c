@@ -5,7 +5,7 @@
 
 void OCT_engine_frame_start() {
     eOCT_WINDOW_startFrame();
-    eOCT_ECS_update();
+    // eOCT_ECS_update();
     eOCT_globals_update();
 }
 void OCT_engine_updateContext(OCT_handle context) {

@@ -10,12 +10,13 @@ struct iOCT_windowSystem {
 	eOCT_eventKey keyEventKey;
 	eOCT_eventKey mouseButtonEventKey;
 	eOCT_eventKey mouseMoveEventKey;
+	eOCT_singleKey focusedCameraMatrixKey;
 
 	eOCT_IDMap windowMap;
 	eOCT_pool windowPool;
 
 	GLFWwindow* rootWindow; // holds gpu resources
-
+	OCT_ID focusedWindowID;
 	// OCT_vec2 targetResolution;
 	// OCT_vec2 currentResolution;
 	// OCT_vec2 windowOffset;
