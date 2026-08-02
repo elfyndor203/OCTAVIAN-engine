@@ -20,7 +20,7 @@ struct eOCT_componentKey {
     const char* name;
 
     OCT_index componentTypeIndex;
-    OCT_index entityIDValueOffset;
+    OCT_index entityHandleValueOffset;
 };
 
 struct eOCT_eventKey {
@@ -32,8 +32,17 @@ struct eOCT_eventKey {
     eOCT_pool* globalCallbackPool;
 };
 
+struct eOCT_singleKey {
+    const char* name;
+
+    OCT_index singleTypeIndex;
+    bool global;
+    eOCT_pool* globalPool;
+};
+
 eOCT_pool* eOCT_field_getSourcePool(OCT_handle contextHandle, eOCT_fieldTicket fieldTicket);
 void* eOCT_field_read(eOCT_pool sourcePool, eOCT_fieldTicket fieldDetails, OCT_index entryIndex);
 
 eOCT_pool* eOCT_component_getPool(OCT_handle contextHandle, eOCT_componentKey componentKey);
-eOCT_pool* eOCT_event_getPool(OCT_handle contextHandle, eOCT_eventKey eventKey, eOCT_pool** callbackPoolOut);
+eOCT_pool* eOCT_event_getPool(eOCT_eventKey eventKey, OCT_handle contextHandle, eOCT_pool** callbackPoolOut);
+eOCT_dataUnion* eOCT_single_get(eOCT_singleKey singleKey, OCT_handle contextHandle);

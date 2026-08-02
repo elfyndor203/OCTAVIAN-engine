@@ -47,7 +47,7 @@ void iOCT_eventManager_clear(iOCT_eventManager* manager) {
 void eOCT_event_broadcast(eOCT_eventKey eventKey, OCT_handle contextHandle, void* event) {
     eOCT_pool* eventPool;
     eOCT_pool* callbackPool;
-    eventPool = eOCT_event_getPool(contextHandle, eventKey, &callbackPool);
+    eventPool = eOCT_event_getPool(eventKey, contextHandle, &callbackPool);
 
     // add to the frame's events
     OCT_index eventIndex;

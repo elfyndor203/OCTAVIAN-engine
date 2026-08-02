@@ -14,5 +14,3 @@ struct iOCT_globals {
 };
 
 extern iOCT_globals iOCT_globals_inst;
-
-void* eOCT_single_get(eOCT_singleDescription* singleDesc);

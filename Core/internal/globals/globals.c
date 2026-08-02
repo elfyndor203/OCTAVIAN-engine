@@ -5,6 +5,7 @@
 #include "events/events_int.h"
 #include "layout/systems.h"
 #include "globals/globals_int.h"
+#include "registry/registry_int.h"
 
 iOCT_globals iOCT_globals_inst = { 0 };
 
@@ -14,6 +15,9 @@ void init_OCT_globals_init() {
 
 void init_OCT_globals_build() {
     iOCT_globals_inst.globalEvents = iOCT_eventManager_open(OCT_ID_GLOBALS);
+    for (OCT_index singleCtr = 0; singleCtr < iOCT_registry_inst.globalSingles.count; singleCtr++) {
+        eOCT_pool_addEntry(&iOCT_globals_inst.globalSingles, NULL);
+    }
 }
 
 void eOCT_globals_update() {

@@ -5,7 +5,7 @@
 
 struct iOCT_platformSystem {
     eOCT_systemDescription systemDescription;
-    eOCT_singleDescription timeCache;
+    eOCT_singleKey timeCache;
 };
 
 extern iOCT_platformSystem iOCT_platformSystem_inst;

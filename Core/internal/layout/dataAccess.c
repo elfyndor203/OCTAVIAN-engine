@@ -42,8 +42,7 @@ eOCT_pool* eOCT_component_getPool(OCT_handle contextHandle, eOCT_componentKey co
     eOCT_pool* sourcePool = &((eOCT_pool*)context->componentPools.array)[componentKey.componentTypeIndex];
     return sourcePool;
 }
-
-eOCT_pool* eOCT_event_getPool(OCT_handle contextHandle, eOCT_eventKey eventKey, eOCT_pool** callbackPoolOut) {
+eOCT_pool* eOCT_event_getPool(eOCT_eventKey eventKey, OCT_handle contextHandle, eOCT_pool** callbackPoolOut) {
     eOCT_pool* sourcePool;
     eOCT_pool* callbackPool;
     if (eventKey.global && eventKey.globalEventPool) {
@@ -60,4 +59,15 @@ eOCT_pool* eOCT_event_getPool(OCT_handle contextHandle, eOCT_eventKey eventKey, 
         *callbackPoolOut = callbackPool;
     }
     return sourcePool;
+}
+
+eOCT_dataUnion* eOCT_single_get(eOCT_singleKey singleKey, OCT_handle contextHandle) {
+    if (singleKey.global && singleKey.globalPool) {
+        return (eOCT_dataUnion*)eOCT_pool_access(singleKey.globalPool, singleKey.singleTypeIndex, 0);
+    }
+
+    iOCT_entityContext* context = iOCT_entityContext_get(contextHandle.objectID);
+
+    eOCT_dataUnion* dataSource = eOCT_pool_access(&context->singles, singleKey.singleTypeIndex, 0);
+    return dataSource;
 }

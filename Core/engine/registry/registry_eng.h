@@ -76,8 +76,10 @@ struct eOCT_componentDescription {
 	eOCT_pool providedFields;
 	eOCT_componentKey* keyCacheLocation;
 	eOCT_rootAttachmentFx rootAttachmentFx;
+	OCT_index entityHandleValueOffset;
+
+	bool sort;
 	OCT_index sortValueOffset;
-	OCT_index entityIDValueOffset;
 
 	OCT_index componentTypeIndex_reg; // where the component is located in the ECS
 };
@@ -103,7 +105,7 @@ struct eOCT_eventDescription { // for cross module communication, but what about
 struct eOCT_singleDescription {
 	const char* name;
 	eOCT_fieldDescription providedField;
-	eOCT_singleDescription* cacheLocation;
+	eOCT_singleKey* keyCacheLocation;
 	bool global;
 
 	OCT_index singleTypeIndex_reg;
@@ -121,6 +123,10 @@ struct eOCT_systemDescription {
 	OCT_ID systemID_reg; // provided by the registry
 };
 
+/*!
+ * Registers each system's components, data pools, and events into the registry. For each component, data pool, and event, registers each of its fields. Engine init fails if any duplicate fields are found.
+ * @param systemDescription
+ */
 void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription);
 //void eOCT_registry_allocateComponents(eOCT_componentDescription* componentDescription);
 // eOCT_pool eOCT_generateFieldDescriptionPool(eOCT_fieldDescription* array, size_t count);

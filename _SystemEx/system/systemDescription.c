@@ -48,7 +48,7 @@ void system_register_systemEx() {
 	eOCT_singleDescription testSingle = {
 		.name = "testGlobal",
 		.providedField = testSingleField,
-		.cacheLocation = NULL,
+		.keyCacheLocation = NULL,
 		.global = true
 	};
 

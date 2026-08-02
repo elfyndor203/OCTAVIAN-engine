@@ -29,4 +29,6 @@ OCT_mat3 OCT_mat3_inverse(OCT_mat3 matrix);
 OCT_mat3 OCT_mat3_translate(OCT_mat3 matrix, OCT_vec2 translation);
 OCT_mat3 OCT_mat3_scale(OCT_mat3 matrix, OCT_vec2 scale);
 OCT_mat3 OCT_mat3_rotate(OCT_mat3 matrix, float rotation);
+OCT_vec2 OCT_mat3_getScale(OCT_mat3 m);
+OCT_vec2 OCT_mat3_getTranslation(OCT_mat3 m);
 void OCT_mat3_print(OCT_mat3 matrix);

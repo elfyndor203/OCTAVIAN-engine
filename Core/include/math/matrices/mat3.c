@@ -96,6 +96,13 @@ OCT_mat3 OCT_mat3_rotate(OCT_mat3 m, float rotation) {
     return result;
 }
 
+OCT_vec2 OCT_mat3_getScale(OCT_mat3 m) {
+    return (OCT_vec2){m.c0r0, m.c1r1};
+}
+OCT_vec2 OCT_mat3_getTranslation(OCT_mat3 m) {
+    return (OCT_vec2){m.c2r0, m.c2r1};
+}
+
 void OCT_mat3_print(OCT_mat3 m) {
     printf("[%.2f, %.2f, %.2f]\n", m.c0r0, m.c1r0, m.c2r0);
     printf("[%.2f, %.2f, %.2f]\n", m.c0r1, m.c1r1, m.c2r1);

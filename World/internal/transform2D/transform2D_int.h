@@ -6,13 +6,13 @@
 #define iOCT_TRANSFORM_ROOT_DEPTH 0
 
 struct iOCT_transform2D {
-	OCT_ID entityID;
+	OCT_handle entityHandle;
 
 	OCT_vec2 position;
 	float rotation;
 	OCT_vec2 scale;
 
-	OCT_ID parentEntityID;
+	OCT_handle parentEntityHandle;
 	OCT_index depth;
 
 	OCT_mat3 localMatrix;

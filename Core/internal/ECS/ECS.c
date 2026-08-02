@@ -13,6 +13,7 @@ static OCT_index iOCT_ECS_addGlobalDataPool(eOCT_dataPoolDescription desc);
 
 iOCT_ECS iOCT_ECS_inst = { 0 };
 
+#pragma region init
 void init_OCT_ECS_init() {
 	iOCT_ECS_inst.contextMap = eOCT_IDMap_init(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT);
 	iOCT_ECS_inst.contextPool = eOCT_pool_open(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, sizeof(iOCT_entityContext));
@@ -24,14 +25,12 @@ void init_OCT_ECS_init() {
 
 	printf("| ECS initialized\n");
 }
-
 void init_OCT_ECS_build() {
 	iOCT_ECS_inst.entitySize = iOCT_registry_inst.components.count * sizeof(OCT_index);
 }
+#pragma endregion
 
-void eOCT_ECS_update() {
-}
-
+#pragma region pool tracking
 OCT_index iOCT_ECS_addDataPool(eOCT_dataPoolDescription desc, bool global) {
 	if (global) {
 		//printf("Added global data pool\n");
@@ -108,12 +107,13 @@ OCT_index iOCT_ECS_addDataPool(eOCT_dataPoolDescription desc, bool global) {
 // 	return dataLoc;
 // }
 
-OCT_handle iOCT_getContextHandle(const iOCT_entityContext* context) {
-	return (OCT_handle) {
-	.containerID = OCT_ID_NULL,
-	.objectID = context->contextID
-	};
-}
+// OCT_handle iOCT_getContextHandle(const iOCT_entityContext* context) {
+// 	return (OCT_handle) {
+// 	.containerID = OCT_ID_NULL,
+// 	.objectID = context->contextID
+// 	};
+// }
+
 #pragma region static
 static OCT_index iOCT_ECS_addContextDataPool(eOCT_dataPoolDescription desc) {
 	OCT_index index;
@@ -123,7 +123,6 @@ static OCT_index iOCT_ECS_addContextDataPool(eOCT_dataPoolDescription desc) {
 
 	return index;
 }
-
 static OCT_index iOCT_ECS_addGlobalDataPool(eOCT_dataPoolDescription desc) {
 	OCT_index index;
 

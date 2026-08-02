@@ -17,7 +17,7 @@ void system_register_RENDERER() {
         .stride = sizeof(iOCT_sprite2D),
         .keyCacheLocation = &iOCT_renderer_inst.sprite2DKey,
         .sortValueOffset = offsetof(iOCT_sprite2D, sortKey),
-        .entityIDValueOffset = offsetof(iOCT_sprite2D, entityID)
+        .entityHandleValueOffset = offsetof(iOCT_sprite2D, entityHandle)
     };
     eOCT_componentDescription camera2D = {
         .name = "camera2D",
@@ -26,7 +26,7 @@ void system_register_RENDERER() {
         .keyCacheLocation = &iOCT_renderer_inst.camera2DKey,
         .sortValueOffset = eOCT_POOL_SORT_NONE,
         .stride = sizeof(iOCT_camera2D),
-        .entityIDValueOffset = offsetof(iOCT_camera2D, entityID)
+        .entityHandleValueOffset = offsetof(iOCT_camera2D, entityHandle)
     };
 
     eOCT_fieldRequest transform2D = {
@@ -132,7 +132,7 @@ void system_register_WINDOW() {
         .name = "focusedCamera",
         .providedField = focusedCameraMatrix,
         .global = true,
-        .cacheLocation = NULL
+        .keyCacheLocation = &iOCT_windowSystem_inst.focusedCameraMatrixKey
     };
     eOCT_systemDescription windowSystem = {
         .name = "Window",
