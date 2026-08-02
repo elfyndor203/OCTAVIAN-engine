@@ -7,7 +7,7 @@ void system_register_PLATFORM() {
     eOCT_fieldDescription time = {
         .name = "systemTime",
         .type = eOCT_DATATYPE_DOUBLE64,
-        .providerType = eOCT_FIELDPROVIDER_SINGLE,
+        .providerType = eOCT_DATAPATTERN_SINGLE,
         .offset = 0
     };
     eOCT_singleDescription timeSingle = {

@@ -35,6 +35,9 @@ add_library(Core STATIC
         internal/globals/globals.c
         engine/globals/globals_eng.h
         engine/globals/types_eng.h
+        internal/layout/dataAccess.c
+        engine/layout/layout_eng.h
+        engine/layout/types_eng.h
 )
 
 target_include_directories(Core

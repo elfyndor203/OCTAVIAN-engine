@@ -15,24 +15,24 @@ void system_register_RENDERER() {
         .providedFields = eOCT_POOL_EMPTY,
         .rootAttachmentFx = iOCT_sprite2D_root,
         .stride = sizeof(iOCT_sprite2D),
-        .cacheLocation = &iOCT_renderer_inst.sprite2DCache,
+        .keyCacheLocation = &iOCT_renderer_inst.sprite2DKey,
         .sortValueOffset = offsetof(iOCT_sprite2D, sortKey),
-        .entitySlotValueOffset = offsetof(iOCT_sprite2D, entityID)
+        .entityIDValueOffset = offsetof(iOCT_sprite2D, entityID)
     };
     eOCT_componentDescription camera2D = {
         .name = "camera2D",
         .providedFields = eOCT_POOL_EMPTY,
         .rootAttachmentFx = NULL,
-        .cacheLocation = &iOCT_renderer_inst.camera2DCache,
+        .keyCacheLocation = &iOCT_renderer_inst.camera2DKey,
         .sortValueOffset = eOCT_POOL_SORT_NONE,
         .stride = sizeof(iOCT_camera2D),
-        .entitySlotValueOffset = offsetof(iOCT_camera2D, entityID)
+        .entityIDValueOffset = offsetof(iOCT_camera2D, entityID)
     };
 
     eOCT_fieldRequest transform2D = {
         .name = "globalTransform2D",
         .type = eOCT_DATATYPE_MAT3,
-        .ticketCacheLocation = &iOCT_renderer_inst.transform2DTicket,
+        .keyCacheLocation = &iOCT_renderer_inst.transform2DTicket,
         .optional = false,
     };
 
@@ -50,19 +50,19 @@ void system_register_RENDERER() {
 void system_register_WINDOW() {
     eOCT_fieldDescription glfwKeys = {
         .name = "glfwKeys",
-        .providerType = eOCT_FIELDPROVIDER_EVENT,
+        .providerType = eOCT_DATAPATTERN_EVENT,
         .offset = offsetof(iOCT_keyEvent, key),
         .type = eOCT_DATATYPE_INT64
     };
     eOCT_fieldDescription glfwKeyPress = {
         .name = "glfwKeyPress",
-        .providerType = eOCT_FIELDPROVIDER_EVENT,
+        .providerType = eOCT_DATAPATTERN_EVENT,
         .offset = offsetof(iOCT_keyEvent, pressed),
         .type = eOCT_DATATYPE_BOOL
     };
     eOCT_fieldDescription glfwKeyRelease = {
         .name = "glfwKeyRelease",
-        .providerType = eOCT_FIELDPROVIDER_EVENT,
+        .providerType = eOCT_DATAPATTERN_EVENT,
         .offset = offsetof(iOCT_keyEvent, released),
         .type = eOCT_DATATYPE_BOOL
     };
@@ -72,26 +72,26 @@ void system_register_WINDOW() {
         .providedFields = eOCT_generateFieldDescriptionPool(3, glfwKeys, glfwKeyPress, glfwKeyRelease),
         .stride = sizeof(iOCT_keyEvent),
         .global = true,
-        .cacheLocation = &iOCT_windowSystem_inst.keyEventCache,
+        .keyCacheLocation = &iOCT_windowSystem_inst.keyEventKey,
     };
 
     eOCT_fieldDescription mouseButton = {
         .name = "glfwMouseButton",
         .type = eOCT_DATATYPE_INT64,
         .offset = offsetof(iOCT_mouseButtonEvent, button),
-        .providerType = eOCT_FIELDPROVIDER_EVENT
+        .providerType = eOCT_DATAPATTERN_EVENT
     };
     eOCT_fieldDescription mouseButtonPress = {
         .name = "glfwMouseButtonPress",
         .type = eOCT_DATATYPE_BOOL,
         .offset = offsetof(iOCT_mouseButtonEvent, pressed),
-        .providerType = eOCT_FIELDPROVIDER_EVENT
+        .providerType = eOCT_DATAPATTERN_EVENT
     };
     eOCT_fieldDescription mouseButtonRelease = {
         .name = "glfwMouseButtonRelease",
         .type = eOCT_DATATYPE_BOOL,
         .offset = offsetof(iOCT_mouseButtonEvent, released),
-        .providerType = eOCT_FIELDPROVIDER_EVENT
+        .providerType = eOCT_DATAPATTERN_EVENT
     };
     eOCT_fieldDescription mouseButtonFields[3] = { mouseButton, mouseButtonPress, mouseButtonRelease };
     eOCT_eventDescription mouseButtonEvents = {
@@ -99,18 +99,18 @@ void system_register_WINDOW() {
         .providedFields = eOCT_generateFieldDescriptionPool(3, mouseButton, mouseButtonPress, mouseButtonRelease),
         .stride = sizeof(iOCT_mouseButtonEvent),
         .global = true,
-        .cacheLocation = &iOCT_windowSystem_inst.mouseButtonEventCache
+        .keyCacheLocation = &iOCT_windowSystem_inst.mouseButtonEventKey
     };
 
     eOCT_fieldDescription mouseXPos = {
         .name = "glfwMouseXPos",
-        .providerType = eOCT_FIELDPROVIDER_EVENT,
+        .providerType = eOCT_DATAPATTERN_EVENT,
         .offset = offsetof(iOCT_mouseMoveEvent, xPos),
         .type = eOCT_DATATYPE_FLOAT32,
     };
     eOCT_fieldDescription mouseYPos = {
         .name = "glfwMouseYPos",
-        .providerType = eOCT_FIELDPROVIDER_EVENT,
+        .providerType = eOCT_DATAPATTERN_EVENT,
         .offset = offsetof(iOCT_mouseMoveEvent, yPos),
         .type = eOCT_DATATYPE_FLOAT32,
     };
@@ -119,12 +119,12 @@ void system_register_WINDOW() {
         .providedFields = eOCT_generateFieldDescriptionPool(2, mouseXPos, mouseYPos),
         .stride = sizeof(iOCT_mouseMoveEvent),
         .global = true,
-        .cacheLocation = &iOCT_windowSystem_inst.mouseMoveEventCache
+        .keyCacheLocation = &iOCT_windowSystem_inst.mouseMoveEventKey
     };
 
     eOCT_fieldDescription focusedCameraMatrix = {
         .name = "focusedCameraMatrix",
-        .providerType = eOCT_FIELDPROVIDER_SINGLE,
+        .providerType = eOCT_DATAPATTERN_SINGLE,
         .offset = 0,
         .type = eOCT_DATATYPE_MAT3
     };

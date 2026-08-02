@@ -38,7 +38,7 @@ void OCT_engine_init() {
     init_OCT_ECS_build();
     init_OCT_globals_build();
 
-    init_OCT_registry_distributeFields();
+    init_OCT_registry_distributeTickets();
     init_OCT_registry_check();
 
     init_OCT_registry_initAllSystems();

@@ -18,7 +18,7 @@ void iOCT_window_keyCallback(GLFWwindow* window, int key, int scancode, int acti
         .released = (action == GLFW_RELEASE),
     };
 
-    eOCT_event_broadcast(iOCT_windowSystem_inst.keyEventCache, OCT_HANDLE_NULL, &keyEvent);
+    eOCT_event_broadcast(iOCT_windowSystem_inst.keyEventKey, OCT_HANDLE_NULL, &keyEvent);
 }
 
 void iOCT_window_mouseButtonCallback(GLFWwindow* window, int button, int action, int modifiers) {
@@ -31,7 +31,7 @@ void iOCT_window_mouseButtonCallback(GLFWwindow* window, int button, int action,
         .released = (action == GLFW_RELEASE)
     };
 
-    eOCT_event_broadcast(iOCT_windowSystem_inst.mouseButtonEventCache, OCT_HANDLE_NULL, &mouseButtonEvent);
+    eOCT_event_broadcast(iOCT_windowSystem_inst.mouseButtonEventKey, OCT_HANDLE_NULL, &mouseButtonEvent);
 }
 
 void iOCT_window_mouseMoveCallback(GLFWwindow* window, double xPos, double yPos) {
@@ -40,7 +40,7 @@ void iOCT_window_mouseMoveCallback(GLFWwindow* window, double xPos, double yPos)
         .yPos = (float)yPos
     };
 
-    eOCT_event_broadcast(iOCT_windowSystem_inst.mouseMoveEventCache, OCT_HANDLE_NULL, &mouseMoveEvent);
+    eOCT_event_broadcast(iOCT_windowSystem_inst.mouseMoveEventKey, OCT_HANDLE_NULL, &mouseMoveEvent);
 }
 
 void iOCT_window_resizeCallback(GLFWwindow* window, int width, int height) {}

@@ -7,6 +7,7 @@ struct iOCT_world {
 	eOCT_systemDescription system;
 
 	eOCT_componentDescription transform2DCache;
+	eOCT_componentKey transform2DKey;
 };
 
 extern iOCT_world iOCT_world_inst;

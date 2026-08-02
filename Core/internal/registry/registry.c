@@ -24,6 +24,9 @@ static void iOCT_registry_registerSingle(eOCT_singleDescription* singleDesc);
 static void iOCT_registry_registerField(eOCT_fieldDescription* field, OCT_index fieldNum, OCT_ID systemID, OCT_index providerIndex, bool global);
 static OCT_index iOCT_registry_registerFields(eOCT_pool providedFields, OCT_ID systemID, OCT_index providerIndex, bool global);
 static eOCT_pool* iOCT_registry_findGlobalPool(eOCT_fieldDescription field);
+static void iOCT_registry_distributeFields();
+static void iOCT_registry_buildGlobalEventTickets();
+
 iOCT_registry iOCT_registry_inst = { 0 }; 
 
 #pragma region internal
@@ -45,7 +48,36 @@ void init_OCT_registry_init() {
 	printf("| Registry initialized\n");
 }
 
-void init_OCT_registry_distributeFields() {
+void init_OCT_registry_distributeTickets() {
+	iOCT_registry_distributeFields();
+	iOCT_registry_buildGlobalEventTickets();
+}
+
+// fills in global pools for global events
+static void iOCT_registry_buildGlobalEventTickets() {
+	eOCT_pool systemPool = iOCT_registry_inst.systems;
+	eOCT_systemDescription** systemArray = (eOCT_systemDescription**)systemPool.array;
+
+	for (int systemCtr = 0; systemCtr < systemPool.count; systemCtr++) {
+		eOCT_systemDescription* system = systemArray[systemCtr];
+		eOCT_pool* eventPool = &system->providedEvents;
+
+		if (eOCT_pool_isEmpty(*eventPool)) {
+			continue;
+		}
+
+		for (int eventCtr = 0; eventCtr < eventPool->count; eventCtr++) {
+			eOCT_eventDescription* event = (eOCT_eventDescription*)eOCT_pool_access(eventPool, eventCtr, 0);
+			eOCT_eventKey* key = event->keyCacheLocation;
+			if (key->global) {
+				key->globalEventPool = (eOCT_pool*)eOCT_pool_access(&iOCT_globals_inst.globalEvents.eventPools, key->eventTypeIndex, 0);
+				key->globalCallbackPool = (eOCT_pool*)eOCT_pool_access(&iOCT_globals_inst.globalEvents.callbackPools, key->eventTypeIndex, 0);
+			}
+		}
+	}
+}
+
+static void iOCT_registry_distributeFields() {
 	eOCT_pool systemPool = iOCT_registry_inst.systems;
 	eOCT_systemDescription** systemArray = (eOCT_systemDescription**)systemPool.array;
 
@@ -61,16 +93,16 @@ void init_OCT_registry_distributeFields() {
 		// for each request
 		for (int requestCtr = 0; requestCtr < requestPool.count; requestCtr++) {
 			eOCT_fieldRequest* request = &requestArray[requestCtr];
-			eOCT_fieldTicket* ticket = request->ticketCacheLocation;
+			eOCT_fieldTicket* key = request->keyCacheLocation;
 			eOCT_fieldDescription match;
 			if (iOCT_registry_findField(request->name, &match)) {	// if there is a match
-				ticket->name = match.name;
-				ticket->type = match.type;
-				ticket->global = match.global_reg;
-				ticket->providerType = match.providerType;
-				ticket->offsetFromStruct = match.offset;
-				ticket->providerTypeIndex = match.providerIndex_reg;
-				ticket->globalPool = iOCT_registry_findGlobalPool(match);
+				key->name = match.name;
+				key->type = match.type;
+				key->global = match.global_reg;
+				key->providerType = match.providerType;
+				key->offsetFromStruct = match.offset;
+				key->providerTypeIndex = match.providerIndex_reg;
+				key->globalPool = iOCT_registry_findGlobalPool(match);
 
 				request->fulfilled_reg = true;
 				request->providerType_reg = match.providerType;
@@ -340,13 +372,6 @@ void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription) {
 	printf("--------------------------------\n\n");
 }
 
-#pragma region navigation
-eOCT_eventDescription iOCT_registry_findSourceEventDescription(eOCT_fieldRequest fieldRequest) {
-	eOCT_eventDescription* array = (eOCT_eventDescription*)iOCT_registry_inst.events.array;
-	return array[fieldRequest.providerIndex_reg];
-}
-#pragma endregion
-
 #pragma region static
 static void iOCT_registry_registerComponent(eOCT_componentDescription* componentDesc) {
 	OCT_index componentIndex;
@@ -354,8 +379,16 @@ static void iOCT_registry_registerComponent(eOCT_componentDescription* component
 	componentDesc->componentTypeIndex_reg = componentIndex;	// inform the system of its component's index
 	*registryEntry = *componentDesc;						// THEN copy
 
-	if (componentDesc->cacheLocation) {
-		*componentDesc->cacheLocation = *componentDesc;
+	if (componentDesc->keyCacheLocation) {
+		eOCT_componentKey key = {
+			.name = componentDesc->name,
+			.componentTypeIndex = componentDesc->componentTypeIndex_reg,
+			.entityIDValueOffset = componentDesc->entityIDValueOffset
+		};
+		*componentDesc->keyCacheLocation = key;
+	}
+	else {
+		OCT_ERROR_LOG(OCT_ERR_NOT_PROVIDED, "Ticket cache location not provided, component cannot be accessed without a ticket.");
 	}
 }
 static void iOCT_registry_registerEvent(eOCT_eventDescription* eventDesc) {
@@ -364,8 +397,14 @@ static void iOCT_registry_registerEvent(eOCT_eventDescription* eventDesc) {
 	eventDesc->eventTypeIndex_reg = eventIndex;
 	*registryEntry = *eventDesc;
 
-	if (eventDesc->cacheLocation) {
-		*eventDesc->cacheLocation = *eventDesc;
+	if (eventDesc->keyCacheLocation) {
+		eOCT_eventKey key = {
+			.name = eventDesc->name,
+			.eventTypeIndex = eventDesc->eventTypeIndex_reg,
+			.global = eventDesc->global,
+			.globalEventPool = NULL		// set later
+		};
+		*eventDesc->keyCacheLocation = key;
 	}
 }
 static void iOCT_registry_registerDataPool(eOCT_dataPoolDescription* dataPoolDesc) {
@@ -450,15 +489,15 @@ static eOCT_pool* iOCT_registry_findGlobalPool(eOCT_fieldDescription field) {
 
 	eOCT_pool* pool;
 	switch (field.providerType) {
-	case eOCT_FIELDPROVIDER_COMPONENT:
+	case eOCT_DATAPATTERN_COMPONENT:
 		return NULL;
-	case eOCT_FIELDPROVIDER_DATAPOOL:
+	case eOCT_DATAPATTERN_DATAPOOL:
 		OCT_ERROR_LOG(OCT_EXIT_NOT_YET_IMPLEMENTED, "Data pools are being updated\n");
 		return NULL;
-	case eOCT_FIELDPROVIDER_EVENT:
+	case eOCT_DATAPATTERN_EVENT:
 		pool = &((eOCT_pool*)iOCT_globals_inst.globalEvents.eventPools.array)[field.providerIndex_reg];
 		break;
-	case eOCT_FIELDPROVIDER_SINGLE:
+	case eOCT_DATAPATTERN_SINGLE:
 		pool = &iOCT_globals_inst.globalSingles;
 		break;
 	default:
@@ -469,36 +508,3 @@ static eOCT_pool* iOCT_registry_findGlobalPool(eOCT_fieldDescription field) {
 }
 #pragma endregion
 
-eOCT_pool* eOCT_field_getSourcePool(OCT_handle contextHandle, eOCT_fieldTicket fieldDetails) {
-	if (fieldDetails.global && fieldDetails.globalPool) {
-		return fieldDetails.globalPool;
-	}
-
-	if (fieldDetails.providerType == eOCT_FIELDPROVIDER_COMPONENT) {
-		iOCT_entityContext* context = iOCT_entityContext_get(contextHandle.objectID);
-		eOCT_pool* componentPool = &((eOCT_pool*)context->componentPools.array)[fieldDetails.providerTypeIndex];
-		return componentPool;
-	}
-
-	if (fieldDetails.providerType == eOCT_FIELDPROVIDER_DATAPOOL) {
-		OCT_ERROR_LOG(OCT_EXIT_NOT_YET_IMPLEMENTED, "Data pools are being updated\n");
-		return NULL;
-	}
-
-	if (fieldDetails.providerType == eOCT_FIELDPROVIDER_EVENT) {
-		OCT_ERROR_LOG(OCT_EXIT_NOT_YET_IMPLEMENTED, "Context events not yet implemented");
-		return NULL;
-	}
-
-	if (fieldDetails.providerType == eOCT_FIELDPROVIDER_SINGLE) {
-		OCT_ERROR_LOG(OCT_EXIT_NOT_YET_IMPLEMENTED, "Context singles are not yet implemented\n");
-		return NULL;
-	}
-
-	return NULL;
-}
-
-void* eOCT_field_read(eOCT_pool sourcePool, eOCT_fieldTicket fieldDetails, OCT_index entryIndex) {
-	void* fieldLoc = eOCT_pool_access(&sourcePool, entryIndex, fieldDetails.offsetFromStruct);
-	return fieldLoc;
-}

@@ -18,8 +18,8 @@ struct iOCT_renderer {
     eOCT_systemDescription systemDescription;
     eOCT_fieldTicket transform2DTicket;
     eOCT_fieldTicket windowVAOCache;
-    eOCT_componentDescription sprite2DCache;
-    eOCT_componentDescription camera2DCache;
+    eOCT_componentKey sprite2DKey;
+    eOCT_componentKey camera2DKey;
 
     // texture storage
     eOCT_IDMap textureGroupMap;

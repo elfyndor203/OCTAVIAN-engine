@@ -44,15 +44,15 @@ void iOCT_eventManager_clear(iOCT_eventManager* manager) {
     }
 }
 
-void eOCT_event_broadcast(eOCT_eventDescription eventDesc, OCT_handle contextHandle, void* event) {
+void eOCT_event_broadcast(eOCT_eventKey eventKey, OCT_handle contextHandle, void* event) {
     eOCT_pool* eventPool;
     eOCT_pool* callbackPool;
-    eventPool = iOCT_getEventPool(eventDesc, contextHandle, &callbackPool);
+    eventPool = eOCT_event_getPool(contextHandle, eventKey, &callbackPool);
 
     // add to the frame's events
     OCT_index eventIndex;
     void* dataLoc = eOCT_pool_addEntry(eventPool, &eventIndex);
-    memcpy(dataLoc, event, eventDesc.stride);
+    memcpy(dataLoc, event, eventPool->elementSize); // __NOTE__ maybe store stride? but it should be the same
 
     // call all callbacks
     eOCT_eventCallbackFx* callbackArray = (eOCT_eventCallbackFx*)callbackPool->array;
@@ -62,7 +62,7 @@ void eOCT_event_broadcast(eOCT_eventDescription eventDesc, OCT_handle contextHan
 }
 
 void eOCT_event_subscribe(eOCT_fieldTicket eventField, OCT_handle contextHandle, eOCT_eventCallbackFx callback) {
-    if (eventField.providerType != eOCT_FIELDPROVIDER_EVENT) {
+    if (eventField.providerType != eOCT_DATAPATTERN_EVENT) {
         OCT_ERROR_LOG(OCT_EXIT_SOURCE_MISMATCH, "Tried to set callback for field that does not come from an event");
         return;
     }

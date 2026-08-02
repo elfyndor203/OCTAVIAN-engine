@@ -19,6 +19,6 @@ struct iOCT_registry {
 
 extern iOCT_registry iOCT_registry_inst;
 
-eOCT_eventDescription iOCT_registry_findSourceEventDescription(eOCT_fieldRequest fieldRequest);
+// eOCT_eventDescription iOCT_registry_findSourceEventDescription(eOCT_fieldRequest fieldRequest);
 // void iOCT_registerAllSystems(); // defined in build_manifest.c
 //void iOCT_allocateAllComponents();

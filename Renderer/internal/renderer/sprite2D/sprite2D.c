@@ -18,7 +18,7 @@ uint64_t generateSortKey(OCT_index drawLayer, OCT_index texGroupIndex);
 
 void OCT_sprite2D_attach(OCT_handle entity, OCT_handle texture, OCT_vec4 uv, OCT_vec4 tintColor, OCT_vec2 dimensions, OCT_index drawLayer) {
     OCT_index texGroupIndex = eOCT_IDMap_getIndex(&iOCT_renderer_inst.textureGroupMap, texture.containerID);
-    iOCT_sprite2D* newSprite = eOCT_entity_attachComponent(entity, iOCT_renderer_inst.sprite2DCache);
+    iOCT_sprite2D* newSprite = eOCT_entity_attachComponent(entity, iOCT_renderer_inst.sprite2DKey);
     newSprite->entityID = entity.objectID;
     newSprite->texGroupID = texture.containerID;
     newSprite->texID = texture.objectID;

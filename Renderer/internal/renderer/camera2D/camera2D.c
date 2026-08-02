@@ -12,7 +12,7 @@ void OCT_camera2D_attach(OCT_handle entity, OCT_vec2 position, float rotation, O
     if (OCT_handle_isNULL(entity) || OCT_handle_isNULL(window)) {
         OCT_ERROR_LOG(OCT_EXIT_NULL_HANDLE, "Entity or window does not exist");
     }
-    iOCT_camera2D* newCamera = eOCT_entity_attachComponent(entity, iOCT_renderer_inst.camera2DCache);
+    iOCT_camera2D* newCamera = eOCT_entity_attachComponent(entity, iOCT_renderer_inst.camera2DKey);
     assert(newCamera && "Camera creation failed");
 
     newCamera->position = position;

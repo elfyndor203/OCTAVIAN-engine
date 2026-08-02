@@ -3,13 +3,14 @@
 #include "ECS/types_eng.h"
 
 #include "utilities/utilities_eng.h"
+#include "layout/types_eng.h"
 
-typedef enum eOCT_fieldProvider {
-	eOCT_FIELDPROVIDER_COMPONENT = 1,
-	eOCT_FIELDPROVIDER_EVENT,
-	eOCT_FIELDPROVIDER_DATAPOOL,
-	eOCT_FIELDPROVIDER_SINGLE
-} eOCT_fieldProvider;
+typedef enum eOCT_dataPattern {
+	eOCT_DATAPATTERN_COMPONENT = 1,
+	eOCT_DATAPATTERN_EVENT,
+	eOCT_DATAPATTERN_DATAPOOL,
+	eOCT_DATAPATTERN_SINGLE
+} eOCT_dataPattern;
 
 typedef enum eOCT_dataTypes { //__NOTE__ typedef all types? or no
 	eOCT_DATATYPE_NULL = 0,
@@ -47,24 +48,14 @@ union eOCT_dataUnion {
 	OCT_mat3 mat3;
 };
 
-struct eOCT_fieldTicket {
-	const char* name;
-	eOCT_dataTypes type;
-	size_t offsetFromStruct;
-	eOCT_fieldProvider providerType;
-	OCT_index providerTypeIndex;
-
-	bool global;
-	eOCT_pool* globalPool;
-};
 struct eOCT_fieldRequest {
 	const char* name;
 	eOCT_dataTypes type;
-	eOCT_fieldTicket* ticketCacheLocation;
+	eOCT_fieldTicket* keyCacheLocation;
 	//eOCT_fieldAccess access;
 	bool optional;
 
-	eOCT_fieldProvider providerType_reg;
+	eOCT_dataPattern providerType_reg;
 	OCT_index providerIndex_reg;
 	size_t fieldOffset_reg;
 	bool global_reg;
@@ -75,7 +66,7 @@ struct eOCT_fieldDescription {
 	eOCT_dataTypes type;	// standard field types defined in fields.h
 	size_t offset;			// offset from the start of the component struct
 
-	eOCT_fieldProvider providerType;
+	eOCT_dataPattern providerType;
 	OCT_index providerIndex_reg;
 	bool global_reg;
 };
@@ -83,10 +74,10 @@ struct eOCT_componentDescription {
 	const char* name;
 	size_t stride;
 	eOCT_pool providedFields;
-	eOCT_componentDescription* cacheLocation;
+	eOCT_componentKey* keyCacheLocation;
 	eOCT_rootAttachmentFx rootAttachmentFx;
 	OCT_index sortValueOffset;
-	OCT_index entitySlotValueOffset;
+	OCT_index entityIDValueOffset;
 
 	OCT_index componentTypeIndex_reg; // where the component is located in the ECS
 };
@@ -104,7 +95,7 @@ struct eOCT_eventDescription { // for cross module communication, but what about
 	const char* name;
 	size_t stride;
 	eOCT_pool providedFields;
-	eOCT_eventDescription* cacheLocation;
+	eOCT_eventKey* keyCacheLocation;
 	bool global;
 
 	OCT_index eventTypeIndex_reg;
@@ -129,10 +120,6 @@ struct eOCT_systemDescription {
 
 	OCT_ID systemID_reg; // provided by the registry
 };
-
-
-eOCT_pool* eOCT_field_getSourcePool(OCT_handle contextHandle, eOCT_fieldTicket fieldDetails);
-void* eOCT_field_read(eOCT_pool sourcePool, eOCT_fieldTicket fieldDetails, OCT_index entryIndex);
 
 void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription);
 //void eOCT_registry_allocateComponents(eOCT_componentDescription* componentDescription);

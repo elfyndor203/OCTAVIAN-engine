@@ -123,7 +123,8 @@ void iOCT_renderer_uploadAll(OCT_handle contextHandle) {
     eOCT_pool_clear(&iOCT_renderer_inst.spriteFullDataBuffer);
 
     // Source
-    eOCT_pool* spritePool = eOCT_context_getComponentPool(contextHandle, iOCT_renderer_inst.sprite2DCache);
+    // eOCT_pool* spritePool = eOCT_context_getComponentPool(contextHandle, iOCT_renderer_inst.sprite2DCache);
+    eOCT_pool* spritePool = eOCT_component_getPool(contextHandle, iOCT_renderer_inst.sprite2DKey);
     iOCT_sprite2D* spriteArray = (iOCT_sprite2D*)spritePool->array;
     // Buffer
     eOCT_pool* spriteBufferPool = &iOCT_renderer_inst.spriteFullDataBuffer;
@@ -177,7 +178,7 @@ void iOCT_renderer_uploadAll(OCT_handle contextHandle) {
 void iOCT_renderer_drawAll(OCT_handle contextHandle) {
     eOCT_pool* windowPool = &iOCT_windowSystem_inst.windowPool;
     iOCT_window* windowArray = (iOCT_window*)windowPool->array;
-    eOCT_pool* spritePool = eOCT_context_getComponentPool(contextHandle, iOCT_renderer_inst.sprite2DCache);
+    eOCT_pool* spritePool = eOCT_component_getPool(contextHandle, iOCT_renderer_inst.sprite2DKey);
     iOCT_sprite2D* spriteArray = (iOCT_sprite2D*)spritePool->array;
 
     assert(windowPool && windowArray && spritePool && spriteArray && "Renderer data grab failed\n");

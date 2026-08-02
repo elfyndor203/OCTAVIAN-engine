@@ -1,6 +1,8 @@
 #pragma once
 #include "OCT_Core.h"   // api headers
 
+#include "layout/layout_eng.h"
+
 #include "errors/errors_eng.h"
 #include "hardware/keys.h"
 
