@@ -49,38 +49,57 @@ OCT_handle iOCT_entity_new(iOCT_entityContext* context) {
 	};
 }
 
-void* eOCT_entity_attachComponent(OCT_handle entity, eOCT_componentKey component) {
+// void* eOCT_entity_attachComponentOld(OCT_handle entity, eOCT_componentKey component) {
+// 	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, entity.containerID);
+// 	OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
+//
+// 	return iOCT_entity_attachComponent(context, entityIndex, component, false, 0);
+// }
+// void* eOCT_entity_attachComponentSorted(OCT_handle entity, eOCT_componentKey component, OCT_index sortValue) {		// __NOTE__ DOESNT UPDATE OTHER ENTRIES
+// 	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, entity.containerID);
+// 	OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
+//
+// 	return iOCT_entity_attachComponent(context, entityIndex, component, true, sortValue);
+// }
+// void* iOCT_entity_attachComponent(iOCT_entityContext* context, OCT_index entityIndex, eOCT_componentKey component, bool sort, OCT_index sortValue) {
+// 	// goes to the slot in the entity pool
+// 	OCT_index* entityComponentEntry = iOCT_entity_getComponentIndexEntry(context, entityIndex, component);
+//
+// 	// gets the index within the component's pool
+// 	eOCT_pool* componentPool = iOCT_context_getComponentPool(context, component.componentTypeIndex);
+// 	OCT_index destinationIndex;
+// 	void* dataLoc;
+// 	if (sort) {
+// 		dataLoc = eOCT_pool_addEntrySorted(componentPool, sortValue, &destinationIndex);
+// 		iOCT_entity_resolveIndices(context, componentPool, component, destinationIndex);	// sorting may shuffle other entries
+// 	}
+// 	else {
+// 		dataLoc = eOCT_pool_addEntry(componentPool, &destinationIndex);
+// 	}
+//
+// 	// saves that index in the entity slot
+// 	*entityComponentEntry = destinationIndex;
+// 	//__NOTE__
+// 	//printf("Attached component\n");
+//
+// 	return dataLoc;
+// }
+
+void* eOCT_entity_attachComponentOnce(OCT_handle entity, eOCT_componentKey componentKey, void* source, OCT_index* outIndex) {
 	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, entity.containerID);
 	OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
 
-	return iOCT_entity_attachComponent(context, entityIndex, component, false, 0);
-}
-void* eOCT_entity_attachComponentSorted(OCT_handle entity, eOCT_componentKey component, OCT_index sortValue) {		// __NOTE__ DOESNT UPDATE OTHER ENTRIES
-	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, entity.containerID);
-	OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
-
-	return iOCT_entity_attachComponent(context, entityIndex, component, true, sortValue);
-}
-void* iOCT_entity_attachComponent(iOCT_entityContext* context, OCT_index entityIndex, eOCT_componentKey component, bool sort, OCT_index sortValue) {
-	// goes to the slot in the entity pool
-	OCT_index* entityComponentEntry = iOCT_entity_getComponentIndexEntry(context, entityIndex, component);
-
-	// gets the index within the component's pool
-	eOCT_pool* componentPool = iOCT_context_getComponentPool(context, component.componentTypeIndex);
+	OCT_index* entityComponentEntry = iOCT_entity_getComponentIndexEntry(context, entityIndex, componentKey);
+	eOCT_pool* componentPool = iOCT_context_getComponentPool(context, componentKey.componentTypeIndex);
 	OCT_index destinationIndex;
-	void* dataLoc;
-	if (sort) {
-		dataLoc = eOCT_pool_addEntrySorted(componentPool, sortValue, &destinationIndex);
-		iOCT_entity_resolveIndices(context, componentPool, component, destinationIndex);	// sorting may shuffle other entries
-	}
-	else {
-		dataLoc = eOCT_pool_addEntry(componentPool, &destinationIndex);
-	}
 
-	// saves that index in the entity slot
+	void* dataLoc = eOCT_pool_addEntryNew(componentPool, source, &destinationIndex);
+	iOCT_entity_resolveIndices(context, componentPool, componentKey, destinationIndex);
 	*entityComponentEntry = destinationIndex;
-	//__NOTE__
-	//printf("Attached component\n");
+
+	if (outIndex) {
+		*outIndex = destinationIndex;
+	}
 	return dataLoc;
 }
 #pragma endregion

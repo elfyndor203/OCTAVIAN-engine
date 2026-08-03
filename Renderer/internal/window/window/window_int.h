@@ -47,7 +47,7 @@ OCT_mat3 iOCT_window_worldToNDC(iOCT_window window);
 iOCT_window* iOCT_window_findByGLFWWindowPtr(GLFWwindow* windowPtr);
 
 void iOCT_window_poll(iOCT_window* window);
-void iOCT_window_close(iOCT_window* window, OCT_index windowIndex);
+void iOCT_window_close(iOCT_window* window);
 
 void iOCT_window_callback_resize(GLFWwindow* window, int newWidth, int newHeight);
 void iOCT_window_keyCallback(GLFWwindow* window, int key, int scancode, int action, int modifiers);

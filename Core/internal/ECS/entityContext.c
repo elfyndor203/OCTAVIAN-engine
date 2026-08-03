@@ -27,7 +27,7 @@ OCT_handle OCT_entityContext_open(OCT_handle* rootOut) {
 	newContext->contextID = newID;
 		// init entity pool
 	OCT_index entityCapacity = eOCT_POOL_CAPACITY_DEFAULT;
-	newContext->entityIDMap = eOCT_IDMap_init(newID, entityCapacity);
+	newContext->entityIDMap = eOCT_IDMap_open(newID, entityCapacity);
 	newContext->entityPool = eOCT_pool_open(newID, entityCapacity, iOCT_ECS_inst.entitySize);
 	eOCT_pool_fillSetting noComponent = {
 		.fillStyle = eOCT_POOL_FILLSTYLE_BYTES,

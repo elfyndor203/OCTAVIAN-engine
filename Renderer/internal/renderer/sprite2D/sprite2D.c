@@ -18,16 +18,30 @@ uint64_t generateSortKey(OCT_index drawLayer, OCT_index texGroupIndex);
 
 void OCT_sprite2D_attach(OCT_handle entity, OCT_handle texture, OCT_vec4 uv, OCT_vec4 tintColor, OCT_vec2 dimensions, OCT_index drawLayer) {
     OCT_index texGroupIndex = eOCT_IDMap_getIndex(&iOCT_renderer_inst.textureGroupMap, texture.containerID);
-    iOCT_sprite2D* newSprite = eOCT_entity_attachComponent(entity, iOCT_renderer_inst.sprite2DKey);
-    newSprite->entityHandle = entity;
-    newSprite->texGroupID = texture.containerID;
-    newSprite->texID = texture.objectID;
-    newSprite->spriteTransform = OCT_mat3_identity;
-    // resolve spriteData texArrayLayer at draw time
-    newSprite->spriteData.uv = uv;
-    newSprite->spriteData.color = tintColor;
-    newSprite->spriteData.dimensions = dimensions;
-    newSprite->sortKey = generateSortKey(drawLayer, texGroupIndex);
+
+    iOCT_sprite2D newSprite = {
+        .entityHandle = entity,
+        .texGroupID = texture.containerID,
+        .texID = texture.objectID,
+        .spriteTransform = OCT_mat3_identity,
+        .sortKey = generateSortKey(drawLayer, texGroupIndex),
+        .spriteData = {
+            .uv = uv,
+            .color = tintColor,
+            .dimensions = dimensions,
+        }
+    };
+    eOCT_entity_attachComponentOnce(entity, iOCT_renderer_inst.sprite2DKey, &newSprite, NULL);
+    // iOCT_sprite2D* newSprite = eOCT_entity_attachComponent(entity, iOCT_renderer_inst.sprite2DKey);
+    // newSprite->entityHandle = entity;
+    // newSprite->texGroupID = texture.containerID;
+    // newSprite->texID = texture.objectID;
+    // newSprite->spriteTransform = OCT_mat3_identity;
+    // // resolve spriteData texArrayLayer at draw time
+    // newSprite->spriteData.uv = uv;
+    // newSprite->spriteData.color = tintColor;
+    // newSprite->spriteData.dimensions = dimensions;
+    // newSprite->sortKey = generateSortKey(drawLayer, texGroupIndex);
 
     printf("Attached sprite2D to entity %zu\n", entity.objectID);
 

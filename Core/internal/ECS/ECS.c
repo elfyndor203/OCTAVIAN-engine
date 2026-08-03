@@ -15,12 +15,12 @@ iOCT_ECS iOCT_ECS_inst = { 0 };
 
 #pragma region init
 void init_OCT_ECS_init() {
-	iOCT_ECS_inst.contextMap = eOCT_IDMap_init(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT);
+	iOCT_ECS_inst.contextMap = eOCT_IDMap_open(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT);
 	iOCT_ECS_inst.contextPool = eOCT_pool_open(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, sizeof(iOCT_entityContext));
 
 	iOCT_ECS_inst.dataPoolSizeAndOrderList = eOCT_pool_open(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, sizeof(size_t));
 
-	iOCT_ECS_inst.globalDataMap = eOCT_IDMap_init(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT);
+	iOCT_ECS_inst.globalDataMap = eOCT_IDMap_open(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT);
 	iOCT_ECS_inst.globalDataPools = eOCT_pool_open(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, sizeof(eOCT_pool));
 
 	printf("| ECS initialized\n");

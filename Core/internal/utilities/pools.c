@@ -1,6 +1,5 @@
 #include "utilities/pools_eng.h"
 #include "utilities/types_eng.h"
-#include "utilities/types_eng.h"
 
 #include "OCT_Core_eng.h"
 
@@ -11,6 +10,7 @@
 #include <stdbool.h>
 #include <inttypes.h>
 
+#include "utilities/utilities_int.h"
 // opt-outs and presets
 eOCT_pool eOCT_POOL_EMPTY = {
 	.array = NULL,
@@ -28,8 +28,7 @@ eOCT_pool_fillSetting eOCT_POOL_FILLSETTING_ZEROS = {
 	.value.byteFill = 0x00
 };
 
-static bool iOCT_pool_expand(eOCT_pool* pool, OCT_index factor);
-static void* iOCT_findDestination(eOCT_pool* pool, OCT_index target, OCT_index* outIndex);
+static void* iOCT_findDestination(eOCT_pool* pool, size_t targetSortValue, OCT_index* outIndex);
 
 #pragma region basic functions
 eOCT_pool eOCT_pool_open(OCT_ID ownerID, OCT_index capacity, size_t elementSize) {
@@ -59,6 +58,33 @@ void* eOCT_pool_addEntry(eOCT_pool* pool, OCT_index* outIndex) {
 	}
 	pool->count++;
 	return slot;
+}
+
+void* eOCT_pool_addEntryNew(eOCT_pool* pool, void* source, OCT_index* outIndex) {
+	if (!source) {
+		OCT_ERROR_LOG(OCT_EXIT_REFERENCE_DOES_NOT_EXIST, "Pool entry source DNE");
+		return NULL;
+	}
+	if (pool->count == pool->capacity) {
+		iOCT_pool_expand(pool, 2);
+	}
+
+	OCT_index destinationIndex;
+	if (pool->sort) {
+		size_t sortValue = *(size_t*)((char*)source + pool->sortValueOffset);
+		iOCT_findDestination(pool, sortValue, &destinationIndex);
+	}
+	else {
+		destinationIndex = pool->count;
+	}
+	void* destinationBase = eOCT_pool_access(pool, pool->count, 0);
+	memcpy(destinationBase, source, pool->elementSize);
+	pool->count++;
+
+	if (outIndex) {
+		*outIndex = destinationIndex;
+	}
+	return destinationBase;
 }
 void* eOCT_pool_access(eOCT_pool* pool, OCT_index index, size_t offset) {
 	if (!pool) {
@@ -236,6 +262,7 @@ void eOCT_pool_setFill(eOCT_pool* pool, eOCT_pool_fillSetting fillSetting) {
 }
 void eOCT_pool_setSort(eOCT_pool* pool, size_t sortValueOffset) {
 	pool->sortValueOffset = sortValueOffset;
+	pool->sort = true;
 
 	if (pool->count > 0) {
 		OCT_ERROR_LOG(OCT_NOTE_POOL_NOT_EMPTY, "Adding sort setting does not sort existing items");
@@ -262,7 +289,7 @@ OCT_index eOCT_pool_expand(eOCT_pool* pool, OCT_index minCapacity) {
 	iOCT_pool_expand(pool, factor);
 	return pool->capacity;
 }
-static bool iOCT_pool_expand(eOCT_pool* pool, OCT_index factor) {
+bool iOCT_pool_expand(eOCT_pool* pool, OCT_index factor) {
 	if (factor * pool->capacity == 0) {
 		return false;
 	}
@@ -329,20 +356,19 @@ void eOCT_pool_dump(eOCT_pool* pool) {
 }
 #pragma endregion
 
-static void* iOCT_findDestination(eOCT_pool* pool, OCT_index target, OCT_index* outIndex) {
+static void* iOCT_findDestination(eOCT_pool* pool, size_t targetSortValue, OCT_index* outIndex) {
 	char* array = (char*)pool->array;
 
 	OCT_index start = 0;
 	OCT_index end = pool->count;
 	OCT_index destinationIndex = 0;
 
-
 	while (start < end) {
 		OCT_index mid = start + (end - start) / 2;
 		OCT_index midValue = 0;
 
 		midValue = *(OCT_index*)(array + (mid * pool->elementSize) + pool->sortValueOffset);
-		if (midValue < target) {
+		if (midValue < targetSortValue) {
 			start = mid + 1;
 		}
 		else {

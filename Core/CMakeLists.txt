@@ -12,7 +12,7 @@ add_library(Core STATIC
         internal/ECS/entityContext.c
     internal/registry/registry.c
     internal/utilities/IDMap.c
-    internal/utilities/poolMapPair.c
+        internal/utilities/mappedPool.c
     internal/utilities/pools.c
         engine/resources/resources_eng.h
         internal/resources/images_int.h
@@ -38,6 +38,7 @@ add_library(Core STATIC
         internal/layout/dataAccess.c
         engine/layout/layout_eng.h
         engine/layout/types_eng.h
+        internal/utilities/utilities_int.h
 )
 
 target_include_directories(Core

@@ -15,7 +15,7 @@
 
 OCT_handle OCT_textureGroup_open(OCT_vec2 dimensions, OCT_index maxCount) {
     OCT_ID systemID = iOCT_renderer_inst.systemDescription.systemID_reg;
-    eOCT_IDMap texMap = eOCT_IDMap_init(systemID, maxCount);
+    eOCT_IDMap texMap = eOCT_IDMap_open(systemID, maxCount);
 
     GLuint texArray;
     glGenTextures(1, &texArray);

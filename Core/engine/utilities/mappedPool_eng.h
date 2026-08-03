@@ -13,4 +13,5 @@ void* eOCT_getByID(eOCT_IDMap* map, eOCT_pool* pool, OCT_ID ID);
 
 void* eOCT_pool_addEntrySorted(eOCT_pool* pool, OCT_index sortValue, OCT_index* outIndex);
 
+eOCT_mappedPool eOCT_mappedPool_open(OCT_ID systemID, OCT_index capacity, size_t elementSize, size_t elementIDValueOffset);
 void eOCT_mappedPool_deleteEntry(eOCT_mappedPool* pool, OCT_ID deletedID);

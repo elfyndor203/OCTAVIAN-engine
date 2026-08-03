@@ -34,8 +34,8 @@ OCT_handle OCT_window_open(const char* name, unsigned int sizeX, unsigned int si
     GLuint newVAO;
     OCT_ID newID;
     OCT_index newIndex;
-    iOCT_window* newWindow = (iOCT_window*)eOCT_pool_addEntry(&iOCT_windowSystem_inst.windowPool, &newIndex);
-    newID = eOCT_IDMap_register(&iOCT_windowSystem_inst.windowMap, newIndex);
+    iOCT_window* newWindow = (iOCT_window*)eOCT_pool_addEntry(&iOCT_windowSystem_inst.windowMPool.pool, &newIndex);
+    newID = eOCT_IDMap_register(&iOCT_windowSystem_inst.windowMPool.IDMap, newIndex);
     newWindow->windowID = newID;
     newWindow->windowPtr = windowPtr;
     newWindow->targetResolution = (OCT_vec2){ (float)sizeX, (float)sizeY };
@@ -59,7 +59,7 @@ OCT_handle OCT_window_open(const char* name, unsigned int sizeX, unsigned int si
 }
 
 bool OCT_window_isOpen(OCT_handle windowHandle) {
-    iOCT_window* window = (iOCT_window*)eOCT_getByID(&iOCT_windowSystem_inst.windowMap, &iOCT_windowSystem_inst.windowPool, windowHandle.objectID);
+    iOCT_window* window = (iOCT_window*)eOCT_getByID(&iOCT_windowSystem_inst.windowMPool.IDMap, &iOCT_windowSystem_inst.windowMPool.pool, windowHandle.objectID);
     if (!window) {
         return false;
     }
@@ -67,15 +67,13 @@ bool OCT_window_isOpen(OCT_handle windowHandle) {
 }
 
 bool OCT_window_anyOpen() {
-    eOCT_pool* windowPool = &iOCT_windowSystem_inst.windowPool;
+    eOCT_pool* windowPool = &iOCT_windowSystem_inst.windowMPool.pool;
     return windowPool->count;
 }
 
-void iOCT_window_close(iOCT_window* window, OCT_index windowIndex) {
-    eOCT_pool* windowPool = &iOCT_windowSystem_inst.windowPool;
-
+void iOCT_window_close(iOCT_window* window) {
     glfwDestroyWindow(window->windowPtr);
-    eOCT_pool_deleteEntry(windowPool, windowIndex); // remove the window
+    eOCT_mappedPool_deleteEntry(&iOCT_windowSystem_inst.windowMPool, window->windowID);
 }
 
 void iOCT_window_poll(iOCT_window* window) {
@@ -132,7 +130,7 @@ static void iOCT_window_setWorldResolution(OCT_vec2 XY) {
 }
 
 iOCT_window* iOCT_window_findByGLFWWindowPtr(GLFWwindow* windowPtr) {
-    eOCT_pool* windowPool = &iOCT_windowSystem_inst.windowPool;
+    eOCT_pool* windowPool = &iOCT_windowSystem_inst.windowMPool.pool;
     for (OCT_index windowCtr = 0; windowCtr < windowPool->count; windowCtr++) {
         iOCT_window* window = (iOCT_window*)eOCT_pool_access(windowPool, windowCtr, 0);
         if (window->windowPtr ==  windowPtr) {

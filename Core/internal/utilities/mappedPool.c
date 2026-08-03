@@ -1,7 +1,9 @@
-#include "utilities/mappedPool.h"
+#include "utilities/mappedPool_eng.h"
 
 #include "OCT_Core_eng.h"
 #include <string.h>
+
+#include "utilities/utilities_int.h"
 
 static OCT_ID iOCT_mappedPool_getElementID(eOCT_mappedPool mPool, OCT_index elementIndex);
 
@@ -10,6 +12,17 @@ void* eOCT_getByID(eOCT_IDMap* map, eOCT_pool* pool, OCT_ID ID) {
 	return eOCT_pool_access(pool, index, 0);
 }
 
+OCT_ID eOCT_mappedPool_addEntry(eOCT_mappedPool* mPool, void* source, void* outDestination, OCT_index* outIndex) {
+	eOCT_pool* pool = &mPool->pool;
+	eOCT_IDMap* map = &mPool->IDMap;
+
+	OCT_index newIndex;
+	OCT_ID newID;
+
+	if (pool->sort) {
+
+	}
+}
 void eOCT_mappedPool_deleteEntry(eOCT_mappedPool* mPool, OCT_ID deletedID) {
 	eOCT_pool* pool = &mPool->pool;
 	eOCT_IDMap* map = &mPool->IDMap;
@@ -49,6 +62,15 @@ void eOCT_mappedPool_deleteEntry(eOCT_mappedPool* mPool, OCT_ID deletedID) {
 		return;
 	}
 	memset(finalElementBase, pool->fillSetting.value.byteFill, pool->elementSize);
+}
+
+eOCT_mappedPool eOCT_mappedPool_open(OCT_ID systemID, OCT_index capacity, size_t elementSize, size_t elementIDValueOffset) {
+	eOCT_mappedPool mPool = {
+		.pool = eOCT_pool_open(systemID, capacity, elementSize),
+		.IDMap = eOCT_IDMap_open(systemID, capacity),
+		.elementIDValueOffset = elementIDValueOffset
+	};
+	return mPool;
 }
 
 static OCT_ID iOCT_mappedPool_getElementID(eOCT_mappedPool mPool, OCT_index elementIndex) {

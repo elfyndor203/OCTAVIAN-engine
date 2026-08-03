@@ -9,7 +9,7 @@
 #include "utilities/pools_eng.h"
 
 // Allocates initial memory for a single entityContext.
-eOCT_IDMap eOCT_IDMap_init(OCT_ID ownerID, OCT_index capacity) {
+eOCT_IDMap eOCT_IDMap_open(OCT_ID ownerID, OCT_index capacity) {
 	eOCT_IDMap map = { 0 };
 
 	map.ownerID = ownerID;

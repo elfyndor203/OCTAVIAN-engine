@@ -12,15 +12,24 @@ void OCT_camera2D_attach(OCT_handle entity, OCT_vec2 position, float rotation, O
     if (OCT_handle_isNULL(entity) || OCT_handle_isNULL(window)) {
         OCT_ERROR_LOG(OCT_EXIT_NULL_HANDLE, "Entity or window does not exist");
     }
-    iOCT_camera2D* newCamera = eOCT_entity_attachComponent(entity, iOCT_renderer_inst.camera2DKey);
-    assert(newCamera && "Camera creation failed");
 
-    newCamera->entityHandle = entity;
-    newCamera->position = position;
-    newCamera->rotation = rotation;
-    newCamera->viewFrameSize = viewFrameSize;
-    newCamera->cameraMatrix = OCT_mat3_generate(position, viewFrameSize, rotation);
+    iOCT_camera2D newCamera = {
+        .entityHandle = entity,
+        .position = position,
+        .rotation = rotation,
+        .viewFrameSize = viewFrameSize,
+        .cameraMatrix = OCT_mat3_generate(position, viewFrameSize, rotation)
+    };
+    eOCT_entity_attachComponentOnce(entity, iOCT_renderer_inst.camera2DKey, &newCamera, NULL);
+    // iOCT_camera2D* newCamera = eOCT_entity_attachComponent(entity, iOCT_renderer_inst.camera2DKey);
+    // assert(newCamera && "Camera creation failed");
+    //
+    // newCamera->entityHandle = entity;
+    // newCamera->position = position;
+    // newCamera->rotation = rotation;
+    // newCamera->viewFrameSize = viewFrameSize;
+    // newCamera->cameraMatrix = OCT_mat3_generate(position, viewFrameSize, rotation);
 
-    iOCT_window* targetWindow = (iOCT_window*)eOCT_getByID(&iOCT_windowSystem_inst.windowMap, &iOCT_windowSystem_inst.windowPool, window.objectID);
+    iOCT_window* targetWindow = (iOCT_window*)eOCT_getByID(&iOCT_windowSystem_inst.windowMPool.IDMap, &iOCT_windowSystem_inst.windowMPool.pool, window.objectID);
     targetWindow->activeCameraSourceEntity = entity;
 }

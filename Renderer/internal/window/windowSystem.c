@@ -42,15 +42,16 @@ void system_init_WINDOW() {
 	// iOCT_mouseMap_init();
 
 	// happens after registry init so using systemID is safe
-	iOCT_windowSystem_inst.windowMap = eOCT_IDMap_init(iOCT_windowSystem_inst.windowSystem.systemID_reg, eOCT_POOL_CAPACITY_DEFAULT);
-	iOCT_windowSystem_inst.windowPool = eOCT_pool_open(iOCT_windowSystem_inst.windowSystem.systemID_reg, eOCT_POOL_CAPACITY_DEFAULT, sizeof(iOCT_window));
+	iOCT_windowSystem_inst.windowMPool = eOCT_mappedPool_open(iOCT_windowSystem_inst.windowSystem.systemID_reg,
+	                                                         eOCT_POOL_CAPACITY_DEFAULT, sizeof(iOCT_window),
+	                                                         offsetof(iOCT_window, windowID));
 	iOCT_windowSystem_inst.rootWindow = initWindow;
 }
 
 
 void eOCT_WINDOW_startFrame() {
 	iOCT_window* window;
-	eOCT_pool* windowPool = &iOCT_windowSystem_inst.windowPool;
+	eOCT_pool* windowPool = &iOCT_windowSystem_inst.windowMPool.pool;
 	iOCT_window* windowArray = (iOCT_window*)windowPool->array;
 
 	for (OCT_index windowCtr = 0; windowCtr < windowPool->count; windowCtr++) {
@@ -62,17 +63,17 @@ void eOCT_WINDOW_startFrame() {
 
 		// check if windows should close
 		if (glfwWindowShouldClose(window->windowPtr)) {
-			iOCT_window_close(window, windowCtr);
+			iOCT_window_close(window);
 			windowCtr--;
 		}
 
 	}
-	if (iOCT_windowSystem_inst.windowPool.count < 1) {
+	if (windowPool->count < 1) {
 		iOCT_windowSystem_inst.focusedWindowID = OCT_ID_NULL;
 	}
 
 	if (iOCT_windowSystem_inst.focusedWindowID != OCT_ID_NULL) {
-		iOCT_window focusedWindow = *(iOCT_window*)eOCT_getByID(&iOCT_windowSystem_inst.windowMap, &iOCT_windowSystem_inst.windowPool, iOCT_windowSystem_inst.focusedWindowID);
+		iOCT_window focusedWindow = *(iOCT_window*)eOCT_getByID(&iOCT_windowSystem_inst.windowMPool.IDMap, &iOCT_windowSystem_inst.windowMPool.pool, iOCT_windowSystem_inst.focusedWindowID);
 		OCT_mat3* matrixSingle = &eOCT_single_get(iOCT_windowSystem_inst.focusedCameraMatrixKey, OCT_HANDLE_NULL)->mat3;
 		*matrixSingle = iOCT_window_screenToWorld(focusedWindow);
 	}
@@ -80,7 +81,7 @@ void eOCT_WINDOW_startFrame() {
 }
 
 void eOCT_WINDOW_finishFrame() {
-	eOCT_pool* windowPool = &iOCT_windowSystem_inst.windowPool;
+	eOCT_pool* windowPool = &iOCT_windowSystem_inst.windowMPool.pool;
 	iOCT_window* windowArray = (iOCT_window*)windowPool->array;
 
 	for (OCT_index windowCtr = 0; windowCtr < windowPool->count; windowCtr++) {
