@@ -53,7 +53,7 @@ void system_register_INPUT() {
         .keyCacheLocation = &iOCT_inputSystem_inst.mousePositionYTicket
     };
     eOCT_fieldRequest activeCamera = {
-        .name = "focusedCameraMatrix",
+        .name = "screenToWorldMatrix",
         .type = eOCT_DATATYPE_MAT3,
         .optional = false,
         .keyCacheLocation = &iOCT_inputSystem_inst.cameraMatrixTicket

@@ -41,7 +41,7 @@ void iOCT_window_wipe();
 void iOCT_window_show();
 void iOCT_window_viewport(int width, int height);
 void iOCT_window_activate(iOCT_window window);
-OCT_mat3 iOCT_window_getCameraFinalProj(iOCT_window window);
+OCT_mat3 iOCT_window_screenToWorld(iOCT_window window);
 OCT_mat3 iOCT_window_worldToNDC(iOCT_window window);
 // OCT_mat3 iOCT_window_getCameraOnlyProj(iOCT_window window);
 iOCT_window* iOCT_window_findByGLFWWindowPtr(GLFWwindow* windowPtr);

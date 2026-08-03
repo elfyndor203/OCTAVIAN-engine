@@ -122,15 +122,15 @@ void system_register_WINDOW() {
         .keyCacheLocation = &iOCT_windowSystem_inst.mouseMoveEventKey
     };
 
-    eOCT_fieldDescription focusedCameraMatrix = {
-        .name = "focusedCameraMatrix",
+    eOCT_fieldDescription screenToWorld = {
+        .name = "screenToWorldMatrix",
         .providerType = eOCT_DATAPATTERN_SINGLE,
         .offset = 0,
         .type = eOCT_DATATYPE_MAT3
     };
-    eOCT_singleDescription focusedCamera = {
+    eOCT_singleDescription screenToWorldMatrix = {
         .name = "focusedCamera",
-        .providedField = focusedCameraMatrix,
+        .providedField = screenToWorld,
         .global = true,
         .keyCacheLocation = &iOCT_windowSystem_inst.focusedCameraMatrixKey
     };
@@ -139,7 +139,7 @@ void system_register_WINDOW() {
         .providedDataPools = eOCT_POOL_EMPTY,
         .providedComponents = eOCT_POOL_EMPTY,
         .providedEvents = eOCT_generateEventDescriptionPool(3, keyEvents, mouseButtonEvents, mouseMoveEvents),
-        .providedSingles = eOCT_generateSingleDescriptionPool(1, focusedCamera),
+        .providedSingles = eOCT_generateSingleDescriptionPool(1, screenToWorldMatrix),
         .requestedFields = eOCT_POOL_EMPTY,
         .initFx = system_init_WINDOW
     };

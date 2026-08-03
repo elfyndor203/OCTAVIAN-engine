@@ -12,7 +12,8 @@
  */
 void* eOCT_entity_attachComponent(OCT_handle entity, eOCT_componentKey component);
 void* eOCT_entity_attachComponentSorted(OCT_handle entity, eOCT_componentKey component, OCT_index sortValue);
-void* eOCT_entity_getComponent(OCT_handle entity, eOCT_componentKey component);
+void* eOCT_entity_getComponentOnce(OCT_handle entity, eOCT_componentKey component);
+void* eOCT_entity_getFieldOnce(OCT_handle entity, eOCT_fieldTicket field);
 void* eOCT_entity_getField(eOCT_contextToken contextToken, OCT_handle entity, eOCT_fieldTicket field);
 OCT_index eOCT_entity_getComponentIndex(OCT_handle entity, eOCT_componentKey component);
 OCT_handle eOCT_entity_getHandle(OCT_handle context, OCT_ID entityID);

@@ -13,7 +13,7 @@ bool OCT_transform2D_attach(OCT_handle entity, OCT_handle parentEntity) {
 		printf("Cannot parent to entity in different context\n");
 		return false;
 	}
-	iOCT_transform2D parentTransform = *(iOCT_transform2D*)eOCT_entity_getComponent(parentEntity, iOCT_world_inst.transform2DKey);
+	iOCT_transform2D parentTransform = *(iOCT_transform2D*)eOCT_entity_getComponentOnce(parentEntity, iOCT_world_inst.transform2DKey);
 
 	iOCT_transform2D* transform = (iOCT_transform2D*)eOCT_entity_attachComponentSorted(entity, iOCT_world_inst.transform2DKey, parentTransform.depth + 1);
 	transform->entityHandle = entity;
@@ -30,7 +30,7 @@ bool OCT_transform2D_attach(OCT_handle entity, OCT_handle parentEntity) {
 }
 
 OCT_vec2 OCT_transform2D_moveTo(OCT_handle entity, OCT_vec2 destination) {
-	iOCT_transform2D* transform = (iOCT_transform2D*)eOCT_entity_getComponent(entity, iOCT_world_inst.transform2DKey);
+	iOCT_transform2D* transform = (iOCT_transform2D*)eOCT_entity_getComponentOnce(entity, iOCT_world_inst.transform2DKey);
 	OCT_vec2 originalPosition = transform->position;
 
 	transform->position = destination;
@@ -40,7 +40,7 @@ OCT_vec2 OCT_transform2D_moveTo(OCT_handle entity, OCT_vec2 destination) {
 OCT_vec2 OCT_transform2D_moveBy(OCT_handle entity, OCT_vec2 deltaXY);
 
 float OCT_transform2D_rotateTo(OCT_handle entity, float degrees) {
-	iOCT_transform2D* transform = (iOCT_transform2D*)eOCT_entity_getComponent(entity, iOCT_world_inst.transform2DKey);
+	iOCT_transform2D* transform = (iOCT_transform2D*)eOCT_entity_getComponentOnce(entity, iOCT_world_inst.transform2DKey);
 	float originalRotation = OCT_rad2deg(transform->rotation);
 
 	transform->rotation = OCT_deg2rad(degrees);
@@ -53,7 +53,7 @@ OCT_vec2 iOCT_transform2D_setPosition(iOCT_transform2D* transform, OCT_vec2 xy) 
 	return transform->position;
 }
 OCT_vec2 OCT_transform2D_read(OCT_handle entity, float* rotationOut, OCT_vec2* scaleOut) {
-	iOCT_transform2D* transform = (iOCT_transform2D*)eOCT_entity_getComponent(entity, iOCT_world_inst.transform2DKey);
+	iOCT_transform2D* transform = (iOCT_transform2D*)eOCT_entity_getComponentOnce(entity, iOCT_world_inst.transform2DKey);
 
 	if (rotationOut) {
 		*rotationOut = transform->rotation;
@@ -100,7 +100,7 @@ void iOCT_transform2D_propagate(OCT_handle context) {
 			target->globalMatrix = target->localMatrix;
 			continue;
 		}
-		parent = (iOCT_transform2D*)eOCT_entity_getComponent(target->parentEntityHandle, iOCT_world_inst.transform2DKey);
+		parent = (iOCT_transform2D*)eOCT_entity_getComponentOnce(target->parentEntityHandle, iOCT_world_inst.transform2DKey);
 		target->globalMatrix = OCT_mat3_mul(parent->globalMatrix, target->localMatrix);		// resolve global
 	}
 

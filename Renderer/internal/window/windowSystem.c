@@ -74,7 +74,7 @@ void eOCT_WINDOW_startFrame() {
 	if (iOCT_windowSystem_inst.focusedWindowID != OCT_ID_NULL) {
 		iOCT_window focusedWindow = *(iOCT_window*)eOCT_getByID(&iOCT_windowSystem_inst.windowMap, &iOCT_windowSystem_inst.windowPool, iOCT_windowSystem_inst.focusedWindowID);
 		OCT_mat3* matrixSingle = &eOCT_single_get(iOCT_windowSystem_inst.focusedCameraMatrixKey, OCT_HANDLE_NULL)->mat3;
-		*matrixSingle = iOCT_window_getCameraFinalProj(focusedWindow);
+		*matrixSingle = iOCT_window_screenToWorld(focusedWindow);
 	}
 
 }

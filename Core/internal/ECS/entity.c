@@ -103,7 +103,7 @@ void* eOCT_entity_getField(eOCT_contextToken contextToken, OCT_handle entity, eO
 
 	return fieldLoc;
 }
-void* eOCT_entity_getComponent(OCT_handle entity, eOCT_componentKey component) {
+void* eOCT_entity_getComponentOnce(OCT_handle entity, eOCT_componentKey component) {
 	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, entity.containerID);
 	if (!context) {
 		OCT_ERROR_LOG(OCT_EXIT_REFERENCE_DOES_NOT_EXIST, "Bad context ID");
@@ -115,6 +115,18 @@ void* eOCT_entity_getComponent(OCT_handle entity, eOCT_componentKey component) {
 		OCT_ERROR_LOG(OCT_EXIT_REFERENCE_DOES_NOT_EXIST, "Bad entity ID");
 	}
 	return dataLoc;
+}
+void* eOCT_entity_getFieldOnce(OCT_handle entity, eOCT_fieldTicket field) {
+	iOCT_entityContext* context = iOCT_entityContext_get(entity.containerID);
+	OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
+
+	OCT_index* entityBase = iOCT_entity_get(context, entityIndex);
+	OCT_index componentIndex = *(entityBase + field.providerTypeIndex);
+
+	eOCT_pool* componentPool = (eOCT_pool*)eOCT_pool_access(&context->componentPools, field.providerTypeIndex, 0);
+	void* fieldLoc = eOCT_pool_access(componentPool, componentIndex, field.offsetFromStruct);
+
+	return fieldLoc;
 }
 void* iOCT_entity_getComponent(iOCT_entityContext* context, OCT_index entityIndex, OCT_index componentTypeIndex) {
 	OCT_index* entityBase = iOCT_entity_get(context, entityIndex);

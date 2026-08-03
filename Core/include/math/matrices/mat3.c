@@ -78,7 +78,7 @@ OCT_mat3 OCT_mat3_translate(OCT_mat3 m, OCT_vec2 translation) {
     return result;
 }
 
-OCT_mat3 OCT_mat3_scaleBy(OCT_mat3 m, OCT_vec2 scale) {
+OCT_mat3 OCT_mat3_scale(OCT_mat3 m, OCT_vec2 scale) {
     OCT_mat3 result = m;
     result.c0r0 *= scale.x;
     result.c1r0 *= scale.x;
