@@ -107,21 +107,12 @@ OCT_mat3 iOCT_window_worldToNDC(iOCT_window window) {
 
     OCT_mat3 entityGlobalTransform = *(OCT_mat3*)eOCT_entity_getField(contextToken, window.activeCameraSourceEntity, iOCT_renderer_inst.transform2DTicket);
     iOCT_camera2D camera = *(iOCT_camera2D*)(eOCT_entity_getComponent(window.activeCameraSourceEntity, iOCT_renderer_inst.camera2DKey));
-    // OCT_vec2 windowRes = window.currentResolution;
 
     OCT_mat3 cameraGlobal = OCT_mat3_mul(entityGlobalTransform, camera.cameraMatrix);
     OCT_mat3 worldToCamera = OCT_mat3_inverse(cameraGlobal);
-
-    // OCT_vec2 cameraScale = {windowRes.x / camera.viewFrameSize.x, -windowRes.y / camera.viewFrameSize.y };
-    // OCT_vec2 NDCScale = {2, -2};
     OCT_vec2 NDCScale = {2, 2};
-    OCT_vec2 translation = { -1, -1 };
 
     OCT_mat3 final = OCT_mat3_scaleBy(worldToCamera, NDCScale);
-    // OCT_mat3 NDCScaled = OCT_mat3_scale(worldScaled, NDCScale);
-    // OCT_mat3 translated = OCT_mat3_translate(NDCScaled, translation);
-
-    OCT_mat3_print(final);
     return final;
 }
 
