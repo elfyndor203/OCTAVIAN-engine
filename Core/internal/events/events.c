@@ -23,10 +23,13 @@ iOCT_eventManager iOCT_eventManager_open(OCT_ID ownerID) {
         eOCT_pool events = eOCT_pool_open(ownerID, eOCT_POOL_CAPACITY_DEFAULT, eventDesc.stride);
         eOCT_pool callbacks = eOCT_pool_open(ownerID, eOCT_POOL_CAPACITY_DEFAULT, sizeof(eOCT_eventCallbackFx));
 
-        eOCT_pool* eventSlot = (eOCT_pool*)eOCT_pool_addEntry(&eventPools, NULL);
-        *eventSlot = events;
-        eOCT_pool* callbackSlot = (eOCT_pool*)eOCT_pool_addEntry(&callbackPools, NULL);
-        *callbackSlot = callbacks;
+        // eOCT_pool* eventSlot = (eOCT_pool*)eOCT_pool_addEntryOld(&eventPools, NULL);
+        // *eventSlot = events;
+        // eOCT_pool* callbackSlot = (eOCT_pool*)eOCT_pool_addEntryOld(&callbackPools, NULL);
+        // *callbackSlot = callbacks;
+
+        eOCT_pool_addEntryNew(&eventPools, &events, NULL);
+        eOCT_pool_addEntryNew(&callbackPools, &callbacks, NULL);
     }
 
     iOCT_eventManager manager = {
@@ -51,7 +54,7 @@ void eOCT_event_broadcast(eOCT_eventKey eventKey, OCT_handle contextHandle, void
 
     // add to the frame's events
     OCT_index eventIndex;
-    void* dataLoc = eOCT_pool_addEntry(eventPool, &eventIndex);
+    void* dataLoc = eOCT_pool_addEntryOld(eventPool, &eventIndex);
     memcpy(dataLoc, event, eventPool->elementSize); // __NOTE__ maybe store stride? but it should be the same
 
     // call all callbacks
@@ -71,7 +74,7 @@ void eOCT_event_subscribe(eOCT_fieldTicket eventField, OCT_handle contextHandle,
     }
 
     eOCT_pool* callbackPool = (eOCT_pool*)eOCT_pool_access(&iOCT_globals_inst.globalEvents.callbackPools, eventField.providerTypeIndex, 0);
-    eOCT_eventCallbackFx* destination = (eOCT_eventCallbackFx*)eOCT_pool_addEntry(callbackPool, NULL);
+    eOCT_eventCallbackFx* destination = (eOCT_eventCallbackFx*)eOCT_pool_addEntryOld(callbackPool, NULL);
     *destination = callback;
 }
 

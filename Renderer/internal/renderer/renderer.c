@@ -52,8 +52,9 @@ static OCT_handle iOCT_initGizmoTex();
 
 void system_init_RENDERER() {
     OCT_ID systemID = iOCT_renderer_inst.systemDescription.systemID_reg;
-    iOCT_renderer_inst.textureGroupPool = eOCT_pool_open(systemID, eOCT_POOL_CAPACITY_DEFAULT, sizeof(iOCT_textureGroup));
-    iOCT_renderer_inst.textureGroupMap = eOCT_IDMap_open(systemID, eOCT_POOL_CAPACITY_DEFAULT);
+    // iOCT_renderer_inst.textureGroupPool = eOCT_pool_open(systemID, eOCT_POOL_CAPACITY_DEFAULT, sizeof(iOCT_textureGroup));
+    // iOCT_renderer_inst.textureGroupMap = eOCT_IDMap_open(systemID, eOCT_POOL_CAPACITY_DEFAULT);
+    iOCT_renderer_inst.textureGroupMPool = eOCT_mappedPool_open(systemID, eOCT_POOL_CAPACITY_DEFAULT, sizeof(iOCT_textureGroup), offsetof(iOCT_textureGroup, textureGroupID));
     iOCT_renderer_inst.spriteFullDataBuffer = eOCT_pool_open(systemID, eOCT_POOL_CAPACITY_DEFAULT,sizeof(iOCT_spriteFullData));
 
     GLuint spriteVAO;
@@ -135,7 +136,8 @@ void iOCT_renderer_uploadAll(OCT_handle contextHandle) {
     eOCT_contextToken contextToken = eOCT_context_getToken(contextHandle);
     for (OCT_index spriteCtr = 0; spriteCtr < spritePool->count; spriteCtr++) {
         iOCT_sprite2D sprite = spriteArray[spriteCtr];
-        iOCT_textureGroup texGroup = *(iOCT_textureGroup*)eOCT_getByID(&iOCT_renderer_inst.textureGroupMap, &iOCT_renderer_inst.textureGroupPool, sprite.texGroupID);
+        // iOCT_textureGroup texGroup = *(iOCT_textureGroup*)eOCT_getByID(&iOCT_renderer_inst.textureGroupMap, &iOCT_renderer_inst.textureGroupPool, sprite.texGroupID);
+        iOCT_textureGroup texGroup = *(iOCT_textureGroup*)eOCT_mappedPool_getByID(&iOCT_renderer_inst.textureGroupMPool, sprite.texGroupID);
         OCT_index texArrayLayer = eOCT_IDMap_getIndex(&texGroup.textureMap, sprite.texID);
 
         // resolve final transform
@@ -221,7 +223,7 @@ void iOCT_renderer_drawAll(OCT_handle contextHandle) {
                 spriteCtr++;
                    }
 
-            iOCT_textureGroup texGroup = *(iOCT_textureGroup*)eOCT_getByID(&iOCT_renderer_inst.textureGroupMap, &iOCT_renderer_inst.textureGroupPool, currentTexGroup);
+            iOCT_textureGroup texGroup = *(iOCT_textureGroup*)eOCT_mappedPool_getByID(&iOCT_renderer_inst.textureGroupMPool, currentTexGroup);
 
 
             glActiveTexture(GL_TEXTURE0);

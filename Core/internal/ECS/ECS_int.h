@@ -2,14 +2,13 @@
 #include "types_int.h"
 
 #include "OCT_Core_eng.h"
-#include "events/types_int.h"
-#include "events/events_int.h"
 
 struct iOCT_ECS {
 	size_t entitySize;
 
-	eOCT_IDMap contextMap;
-	eOCT_pool contextPool;
+	// eOCT_IDMap contextMap;
+	// eOCT_pool contextPool;
+	eOCT_mappedPool contextMPool;
 
 	eOCT_pool dataPoolSizeAndOrderList;
 

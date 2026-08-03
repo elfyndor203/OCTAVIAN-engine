@@ -17,8 +17,8 @@
 uint64_t generateSortKey(OCT_index drawLayer, OCT_index texGroupIndex);
 
 void OCT_sprite2D_attach(OCT_handle entity, OCT_handle texture, OCT_vec4 uv, OCT_vec4 tintColor, OCT_vec2 dimensions, OCT_index drawLayer) {
-    OCT_index texGroupIndex = eOCT_IDMap_getIndex(&iOCT_renderer_inst.textureGroupMap, texture.containerID);
-
+    // OCT_index texGroupIndex = eOCT_IDMap_getIndex(&iOCT_renderer_inst.textureGroupMap, texture.containerID);
+    OCT_index texGroupIndex = eOCT_IDMap_getIndex(&iOCT_renderer_inst.textureGroupMPool.IDMap, texture.containerID);
     iOCT_sprite2D newSprite = {
         .entityHandle = entity,
         .texGroupID = texture.containerID,
@@ -45,7 +45,7 @@ void OCT_sprite2D_attach(OCT_handle entity, OCT_handle texture, OCT_vec4 uv, OCT
 
     printf("Attached sprite2D to entity %zu\n", entity.objectID);
 
-    iOCT_textureGroup* texGroup = (iOCT_textureGroup*)eOCT_getByID(&iOCT_renderer_inst.textureGroupMap, &iOCT_renderer_inst.textureGroupPool, texture.containerID);
+    // iOCT_textureGroup* texGroup = (iOCT_textureGroup*)eOCT_getByID(&iOCT_renderer_inst.textureGroupMap, &iOCT_renderer_inst.textureGroupPool, texture.containerID);
 }
 
 /// assumes layer and texGroup don't exceed 16 bit max, because it'd better not

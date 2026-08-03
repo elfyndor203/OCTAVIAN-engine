@@ -34,7 +34,7 @@ OCT_handle OCT_window_open(const char* name, unsigned int sizeX, unsigned int si
     GLuint newVAO;
     OCT_ID newID;
     OCT_index newIndex;
-    iOCT_window* newWindow = (iOCT_window*)eOCT_pool_addEntry(&iOCT_windowSystem_inst.windowMPool.pool, &newIndex);
+    iOCT_window* newWindow = (iOCT_window*)eOCT_pool_addEntryOld(&iOCT_windowSystem_inst.windowMPool.pool, &newIndex);
     newID = eOCT_IDMap_register(&iOCT_windowSystem_inst.windowMPool.IDMap, newIndex);
     newWindow->windowID = newID;
     newWindow->windowPtr = windowPtr;
@@ -59,7 +59,8 @@ OCT_handle OCT_window_open(const char* name, unsigned int sizeX, unsigned int si
 }
 
 bool OCT_window_isOpen(OCT_handle windowHandle) {
-    iOCT_window* window = (iOCT_window*)eOCT_getByID(&iOCT_windowSystem_inst.windowMPool.IDMap, &iOCT_windowSystem_inst.windowMPool.pool, windowHandle.objectID);
+    // iOCT_window* window = (iOCT_window*)eOCT_getByID(&iOCT_windowSystem_inst.windowMPool.IDMap, &iOCT_windowSystem_inst.windowMPool.pool, windowHandle.objectID);
+    iOCT_window* window = (iOCT_window*)eOCT_mappedPool_getByID(&iOCT_windowSystem_inst.windowMPool, windowHandle.objectID);
     if (!window) {
         return false;
     }

@@ -15,8 +15,9 @@ iOCT_ECS iOCT_ECS_inst = { 0 };
 
 #pragma region init
 void init_OCT_ECS_init() {
-	iOCT_ECS_inst.contextMap = eOCT_IDMap_open(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT);
-	iOCT_ECS_inst.contextPool = eOCT_pool_open(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, sizeof(iOCT_entityContext));
+	// iOCT_ECS_inst.contextMap = eOCT_IDMap_open(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT);
+	// iOCT_ECS_inst.contextPool = eOCT_pool_open(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, sizeof(iOCT_entityContext));
+	iOCT_ECS_inst.contextMPool = eOCT_mappedPool_open(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, sizeof(iOCT_entityContext), offsetof(iOCT_entityContext, contextID));
 
 	iOCT_ECS_inst.dataPoolSizeAndOrderList = eOCT_pool_open(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, sizeof(size_t));
 
@@ -118,7 +119,7 @@ OCT_index iOCT_ECS_addDataPool(eOCT_dataPoolDescription desc, bool global) {
 static OCT_index iOCT_ECS_addContextDataPool(eOCT_dataPoolDescription desc) {
 	OCT_index index;
 
-	size_t* strideDestination = (size_t*)eOCT_pool_addEntry(&iOCT_ECS_inst.dataPoolSizeAndOrderList, &index);
+	size_t* strideDestination = (size_t*)eOCT_pool_addEntryOld(&iOCT_ECS_inst.dataPoolSizeAndOrderList, &index);
 	*strideDestination = desc.stride;
 
 	return index;
@@ -126,7 +127,7 @@ static OCT_index iOCT_ECS_addContextDataPool(eOCT_dataPoolDescription desc) {
 static OCT_index iOCT_ECS_addGlobalDataPool(eOCT_dataPoolDescription desc) {
 	OCT_index index;
 
-	eOCT_pool* poolDestination = eOCT_pool_addEntry(&iOCT_ECS_inst.globalDataPools, &index);
+	eOCT_pool* poolDestination = eOCT_pool_addEntryOld(&iOCT_ECS_inst.globalDataPools, &index);
 	*poolDestination = eOCT_pool_open(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, desc.stride);
 
 	return index;

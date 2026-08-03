@@ -22,8 +22,9 @@ struct iOCT_renderer {
     eOCT_componentKey camera2DKey;
 
     // texture storage
-    eOCT_IDMap textureGroupMap;
-    eOCT_pool textureGroupPool;
+    // eOCT_IDMap textureGroupMap;
+    // eOCT_pool textureGroupPool;
+    eOCT_mappedPool textureGroupMPool;
 
     // openGL sprite drawing
     eOCT_pool spriteFullDataBuffer;

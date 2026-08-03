@@ -139,7 +139,7 @@ void init_OCT_registry_check() {
 void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription) {
 	OCT_ID systemID = iOCT_registry_inst.systems.count + OCT_ID_SYSTEM_START;
 
-	eOCT_systemDescription** destination = (eOCT_systemDescription**)eOCT_pool_addEntry(&iOCT_registry_inst.systems, NULL);	// addEntry after so the ID starts at 3 instead of 3 + 1
+	eOCT_systemDescription** destination = (eOCT_systemDescription**)eOCT_pool_addEntryOld(&iOCT_registry_inst.systems, NULL);	// addEntry after so the ID starts at 3 instead of 3 + 1
 	*destination = systemDescription;
 	systemDescription->systemID_reg = systemID;
 	printf("\n--------------------------------\n");
@@ -221,7 +221,7 @@ eOCT_pool eOCT_generateFieldDescriptionPool(OCT_index count, ...) {
 
 	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, count, sizeof(eOCT_fieldDescription));
 	for (OCT_index ctr = 0; ctr < count; ctr++) {
-		eOCT_fieldDescription* destination = (eOCT_fieldDescription*)eOCT_pool_addEntry(&pool, NULL);
+		eOCT_fieldDescription* destination = (eOCT_fieldDescription*)eOCT_pool_addEntryOld(&pool, NULL);
 		*destination = va_arg(args, eOCT_fieldDescription);
 	}
 	va_end(args);
@@ -234,7 +234,7 @@ eOCT_pool eOCT_generateComponentDescriptionPool(OCT_index count, ...) {
 
 	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, count, sizeof(eOCT_componentDescription));
 	for (OCT_index ctr = 0; ctr < count; ctr++) {
-		eOCT_componentDescription* destination = (eOCT_componentDescription*)eOCT_pool_addEntry(&pool, NULL);
+		eOCT_componentDescription* destination = (eOCT_componentDescription*)eOCT_pool_addEntryOld(&pool, NULL);
 		*destination = va_arg(args, eOCT_componentDescription);
 	}
 	va_end(args);
@@ -247,7 +247,7 @@ eOCT_pool eOCT_generateDataPoolDescriptionPool(OCT_index count, ...) {
 
 	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, count, sizeof(eOCT_dataPoolDescription));
 	for (OCT_index ctr = 0; ctr < count; ctr++) {
-		eOCT_dataPoolDescription* destination = (eOCT_dataPoolDescription*)eOCT_pool_addEntry(&pool, NULL);
+		eOCT_dataPoolDescription* destination = (eOCT_dataPoolDescription*)eOCT_pool_addEntryOld(&pool, NULL);
 		*destination = va_arg(args, eOCT_dataPoolDescription);
 	}
 	va_end(args);
@@ -260,7 +260,7 @@ eOCT_pool eOCT_generateEventDescriptionPool(OCT_index count, ...) {
 
 	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, count, sizeof(eOCT_eventDescription));
 	for (OCT_index ctr = 0; ctr < count; ctr++) {
-		eOCT_eventDescription* destination = (eOCT_eventDescription*)eOCT_pool_addEntry(&pool, NULL);
+		eOCT_eventDescription* destination = (eOCT_eventDescription*)eOCT_pool_addEntryOld(&pool, NULL);
 		*destination = va_arg(args, eOCT_eventDescription);
 	}
 	va_end(args);
@@ -273,7 +273,7 @@ eOCT_pool eOCT_generateSingleDescriptionPool(OCT_index count, ...) {
 
 	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, count, sizeof(eOCT_singleDescription));
 	for (OCT_index ctr = 0; ctr < count; ctr++) {
-		eOCT_singleDescription* destination = (eOCT_singleDescription*)eOCT_pool_addEntry(&pool, NULL);
+		eOCT_singleDescription* destination = (eOCT_singleDescription*)eOCT_pool_addEntryOld(&pool, NULL);
 		*destination = va_arg(args, eOCT_singleDescription);
 	}
 	va_end(args);
@@ -286,7 +286,7 @@ eOCT_pool eOCT_generateFieldRequestPool(OCT_index count, ...) {
 
 	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, count, sizeof(eOCT_fieldRequest));
 	for (OCT_index ctr = 0; ctr < count; ctr++) {
-		eOCT_fieldRequest* destination = (eOCT_fieldRequest*)eOCT_pool_addEntry(&pool, NULL);
+		eOCT_fieldRequest* destination = (eOCT_fieldRequest*)eOCT_pool_addEntryOld(&pool, NULL);
 		*destination = va_arg(args, eOCT_fieldRequest);
 	}
 	va_end(args);
@@ -298,7 +298,7 @@ eOCT_pool eOCT_generateFieldRequestPool(OCT_index count, ...) {
 #pragma region static
 static void iOCT_registry_registerComponent(eOCT_componentDescription* componentDesc) {
 	OCT_index componentIndex;
-	eOCT_componentDescription* registryEntry = (eOCT_componentDescription*)eOCT_pool_addEntry(&iOCT_registry_inst.components, &componentIndex);	// store a stable copy in the registry
+	eOCT_componentDescription* registryEntry = (eOCT_componentDescription*)eOCT_pool_addEntryOld(&iOCT_registry_inst.components, &componentIndex);	// store a stable copy in the registry
 	componentDesc->componentTypeIndex_reg = componentIndex;	// inform the system of its component's index
 	*registryEntry = *componentDesc;						// THEN copy
 
@@ -316,7 +316,7 @@ static void iOCT_registry_registerComponent(eOCT_componentDescription* component
 }
 static void iOCT_registry_registerEvent(eOCT_eventDescription* eventDesc) {
 	OCT_index eventIndex;
-	eOCT_eventDescription* registryEntry = (eOCT_eventDescription*)eOCT_pool_addEntry(&iOCT_registry_inst.events, &eventIndex);
+	eOCT_eventDescription* registryEntry = (eOCT_eventDescription*)eOCT_pool_addEntryOld(&iOCT_registry_inst.events, &eventIndex);
 	eventDesc->eventTypeIndex_reg = eventIndex;
 	*registryEntry = *eventDesc;
 
@@ -333,7 +333,7 @@ static void iOCT_registry_registerEvent(eOCT_eventDescription* eventDesc) {
 static void iOCT_registry_registerDataPool(eOCT_dataPoolDescription* dataPoolDesc) {
 	dataPoolDesc->dataPoolTypeIndex_reg = iOCT_ECS_addDataPool(*dataPoolDesc, dataPoolDesc->global);
 
-	eOCT_dataPoolDescription* registryEntry = (eOCT_dataPoolDescription*)eOCT_pool_addEntry(&iOCT_registry_inst.dataPools, NULL);
+	eOCT_dataPoolDescription* registryEntry = (eOCT_dataPoolDescription*)eOCT_pool_addEntryOld(&iOCT_registry_inst.dataPools, NULL);
 	*registryEntry = *dataPoolDesc;
 
 	if (dataPoolDesc->cacheLocation) {
@@ -343,7 +343,7 @@ static void iOCT_registry_registerDataPool(eOCT_dataPoolDescription* dataPoolDes
 static void iOCT_registry_registerSingle(eOCT_singleDescription* singleDesc) {
 	assert(singleDesc->global && "Context local singles not yet implemented");
 	OCT_index singleIndex;
-	eOCT_singleDescription* registryEntry = (eOCT_singleDescription*)eOCT_pool_addEntry(&iOCT_registry_inst.globalSingles, &singleIndex);
+	eOCT_singleDescription* registryEntry = (eOCT_singleDescription*)eOCT_pool_addEntryOld(&iOCT_registry_inst.globalSingles, &singleIndex);
 	singleDesc->singleTypeIndex_reg = singleIndex;
 	*registryEntry = *singleDesc;
 
@@ -405,7 +405,7 @@ static void iOCT_registry_registerField(eOCT_fieldDescription* field, OCT_index 
 		field->providerIndex_reg = providerIndex;
 		field->global_reg = global;
 
-		eOCT_fieldDescription* fieldDestination = (eOCT_fieldDescription*)eOCT_pool_addEntry(&iOCT_registry_inst.fields, NULL);	// add field to the registry
+		eOCT_fieldDescription* fieldDestination = (eOCT_fieldDescription*)eOCT_pool_addEntryOld(&iOCT_registry_inst.fields, NULL);	// add field to the registry
 		*fieldDestination = *field;
 		printf("Success\n");
 	}

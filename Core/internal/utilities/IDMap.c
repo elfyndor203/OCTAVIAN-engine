@@ -82,6 +82,11 @@ OCT_index eOCT_IDMap_getIndex(eOCT_IDMap* map, OCT_ID ID) {
 		OCT_ERROR_LOG(OCT_EXIT_OUT_OF_BOUNDS, "ID does not exist");
 		return OCT_INDEX_NULL;
 	}
+	OCT_index index = map->array[ID];
+	if (index == OCT_INDEX_NULL) {
+		OCT_ERROR_LOG(OCT_EXIT_REFERENCE_DOES_NOT_EXIST, "unregistered ID detected: index is NULL"); // __NOTE__: not working correctly right now
+		return OCT_INDEX_NULL;
+	}
 	return map->array[ID];
 }
 

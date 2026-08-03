@@ -47,7 +47,7 @@ eOCT_pool eOCT_pool_open(OCT_ID ownerID, OCT_index capacity, size_t elementSize)
 	//printf(">Init pool of size: %zu\n", capacity * elementSize);
 	return pool;
 }
-void* eOCT_pool_addEntry(eOCT_pool* pool, OCT_index* outIndex) {
+void* eOCT_pool_addEntryOld(eOCT_pool* pool, OCT_index* outIndex) {
 	if (pool->count == pool->capacity) {
 		iOCT_pool_expand(pool, 2);
 	}
@@ -61,8 +61,8 @@ void* eOCT_pool_addEntry(eOCT_pool* pool, OCT_index* outIndex) {
 }
 
 void* eOCT_pool_addEntryNew(eOCT_pool* pool, void* source, OCT_index* outIndex) {
-	if (!source) {
-		OCT_ERROR_LOG(OCT_EXIT_REFERENCE_DOES_NOT_EXIST, "Pool entry source DNE");
+	if (!source && pool->sort) {
+		OCT_ERROR_LOG(OCT_EXIT_REFERENCE_DOES_NOT_EXIST, "Cannot add sorted without a valid source.");
 		return NULL;
 	}
 	if (pool->count == pool->capacity) {
@@ -78,7 +78,9 @@ void* eOCT_pool_addEntryNew(eOCT_pool* pool, void* source, OCT_index* outIndex) 
 		destinationIndex = pool->count;
 	}
 	void* destinationBase = eOCT_pool_access(pool, pool->count, 0);
-	memcpy(destinationBase, source, pool->elementSize);
+	if (source) {
+		memcpy(destinationBase, source, pool->elementSize);
+	}
 	pool->count++;
 
 	if (outIndex) {

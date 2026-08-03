@@ -30,6 +30,7 @@ void OCT_camera2D_attach(OCT_handle entity, OCT_vec2 position, float rotation, O
     // newCamera->viewFrameSize = viewFrameSize;
     // newCamera->cameraMatrix = OCT_mat3_generate(position, viewFrameSize, rotation);
 
-    iOCT_window* targetWindow = (iOCT_window*)eOCT_getByID(&iOCT_windowSystem_inst.windowMPool.IDMap, &iOCT_windowSystem_inst.windowMPool.pool, window.objectID);
+    // iOCT_window* targetWindow = (iOCT_window*)eOCT_getByID(&iOCT_windowSystem_inst.windowMPool.IDMap, &iOCT_windowSystem_inst.windowMPool.pool, window.objectID);
+    iOCT_window* targetWindow = (iOCT_window*)eOCT_mappedPool_getByID(&iOCT_windowSystem_inst.windowMPool, window.objectID);
     targetWindow->activeCameraSourceEntity = entity;
 }

@@ -15,7 +15,7 @@ const unsigned char* eOCT_image_load(const char* path) {
     OCT_ID newID;
     iOCT_image* newImage;
 
-    newImage = eOCT_pool_addEntry(&iOCT_resources_inst.images, &newIndex);
+    newImage = eOCT_pool_addEntryOld(&iOCT_resources_inst.images, &newIndex);
     newID = eOCT_IDMap_register(&iOCT_resources_inst.resourceMap, newIndex);
 
     strncpy(newImage->path, path, iOCT_RESOURCE_PATHNAME_MAX - 1);

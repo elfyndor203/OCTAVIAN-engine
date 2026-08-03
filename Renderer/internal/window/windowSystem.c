@@ -73,7 +73,8 @@ void eOCT_WINDOW_startFrame() {
 	}
 
 	if (iOCT_windowSystem_inst.focusedWindowID != OCT_ID_NULL) {
-		iOCT_window focusedWindow = *(iOCT_window*)eOCT_getByID(&iOCT_windowSystem_inst.windowMPool.IDMap, &iOCT_windowSystem_inst.windowMPool.pool, iOCT_windowSystem_inst.focusedWindowID);
+		// iOCT_window focusedWindow = *(iOCT_window*)eOCT_getByID(&iOCT_windowSystem_inst.windowMPool.IDMap, &iOCT_windowSystem_inst.windowMPool.pool, iOCT_windowSystem_inst.focusedWindowID);
+		iOCT_window focusedWindow = *(iOCT_window*)eOCT_mappedPool_getByID(&iOCT_windowSystem_inst.windowMPool, iOCT_windowSystem_inst.focusedWindowID);
 		OCT_mat3* matrixSingle = &eOCT_single_get(iOCT_windowSystem_inst.focusedCameraMatrixKey, OCT_HANDLE_NULL)->mat3;
 		*matrixSingle = iOCT_window_screenToWorld(focusedWindow);
 	}

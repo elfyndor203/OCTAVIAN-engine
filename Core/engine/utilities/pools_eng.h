@@ -62,7 +62,7 @@ eOCT_pool eOCT_pool_open(OCT_ID ownerID, OCT_index capacity, size_t elementSize)
 /// <param name="pool"></param>
 /// <param name="outIndex"></param>
 /// <returns></returns>
-void* eOCT_pool_addEntry(eOCT_pool* pool, OCT_index* outIndex);
+void* eOCT_pool_addEntryOld(eOCT_pool* pool, OCT_index* outIndex);
 void* eOCT_pool_addEntryNew(eOCT_pool* pool, void* source, OCT_index* outIndex);
 /**
  * Adds an entry to its sorted position in a pool with a sort setting.

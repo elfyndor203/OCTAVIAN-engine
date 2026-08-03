@@ -18,17 +18,20 @@ static OCT_handle iOCT_entityContext_initRootEntity(iOCT_entityContext* context)
 
 OCT_handle OCT_entityContext_open(OCT_handle* rootOut) {
 	// init context details
-	OCT_index newIndex;
-	OCT_ID newID;
-	iOCT_entityContext* newContext;
+	// OCT_index newIndex;
+	// OCT_ID newID;
+	// iOCT_entityContext* newContext;
+	iOCT_entityContext* newContext;	// uses a ptr because the newID is used for most init steps, not just set
+	OCT_ID newID = eOCT_mappedPool_addEntry(&iOCT_ECS_inst.contextMPool, NULL, (void*)&newContext, NULL);
 
-	newContext = (iOCT_entityContext*)eOCT_pool_addEntry(&iOCT_ECS_inst.contextPool, &newIndex);	// add context to context list
-	newID = eOCT_IDMap_register(&iOCT_ECS_inst.contextMap, newIndex);
+	// newContext = (iOCT_entityContext*)eOCT_pool_addEntryOld(&iOCT_ECS_inst.contextPool, &newIndex);	// add context to context list
+	// newID = eOCT_IDMap_register(&iOCT_ECS_inst.contextMap, newIndex);
 	newContext->contextID = newID;
 		// init entity pool
 	OCT_index entityCapacity = eOCT_POOL_CAPACITY_DEFAULT;
 	newContext->entityIDMap = eOCT_IDMap_open(newID, entityCapacity);
 	newContext->entityPool = eOCT_pool_open(newID, entityCapacity, iOCT_ECS_inst.entitySize);
+
 	eOCT_pool_fillSetting noComponent = {
 		.fillStyle = eOCT_POOL_FILLSTYLE_BYTES,
 		.value.valueFill = iOCT_COMPONENT_UNSET
@@ -58,7 +61,8 @@ static eOCT_pool iOCT_entityContext_initComponentPools(OCT_ID contextID) {
 	for (OCT_index componentCtr = 0; componentCtr < totalComponents; componentCtr++) {
 		eOCT_componentDescription* component = (eOCT_componentDescription*)eOCT_pool_access(&iOCT_registry_inst.components, componentCtr, 0);
 
-		eOCT_pool* newPool = eOCT_pool_addEntry(&containerPool, NULL);
+		// eOCT_pool* newPool = eOCT_pool_addEntryOld(&containerPool, NULL);
+		eOCT_pool* newPool = eOCT_pool_addEntryNew(&containerPool, NULL, NULL);
 		*newPool = eOCT_pool_open(contextID, eOCT_POOL_CAPACITY_DEFAULT, component->stride);	// init actual component pool
 		if (component->sortValueOffset != eOCT_POOL_SORT_NONE) {
 			eOCT_pool_setSort(newPool, component->sortValueOffset);
@@ -133,7 +137,8 @@ eOCT_pool* iOCT_context_getComponentPool(iOCT_entityContext* context, OCT_index 
 // }
 
 void OCT_entityContext_dumpEntityPool(OCT_handle contextHandle) {
-	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, contextHandle.objectID);
+	// iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, contextHandle.objectID);
+	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_mappedPool_getByID(&iOCT_ECS_inst.contextMPool, contextHandle.objectID);
 	eOCT_pool_dump(&context->entityPool);
 }
 
@@ -143,6 +148,7 @@ void eOCT_entityContext_prepare(OCT_handle contextHandle) {
 }
 
 iOCT_entityContext* iOCT_entityContext_get(OCT_ID contextID) {
-	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, contextID);
+	// iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, contextID);
+	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_mappedPool_getByID(&iOCT_ECS_inst.contextMPool, contextID);
 	return context;
 }

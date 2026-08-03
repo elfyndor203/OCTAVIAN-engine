@@ -12,16 +12,30 @@ void* eOCT_getByID(eOCT_IDMap* map, eOCT_pool* pool, OCT_ID ID) {
 	return eOCT_pool_access(pool, index, 0);
 }
 
-OCT_ID eOCT_mappedPool_addEntry(eOCT_mappedPool* mPool, void* source, void* outDestination, OCT_index* outIndex) {
+void* eOCT_mappedPool_getByID(eOCT_mappedPool* mPool, OCT_ID ID) {
+	OCT_index index = eOCT_IDMap_getIndex(&mPool->IDMap, ID);
+	return eOCT_pool_access(&mPool->pool, index, 0);
+}
+
+OCT_ID eOCT_mappedPool_addEntry(eOCT_mappedPool* mPool, void* source, void** outDestination, OCT_index* outIndex) {
 	eOCT_pool* pool = &mPool->pool;
 	eOCT_IDMap* map = &mPool->IDMap;
 
 	OCT_index newIndex;
 	OCT_ID newID;
 
-	if (pool->sort) {
+	void* destination = eOCT_pool_addEntryNew(pool, source, &newIndex);
+	newID = eOCT_IDMap_register(map, newIndex);
+	OCT_ID* destinationIDLoc = (OCT_ID*)((char*)destination + mPool->elementIDValueOffset);
+	*destinationIDLoc = newID;
 
+	if (outIndex) {
+		*outIndex = newIndex;
 	}
+	if (outDestination) {
+		*outDestination = destination;
+	}
+	return newID;
 }
 void eOCT_mappedPool_deleteEntry(eOCT_mappedPool* mPool, OCT_ID deletedID) {
 	eOCT_pool* pool = &mPool->pool;
