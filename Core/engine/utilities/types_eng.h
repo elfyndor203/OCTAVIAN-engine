@@ -3,6 +3,7 @@
 #include "math/definitions/aliases.h"
 typedef struct eOCT_pool eOCT_pool;
 typedef struct eOCT_IDMap eOCT_IDMap;
+typedef struct eOCT_mappedPool eOCT_mappedPool;
 
 typedef enum eOCT_pool_fillStyles eOCT_pool_fillStyles;
 typedef union eOCT_pool_fillValue eOCT_pool_fillValue;

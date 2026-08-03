@@ -48,6 +48,7 @@ struct eOCT_pool {
 	// automation instructions
 	eOCT_pool_fillSetting fillSetting;
 	size_t sortValueOffset; // offset
+	bool sort;
 };
 
 extern eOCT_pool eOCT_POOL_EMPTY;
@@ -89,5 +90,5 @@ bool eOCT_pool_isEmpty(eOCT_pool pool);
 void eOCT_pool_dump(eOCT_pool* pool);
 OCT_index eOCT_pool_expand(eOCT_pool* pool, OCT_index minCapacity);
 
-void eOCT_pool_deleteEntry(eOCT_pool* pool, OCT_index index, bool compact);
+void eOCT_pool_deleteEntry(eOCT_pool* pool, OCT_index deletedIndex);
 void eOCT_pool_free(eOCT_pool* pool);

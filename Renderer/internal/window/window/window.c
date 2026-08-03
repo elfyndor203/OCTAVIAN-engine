@@ -75,7 +75,7 @@ void iOCT_window_close(iOCT_window* window, OCT_index windowIndex) {
     eOCT_pool* windowPool = &iOCT_windowSystem_inst.windowPool;
 
     glfwDestroyWindow(window->windowPtr);
-    eOCT_pool_deleteEntry(windowPool, windowIndex, true); // remove the window
+    eOCT_pool_deleteEntry(windowPool, windowIndex); // remove the window
 }
 
 void iOCT_window_poll(iOCT_window* window) {

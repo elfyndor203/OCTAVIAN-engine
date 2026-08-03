@@ -79,22 +79,32 @@ void* eOCT_pool_access(eOCT_pool* pool, OCT_index index, size_t offset) {
 	void* entry = (char*)pool->array + (size_t)index * pool->elementSize + offset;
 	return entry;
 }
-void eOCT_pool_deleteEntry(eOCT_pool* pool, OCT_index index, bool compact) {
-	void* entry = eOCT_pool_access(pool, index, 0);
-	// OCT_ID swappedID = OCT_ID_NULL;
+void eOCT_pool_deleteEntry(eOCT_pool* pool, OCT_index deletedIndex) {
+	void* elementBase = eOCT_pool_access(pool, deletedIndex, 0);
+	void* finalElementBase = eOCT_pool_access(pool, pool->count - 1, 0);
+	OCT_index entriesAfterDeleted = pool->count - deletedIndex - 1;
 
-	// if shuffling is needed
-	if (index < pool->count - 1 && compact) {
-		void* finalEntry = eOCT_pool_access(pool, pool->count - 1, 0);
-		memcpy(entry, finalEntry, pool->elementSize);
-		memset(finalEntry, 0, pool->elementSize);
-		// swappedID = *(OCT_ID*)entry; // return the ID that got swapped to update the IDmap
+	if (!elementBase || !finalElementBase) {
+		OCT_ERROR_LOG(OCT_EXIT_REFERENCE_DOES_NOT_EXIST, "Invalid index provided for delete");
+		return;
 	}
-	else {
-		memset(entry, 0, pool->elementSize);
+
+	if (pool->sort) {	// move whole chunk
+		memmove(elementBase, (char*)elementBase + pool->elementSize, entriesAfterDeleted * pool->elementSize);
+	}
+	else {				// swap remove
+		memcpy(elementBase, finalElementBase, pool->elementSize);
 	}
 	pool->count--;
-	// return swappedID;
+
+	if (pool->fillSetting.fillStyle == eOCT_POOL_FILLSTYLE_NONE) {
+		return;
+	}
+	if (pool->fillSetting.fillStyle != eOCT_POOL_FILLSTYLE_BYTES) {
+		OCT_ERROR_LOG(OCT_EXIT_NOT_YET_IMPLEMENTED, "Pool filling not yet finished");
+		return;
+	}
+	memset(finalElementBase, pool->fillSetting.value.byteFill, pool->elementSize);
 }
 void eOCT_pool_clear(eOCT_pool* pool) {
 	memset(pool->array, 0, pool->capacity * pool->elementSize);
