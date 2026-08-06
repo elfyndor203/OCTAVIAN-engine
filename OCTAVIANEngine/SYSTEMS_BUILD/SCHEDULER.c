@@ -1,5 +1,7 @@
 
 #include "OCT_Core_eng.h"
+#include "systemDescription_platform.h"
+#include "systemDescription_input.h"
 #include "systemDescription_renderer.h"
 #include "systemDescription_world.h"
 
@@ -11,6 +13,8 @@ void OCT_engine_frame_start() {
 void OCT_engine_updateContext(OCT_handle context) {
     eOCT_entityContext_prepare(context);
 
+    eOCT_PLATFORM_update();
+    eOCT_INPUT_update();
     eOCT_WORLD_update(context);
     eOCT_RENDERER_update(context);
 }

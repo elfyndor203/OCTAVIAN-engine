@@ -5,7 +5,7 @@
 #include "registry/registry_eng.h"
 
 struct iOCT_registry {
-	eOCT_pool systems;	// systemDesc pointers
+	eOCT_pool systems;	// systemDesc list
 
 	eOCT_pool components; // stable copies
 	eOCT_pool dataPools;

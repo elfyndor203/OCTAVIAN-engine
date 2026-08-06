@@ -31,7 +31,7 @@ iOCT_registry iOCT_registry_inst = { 0 };
 
 #pragma region init
 void init_OCT_registry_init() {
-	eOCT_pool systems = eOCT_pool_open(OCT_ID_REGISTRY, eOCT_POOL_CAPACITY_DEFAULT, sizeof(eOCT_systemDescription*)); // store system pointers
+	eOCT_pool systems = eOCT_pool_open(OCT_ID_REGISTRY, eOCT_POOL_CAPACITY_DEFAULT, sizeof(eOCT_systemDescription)); // store system pointers
 	eOCT_pool components = eOCT_pool_open(OCT_ID_REGISTRY, eOCT_POOL_CAPACITY_DEFAULT, sizeof(eOCT_componentDescription));
 	eOCT_pool events = eOCT_pool_open(OCT_ID_REGISTRY, eOCT_POOL_CAPACITY_DEFAULT, sizeof(eOCT_eventDescription));
 	eOCT_pool dataPools = eOCT_pool_open(OCT_ID_REGISTRY, eOCT_POOL_CAPACITY_DEFAULT, sizeof(eOCT_dataPoolDescription));
@@ -57,7 +57,7 @@ void init_OCT_registry_initAllSystems() {
 	eOCT_systemInitFx initFx;
 	eOCT_systemUpdateFx updateFx;
 	for (OCT_index systemCtr = 0; systemCtr < iOCT_registry_inst.systems.count; systemCtr++) {
-		system = **(eOCT_systemDescription**)eOCT_pool_access(&iOCT_registry_inst.systems, systemCtr, 0);
+		system = *(eOCT_systemDescription*)eOCT_pool_access(&iOCT_registry_inst.systems, systemCtr, 0);
 		initFx = system.initFx;
 		if (initFx) {
 			printf("Init system %s with INIT fx %p\n", system.name, initFx);
@@ -70,7 +70,7 @@ void init_OCT_registry_initAllSystems() {
 }
 void init_OCT_registry_check() {
 	eOCT_pool systemPool = iOCT_registry_inst.systems;
-	eOCT_systemDescription** systemArray = (eOCT_systemDescription**)systemPool.array;
+	eOCT_systemDescription* systemArray = (eOCT_systemDescription*)systemPool.array;
 	eOCT_systemDescription system;
 	int systemCtr = 0;
 
@@ -87,13 +87,13 @@ void init_OCT_registry_check() {
 	printf("\n--------SUMMARY--------\n");
 	printf("Systems: (%d - %d reserved)\n", 1, OCT_ID_SYSTEM_START - 1);
 	for (systemCtr = 0; systemCtr < systemPool.count; systemCtr++) {
-		system = *systemArray[systemCtr];
+		system = systemArray[systemCtr];
 		printf("%02zu.    | %s\n", system.systemID_reg, system.name);
 	}
 
 	printf("\nComponents:\n");
 	for (systemCtr = 0; systemCtr < systemPool.count; systemCtr++) {
-		system = *systemArray[systemCtr];
+		system = systemArray[systemCtr];
 		componentPool = system.providedComponents;
 		componentArray = (eOCT_componentDescription*)componentPool.array;
 		for (componentCtr = 0; componentCtr < componentPool.count; componentCtr++) {
@@ -106,7 +106,7 @@ void init_OCT_registry_check() {
 
 	printf("\nFields requested:\n");
 	for (systemCtr = 0; systemCtr < systemPool.count; systemCtr++) {
-		system = *systemArray[systemCtr];
+		system = systemArray[systemCtr];
 		requestPool = system.requestedFields;
 		requestArray = (eOCT_fieldRequest*)requestPool.array;
 		for (requestCtr = 0; requestCtr < requestPool.count; requestCtr++) {
@@ -136,22 +136,25 @@ void init_OCT_registry_check() {
 }
 #pragma endregion
 
-void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription) {
+OCT_ID eOCT_registry_registerSystem(eOCT_systemDescription systemDescription) {
 	OCT_ID systemID = iOCT_registry_inst.systems.count + OCT_ID_SYSTEM_START;
 
-	eOCT_systemDescription** destination = (eOCT_systemDescription**)eOCT_pool_addEntryOld(&iOCT_registry_inst.systems, NULL);	// addEntry after so the ID starts at 3 instead of 3 + 1
-	*destination = systemDescription;
-	systemDescription->systemID_reg = systemID;
+	systemDescription.systemID_reg = systemID;
+	eOCT_pool_addEntryNew(&iOCT_registry_inst.systems, &systemDescription, NULL);
+
+	// eOCT_systemDescription** destination = (eOCT_systemDescription**)eOCT_pool_addEntryOld(&iOCT_registry_inst.systems, NULL);	// addEntry after so the ID starts at 3 instead of 3 + 1
+	// *destination = systemDescription;
+	// systemDescription->systemID_reg = systemID;
 	printf("\n--------------------------------\n");
-	printf("%02"PRIu64".--.--| System '%s':\n", systemDescription->systemID_reg, systemDescription->name);
+	printf("%02"PRIu64".--.--| System '%s':\n", systemDescription.systemID_reg, systemDescription.name);
 
 	// COMPONENTS
-	if (eOCT_pool_isEmpty(systemDescription->providedComponents)) {		// requests handed separately later, so registration ends
+	if (eOCT_pool_isEmpty(systemDescription.providedComponents)) {		// requests handed separately later, so registration ends
 		printf("No provided components\n");
 	}
 	else {
-		eOCT_componentDescription* componentArray = (eOCT_componentDescription*)systemDescription->providedComponents.array;	// register all components and all of their fields
-		for (OCT_index componentCtr = 0; componentCtr < systemDescription->providedComponents.count; componentCtr++) {
+		eOCT_componentDescription* componentArray = (eOCT_componentDescription*)systemDescription.providedComponents.array;	// register all components and all of their fields
+		for (OCT_index componentCtr = 0; componentCtr < systemDescription.providedComponents.count; componentCtr++) {
 			eOCT_componentDescription* component = &componentArray[componentCtr];
 			printf("%02"PRIu64".%02zu.--| %2cComponent %zu: %-15s\n", systemID, component->componentTypeIndex_reg, ' ', component->componentTypeIndex_reg, component->name);
 
@@ -162,12 +165,12 @@ void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription) {
 
 	printf("\n");
 	// EVENTS
-	if (eOCT_pool_isEmpty(systemDescription->providedEvents)) {
+	if (eOCT_pool_isEmpty(systemDescription.providedEvents)) {
 		printf("No provided events\n");
 	}
 	else {
-		eOCT_eventDescription* eventArray = (eOCT_eventDescription*)systemDescription->providedEvents.array;
-		for (OCT_index eventCtr = 0; eventCtr < systemDescription->providedEvents.count; eventCtr++) {
+		eOCT_eventDescription* eventArray = (eOCT_eventDescription*)systemDescription.providedEvents.array;
+		for (OCT_index eventCtr = 0; eventCtr < systemDescription.providedEvents.count; eventCtr++) {
 			eOCT_eventDescription* event = &eventArray[eventCtr];
 			printf("%02"PRIu64".%02zu.--| %2cEvent %zu: %-15s\n", systemID, event->eventTypeIndex_reg, ' ', event->eventTypeIndex_reg, event->name);
 
@@ -178,12 +181,12 @@ void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription) {
 
 	printf("\n");
 	// DATA POOLS
-	if (eOCT_pool_isEmpty(systemDescription->providedDataPools)) {
+	if (eOCT_pool_isEmpty(systemDescription.providedDataPools)) {
 		printf("No additional provided data\n");
 	}
 	else {
-		eOCT_dataPoolDescription* dataPoolArray = (eOCT_dataPoolDescription*)systemDescription->providedDataPools.array;
-		for (OCT_index dataPoolCtr = 0; dataPoolCtr < systemDescription->providedDataPools.count; dataPoolCtr++) {
+		eOCT_dataPoolDescription* dataPoolArray = (eOCT_dataPoolDescription*)systemDescription.providedDataPools.array;
+		for (OCT_index dataPoolCtr = 0; dataPoolCtr < systemDescription.providedDataPools.count; dataPoolCtr++) {
 			eOCT_dataPoolDescription* dataPool = &dataPoolArray[dataPoolCtr];
 			printf("%02"PRIu64".%02zu.--| %2cData Pool %zu: %-15s\n", systemID, dataPool->dataPoolTypeIndex_reg, ' ', dataPool->dataPoolTypeIndex_reg, dataPool->name);
 
@@ -194,17 +197,17 @@ void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription) {
 
 	printf("\n");
 	// SINGLES'
-	if (eOCT_pool_isEmpty(systemDescription->providedSingles)) {
+	if (eOCT_pool_isEmpty(systemDescription.providedSingles)) {
 		printf("No provided singles\n");
 	}
 	else {
-		eOCT_singleDescription* singlesArray = (eOCT_singleDescription*)systemDescription->providedSingles.array;
-		for (OCT_index singleCtr = 0; singleCtr < systemDescription->providedSingles.count; singleCtr++) {
+		eOCT_singleDescription* singlesArray = (eOCT_singleDescription*)systemDescription.providedSingles.array;
+		for (OCT_index singleCtr = 0; singleCtr < systemDescription.providedSingles.count; singleCtr++) {
 			eOCT_singleDescription* single = &singlesArray[singleCtr];
 			printf("%02"PRIu64".%02zu.--| %2cSingle %zu: %-15s\n", systemID, single->singleTypeIndex_reg, ' ', single->singleTypeIndex_reg, single->name);
 			if (single->providedField.offset != 0) {
 				OCT_ERROR_LOG(OCT_EXIT_REGISTRATION_FAILED, "Singles must have offset 0");
-				return;
+				return OCT_ID_NULL;
 			}
 
 			iOCT_registry_registerSingle(single);
@@ -212,6 +215,8 @@ void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription) {
 		}
 	}
 	printf("--------------------------------\n\n");
+
+	return systemID;
 }
 
 #pragma region generators
@@ -421,12 +426,12 @@ static bool iOCT_registry_validateComponent(eOCT_componentDescription component)
 // fills in global pools for global events
 static void iOCT_registry_buildGlobalTickets() {
 	eOCT_pool systemPool = iOCT_registry_inst.systems;
-	eOCT_systemDescription** systemArray = (eOCT_systemDescription**)systemPool.array;
+	eOCT_systemDescription* systemArray = (eOCT_systemDescription*)systemPool.array;
 
 	// events
 	for (int systemCtr = 0; systemCtr < systemPool.count; systemCtr++) {
-		eOCT_systemDescription* system = systemArray[systemCtr];
-		eOCT_pool* eventPool = &system->providedEvents;
+		eOCT_systemDescription system = systemArray[systemCtr];
+		eOCT_pool* eventPool = &system.providedEvents;
 
 		if (eOCT_pool_isEmpty(*eventPool)) {
 			continue;
@@ -444,8 +449,8 @@ static void iOCT_registry_buildGlobalTickets() {
 
 	// singles
 	for (int systemCtr = 0; systemCtr < systemPool.count; systemCtr++) {
-		eOCT_systemDescription* system = systemArray[systemCtr];
-		eOCT_pool* singlesPool = &system->providedSingles;
+		eOCT_systemDescription system = systemArray[systemCtr];
+		eOCT_pool* singlesPool = &system.providedSingles;
 
 		if (eOCT_pool_isEmpty(*singlesPool)) {
 			continue;
@@ -462,11 +467,11 @@ static void iOCT_registry_buildGlobalTickets() {
 }
 static void iOCT_registry_distributeFields() {
 	eOCT_pool systemPool = iOCT_registry_inst.systems;
-	eOCT_systemDescription** systemArray = (eOCT_systemDescription**)systemPool.array;
+	eOCT_systemDescription* systemArray = (eOCT_systemDescription*)systemPool.array;
 
 	for (int systemCtr = 0; systemCtr < systemPool.count; systemCtr++) {
-		eOCT_systemDescription* system = systemArray[systemCtr];
-		eOCT_pool requestPool = system->requestedFields;
+		eOCT_systemDescription system = systemArray[systemCtr];
+		eOCT_pool requestPool = system.requestedFields;
 
 		if (eOCT_pool_isEmpty(requestPool)) {	// ensure pool has contents
 			continue;
@@ -476,8 +481,9 @@ static void iOCT_registry_distributeFields() {
 		// for each request
 		for (int requestCtr = 0; requestCtr < requestPool.count; requestCtr++) {
 			eOCT_fieldRequest* request = &requestArray[requestCtr];
-			eOCT_fieldTicket* key = request->keyCacheLocation;
 			eOCT_fieldDescription match;
+
+			eOCT_fieldTicket* key = request->ticketCache_ifLocal;
 			if (iOCT_registry_findField(request->name, &match)) {	// if there is a match
 				key->name = match.name;
 				key->type = match.type;

@@ -16,6 +16,16 @@ struct eOCT_fieldTicket {
     eOCT_pool* globalPool;
 };
 
+// struct eOCT_fieldTicket_global {
+//     const char* name;
+//     eOCT_dataTypes type;
+//     size_t offsetFromStruct;
+//     eOCT_dataPattern providerType;
+//     OCT_index providerTypeIndex;
+//
+//     eOCT_pool* globalPool;
+// };
+
 struct eOCT_componentKey {
     const char* name;
 
@@ -42,6 +52,7 @@ struct eOCT_singleKey {
 
 eOCT_pool* eOCT_field_getSourcePool(OCT_handle contextHandle, eOCT_fieldTicket fieldTicket);
 void* eOCT_field_read(eOCT_pool sourcePool, eOCT_fieldTicket fieldDetails, OCT_index entryIndex);
+void* eOCT_field_readOnce(eOCT_fieldTicket fieldTicket, OCT_index entryIndex, OCT_handle contextHandle);
 
 eOCT_pool* eOCT_component_getPool(OCT_handle contextHandle, eOCT_componentKey componentKey);
 eOCT_pool* eOCT_event_getPool(eOCT_eventKey eventKey, OCT_handle contextHandle, eOCT_pool** callbackPoolOut);

@@ -51,7 +51,8 @@ union eOCT_dataUnion {
 struct eOCT_fieldRequest {
 	const char* name;
 	eOCT_dataTypes type;
-	eOCT_fieldTicket* keyCacheLocation;
+	eOCT_fieldTicket* ticketCache_ifLocal;
+	// eOCT_fieldTicket_global* ticketCache_ifGlobal;
 	//eOCT_fieldAccess access;
 	bool optional;
 
@@ -127,7 +128,7 @@ struct eOCT_systemDescription {
  * Registers each system's components, data pools, and events into the registry. For each component, data pool, and event, registers each of its fields. Engine init fails if any duplicate fields are found.
  * @param systemDescription
  */
-void eOCT_registry_registerSystem(eOCT_systemDescription* systemDescription);
+OCT_ID eOCT_registry_registerSystem(eOCT_systemDescription systemDescription);
 //void eOCT_registry_allocateComponents(eOCT_componentDescription* componentDescription);
 // eOCT_pool eOCT_generateFieldDescriptionPool(eOCT_fieldDescription* array, size_t count);
 eOCT_pool eOCT_generateFieldDescriptionPool(OCT_index count, ...);

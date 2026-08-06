@@ -14,7 +14,7 @@
 #define TEMP_MIPMAPS 1
 
 OCT_handle OCT_textureGroup_open(OCT_vec2 dimensions, OCT_index maxCount) {
-    OCT_ID systemID = iOCT_renderer_inst.systemDescription.systemID_reg;
+    OCT_ID systemID = iOCT_renderer_inst.systemID;
     eOCT_IDMap texMap = eOCT_IDMap_open(systemID, maxCount);
 
     GLuint texArray;

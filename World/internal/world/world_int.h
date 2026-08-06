@@ -4,7 +4,7 @@
 #include "OCT_Core_eng.h"
 
 struct iOCT_world {
-	eOCT_systemDescription system;
+	OCT_ID systemID;
 
 	eOCT_componentDescription transform2DCache;
 	eOCT_componentKey transform2DKey;

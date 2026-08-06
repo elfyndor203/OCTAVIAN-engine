@@ -8,7 +8,7 @@ add_library(Input STATIC
         system/systemDescription_input.h
         internal/input/inputs.c
         include/OCT_Inputs.h
-        internal/input/keyStates.c
+        include/inputs.h
 )
 
 target_include_directories(Input

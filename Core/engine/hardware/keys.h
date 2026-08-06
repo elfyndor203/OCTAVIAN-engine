@@ -106,8 +106,8 @@
     X(OCT_BUTTON_SCROLL_UP,     "Scroll up") \
     X(OCT_BUTTON_SCROLL_DOWN,   "Scroll down") \
 
-typedef enum OCT_KEYS_AND_BUTTONS {
+typedef enum OCT_BUTTONS {
 #define X(keycode, print) keycode,
     iOCT_BUTTON_LIST
 #undef X
-} OCT_KEYS_AND_BUTTONS;
+} OCT_BUTTONS;

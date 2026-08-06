@@ -4,7 +4,8 @@
 #include "OCT_Core_eng.h"
 
 struct iOCT_inputSystem {
-    eOCT_systemDescription system;
+    OCT_ID systemID;
+
     eOCT_fieldTicket keyTicket;
     eOCT_fieldTicket keyPressTicket;
     eOCT_fieldTicket keyReleaseTicket;
@@ -14,6 +15,7 @@ struct iOCT_inputSystem {
     eOCT_fieldTicket mousePositionXTicket;
     eOCT_fieldTicket mousePositionYTicket;
     eOCT_fieldTicket cameraMatrixTicket;
+    eOCT_fieldTicket deltaTimeTicket;
 
     OCT_vec2 mousePosition;
 };

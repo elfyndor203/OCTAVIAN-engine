@@ -32,7 +32,7 @@ void system_register_RENDERER() {
     eOCT_fieldRequest transform2D = {
         .name = "globalTransform2D",
         .type = eOCT_DATATYPE_MAT3,
-        .keyCacheLocation = &iOCT_renderer_inst.transform2DTicket,
+        .ticketCache_ifLocal = &iOCT_renderer_inst.transform2DTicket,
         .optional = false,
     };
 
@@ -43,8 +43,7 @@ void system_register_RENDERER() {
         .requestedFields = eOCT_generateFieldRequestPool(1, transform2D),
         .initFx = system_init_RENDERER};
 
-    iOCT_renderer_inst.systemDescription = rendererSystem;
-    eOCT_registry_registerSystem(&iOCT_renderer_inst.systemDescription);
+    iOCT_renderer_inst.systemID = eOCT_registry_registerSystem(rendererSystem);
 }
 
 void system_register_WINDOW() {
@@ -144,6 +143,5 @@ void system_register_WINDOW() {
         .initFx = system_init_WINDOW
     };
 
-    iOCT_windowSystem_inst.windowSystem = windowSystem;
-    eOCT_registry_registerSystem(&iOCT_windowSystem_inst.windowSystem);
+    iOCT_windowSystem_inst.systemID = eOCT_registry_registerSystem(windowSystem);
 }

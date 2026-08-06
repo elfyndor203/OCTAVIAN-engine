@@ -27,6 +27,7 @@ target_link_libraries(OCTAVIANEngine
         _SystemEx
         Renderer
         Input
+        Platform
     PRIVATE
         WorldSystem
         _SystemExSystem

@@ -4,8 +4,12 @@
 #include "OCT_Core_eng.h"
 
 struct iOCT_platformSystem {
-    eOCT_systemDescription systemDescription;
-    eOCT_singleKey timeCache;
+    OCT_ID systemID;
+    eOCT_singleKey timeTicket;
+    eOCT_singleKey deltaTimeTicket;
+    double previousFrameTime;
 };
 
 extern iOCT_platformSystem iOCT_platformSystem_inst;
+
+void iOCT_platformSystem_init();

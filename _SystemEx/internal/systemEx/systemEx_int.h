@@ -3,7 +3,7 @@
 #include "types_int.h"
 
 struct iOCT_systemEx {
-	eOCT_systemDescription system; // stable systemDescription storage
+	OCT_ID systemID;
 	eOCT_fieldTicket keyCache;
 	eOCT_fieldTicket keyPressCache;
 	eOCT_fieldTicket keyReleaseCache;

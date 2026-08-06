@@ -62,6 +62,5 @@ void system_register_WORLD() {
 		.initFx = iOCT_world_init
 	};
 
-	iOCT_world_inst.system = world;
-	eOCT_registry_registerSystem(&iOCT_world_inst.system);
+	iOCT_world_inst.systemID = eOCT_registry_registerSystem(world);
 }

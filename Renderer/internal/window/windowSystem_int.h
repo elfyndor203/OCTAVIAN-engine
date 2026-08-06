@@ -6,7 +6,8 @@
 #include <GLFW/glfw3.h>
 
 struct iOCT_windowSystem {
-	eOCT_systemDescription windowSystem;
+	OCT_ID systemID;
+
 	eOCT_eventKey keyEventKey;
 	eOCT_eventKey mouseButtonEventKey;
 	eOCT_eventKey mouseMoveEventKey;

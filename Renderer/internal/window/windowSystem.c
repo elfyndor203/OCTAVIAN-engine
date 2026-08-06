@@ -42,7 +42,7 @@ void system_init_WINDOW() {
 	// iOCT_mouseMap_init();
 
 	// happens after registry init so using systemID is safe
-	iOCT_windowSystem_inst.windowMPool = eOCT_mappedPool_open(iOCT_windowSystem_inst.windowSystem.systemID_reg,
+	iOCT_windowSystem_inst.windowMPool = eOCT_mappedPool_open(iOCT_windowSystem_inst.systemID,
 	                                                         eOCT_POOL_CAPACITY_DEFAULT, sizeof(iOCT_window),
 	                                                         offsetof(iOCT_window, windowID));
 	iOCT_windowSystem_inst.rootWindow = initWindow;
