@@ -28,9 +28,9 @@ struct iOCT_windowSystem {
 	// OCT_vec2 cursorPos;
 	// OCT_vec2 cursorDelta;
 	// OCT_vec2 scrollDelta;
-
 };
 
 extern iOCT_windowSystem iOCT_windowSystem_inst;
+extern OCT_BUTTON iOCT_glfwToOCTButtonKeyMap[OCT_BUTTONS_TOTAL];
 
 void system_init_WINDOW();

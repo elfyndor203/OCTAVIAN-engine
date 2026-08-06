@@ -50,7 +50,12 @@ OCT_vec2 OCT_transform2D_moveTo(OCT_handle entity, OCT_vec2 destination) {
 
 	return OCT_vec2_sub(transform->position, originalPosition);
 }
-OCT_vec2 OCT_transform2D_moveBy(OCT_handle entity, OCT_vec2 deltaXY);
+OCT_vec2 OCT_transform2D_moveBy(OCT_handle entity, OCT_vec2 deltaXY) {
+	iOCT_transform2D* transform = (iOCT_transform2D*)eOCT_entity_getComponentOnce(entity, iOCT_world_inst.transform2DKey);
+
+	transform->position = OCT_vec2_add(transform->position, deltaXY);
+	return transform->position;
+}
 
 float OCT_transform2D_rotateTo(OCT_handle entity, float degrees) {
 	iOCT_transform2D* transform = (iOCT_transform2D*)eOCT_entity_getComponentOnce(entity, iOCT_world_inst.transform2DKey);

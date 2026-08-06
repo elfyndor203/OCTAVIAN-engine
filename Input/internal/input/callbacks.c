@@ -2,38 +2,42 @@
 #include "OCT_Core_eng.h"
 
 #include "inputSystem_int.h"
+#include "inputs_int.h"
+
+static void iOCT_input_printButton(OCT_BUTTON buttons);
 
 void iOCT_input_keyCallback(OCT_index eventIndex) {
-    eOCT_pool keyEventPool = *eOCT_field_getSourcePool(OCT_HANDLE_NULL, iOCT_inputSystem_inst.keyTicket);
-    eOCT_pool pressEventPool = *eOCT_field_getSourcePool(OCT_HANDLE_NULL, iOCT_inputSystem_inst.keyPressTicket);
-    eOCT_pool releaseEventPool = *eOCT_field_getSourcePool(OCT_HANDLE_NULL, iOCT_inputSystem_inst.keyReleaseTicket);
+    OCT_BUTTON button = *(int*)eOCT_field_readOnce(iOCT_inputSystem_inst.keyTicket, eventIndex, OCT_HANDLE_NULL);
+    bool pressed = *(bool*)eOCT_field_readOnce(iOCT_inputSystem_inst.keyPressTicket, eventIndex, OCT_HANDLE_NULL);
+    bool released = *(bool*)eOCT_field_readOnce(iOCT_inputSystem_inst.keyReleaseTicket, eventIndex, OCT_HANDLE_NULL);
 
-    int key = *(int*)eOCT_field_read(keyEventPool, iOCT_inputSystem_inst.keyTicket, eventIndex);
-    bool pressed = *(bool*)eOCT_field_read(keyEventPool, iOCT_inputSystem_inst.keyPressTicket, eventIndex);
-    bool released = *(bool*)eOCT_field_read(keyEventPool, iOCT_inputSystem_inst.keyReleaseTicket, eventIndex);
-
+    printf("Button ");
+    iOCT_input_printButton(button);
     if (pressed) {
-        printf("Key %c pressed\n", key);
+        printf(" pressed\n");
+        iOCT_button_updateState(button, OCT_BUTTONSTATE_PRESSED);
     }
     if (released) {
-        printf("Key %c released\n", key);
+        printf(" released\n");
+        iOCT_button_updateState(button, OCT_BUTTONSTATE_RELEASED);
     }
+
 }
 
 void iOCT_input_mouseButtonCallback(OCT_index eventIndex) {
-    eOCT_pool keyEventPool = *eOCT_field_getSourcePool(OCT_HANDLE_NULL, iOCT_inputSystem_inst.mouseButtonTicket);
-    eOCT_pool pressEventPool = *eOCT_field_getSourcePool(OCT_HANDLE_NULL, iOCT_inputSystem_inst.mouseButtonPressTicket);
-    eOCT_pool releaseEventPool = *eOCT_field_getSourcePool(OCT_HANDLE_NULL, iOCT_inputSystem_inst.mouseButtonReleaseTicket);
+    OCT_BUTTON button = *(int*)eOCT_field_readOnce(iOCT_inputSystem_inst.mouseButtonTicket, eventIndex, OCT_HANDLE_NULL);
+    bool pressed = *(bool*)eOCT_field_readOnce(iOCT_inputSystem_inst.mouseButtonPressTicket, eventIndex, OCT_HANDLE_NULL);
+    bool released = *(bool*)eOCT_field_readOnce(iOCT_inputSystem_inst.mouseButtonReleaseTicket, eventIndex, OCT_HANDLE_NULL);
 
-    int button = *(int*)eOCT_field_read(keyEventPool, iOCT_inputSystem_inst.mouseButtonTicket, eventIndex);
-    bool pressed = *(bool*)eOCT_field_read(keyEventPool, iOCT_inputSystem_inst.mouseButtonPressTicket, eventIndex);
-    bool released = *(bool*)eOCT_field_read(keyEventPool, iOCT_inputSystem_inst.mouseButtonReleaseTicket, eventIndex);
-
+    printf("Button ");
+    iOCT_input_printButton(button);
     if (pressed) {
-        printf("Mouse button %d pressed\n", button);
+        printf(" pressed\n");
+        iOCT_button_updateState(button, OCT_BUTTONSTATE_PRESSED);
     }
     if (released) {
-        printf("Mouse button %d released\n", button);
+        printf(" released\n");
+        iOCT_button_updateState(button, OCT_BUTTONSTATE_RELEASED);
     }
 }
 
@@ -45,4 +49,10 @@ void iOCT_input_mouseMoveCallback(OCT_index eventIndex) {
     float yPos = *(float*)eOCT_field_read(mouseYEventPool, iOCT_inputSystem_inst.mousePositionYTicket, eventIndex);
 
     iOCT_inputSystem_inst.mousePosition = (OCT_vec2){xPos, yPos};
+}
+
+static void iOCT_input_printButton(OCT_BUTTON buttons) {
+    const char* string = OCT_BUTTONS_NAMES[buttons];
+
+    printf("%s", string);
 }

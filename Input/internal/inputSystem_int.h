@@ -18,6 +18,8 @@ struct iOCT_inputSystem {
     eOCT_fieldTicket deltaTimeTicket;
 
     OCT_vec2 mousePosition;
+
+    eOCT_pool buttonStates;
 };
 
 extern iOCT_inputSystem iOCT_inputSystem_inst;

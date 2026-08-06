@@ -4,7 +4,7 @@
 #include "layout/layout_eng.h"
 
 #include "errors/errors_eng.h"
-#include "hardware/keys.h"
+#include "hardware/buttons.h"
 
 #include "utilities/utilities_eng.h"
 #include "utilities/types_eng.h"

@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <stdio.h>
 
+#include "../../../../Input/include/inputs.h"
 #include "window/windowSystem_int.h"
 #include "window/inputs/inputs_int.h"
 
@@ -12,10 +13,18 @@ void iOCT_window_keyCallback(GLFWwindow* window, int key, int scancode, int acti
         return;
     }
 
+    OCT_buttonStates octAction;
+    if (action == GLFW_PRESS) {
+        octAction = OCT_BUTTONSTATE_PRESSED;
+    }
+    else {
+        octAction = OCT_BUTTONSTATE_RELEASED;
+    }
+
     iOCT_keyEvent keyEvent = {
-        .key = key,
-        .pressed = (action == GLFW_PRESS),
-        .released = (action == GLFW_RELEASE),
+        .key = iOCT_getOCTButtonFromGLFW(key, false),
+        .pressed = (octAction == OCT_BUTTONSTATE_PRESSED),
+        .released = (octAction == OCT_BUTTONSTATE_RELEASED)
     };
 
     eOCT_event_broadcast(iOCT_windowSystem_inst.keyEventKey, OCT_HANDLE_NULL, &keyEvent);
@@ -26,7 +35,7 @@ void iOCT_window_mouseButtonCallback(GLFWwindow* window, int button, int action,
         return;
     }
     iOCT_mouseButtonEvent mouseButtonEvent = {
-        .button = button,
+        .button = iOCT_getOCTButtonFromGLFW(button, true),
         .pressed = (action == GLFW_PRESS),
         .released = (action == GLFW_RELEASE)
     };

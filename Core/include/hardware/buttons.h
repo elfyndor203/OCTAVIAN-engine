@@ -106,8 +106,23 @@
     X(OCT_BUTTON_SCROLL_UP,     "Scroll up") \
     X(OCT_BUTTON_SCROLL_DOWN,   "Scroll down") \
 
+
+
 typedef enum OCT_BUTTONS {
 #define X(keycode, print) keycode,
     iOCT_BUTTON_LIST
 #undef X
-} OCT_BUTTONS;
+    OCT_BUTTONS_TOTAL
+} OCT_BUTTON;
+
+static const int OCT_BUTTONS_ARRAY[] = {
+#define X(keyCode, print) keyCode,
+    iOCT_BUTTON_LIST
+#undef X
+};
+
+static const char* OCT_BUTTONS_NAMES[] = {
+#define X(keyCode, print) print,
+    iOCT_BUTTON_LIST
+#undef X
+};

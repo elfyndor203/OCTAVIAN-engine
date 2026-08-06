@@ -46,6 +46,8 @@ void system_init_WINDOW() {
 	                                                         eOCT_POOL_CAPACITY_DEFAULT, sizeof(iOCT_window),
 	                                                         offsetof(iOCT_window, windowID));
 	iOCT_windowSystem_inst.rootWindow = initWindow;
+
+	iOCT_buttonList_init();
 }
 
 
@@ -78,7 +80,6 @@ void eOCT_WINDOW_startFrame() {
 		OCT_mat3* matrixSingle = &eOCT_single_get(iOCT_windowSystem_inst.focusedCameraMatrixKey, OCT_HANDLE_NULL)->mat3;
 		*matrixSingle = iOCT_window_screenToWorld(focusedWindow);
 	}
-
 }
 
 void eOCT_WINDOW_finishFrame() {
@@ -94,25 +95,3 @@ void eOCT_WINDOW_finishFrame() {
 
 	OCT_mat3 cameraMatrix = (eOCT_single_get(iOCT_windowSystem_inst.focusedCameraMatrixKey, OCT_HANDLE_NULL))->mat3;
 }
-
-// void OCT_WDWModule_update() {
-// 	iOCT_windowSystem_inst.cursorDelta = OCT_vec2_zero;
-// 	iOCT_windowSystem_inst.scrollDelta = OCT_vec2_zero;
-// 	iOCT_window_show();
-// 	iOCT_window_wipe();
-// }
-
-// bool OCT_window_closed() {
-// 	if (glfwWindowShouldClose(iOCT_windowSystem_inst.windowPtr)) {
-// 		return true;
-// 	}
-// 	else {
-// 		return false;
-// 	}
-// }
-
-// void OCT_WDWModule_free() {
-// 	free(iOCT_windowSystem_inst.keyMap);
-// 	free(iOCT_windowSystem_inst.mouseMap);
-// 	free(iOCT_windowSystem_inst.windowPtr);
-// }

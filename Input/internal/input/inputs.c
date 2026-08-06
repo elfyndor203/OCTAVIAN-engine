@@ -17,3 +17,24 @@ OCT_vec2 OCT_mouse_readPosWorld() {
 
     return (OCT_vec2){worldPosVec3.x, worldPosVec3.y};
 }
+
+OCT_buttonStates OCT_button_read(OCT_BUTTON button, double* timeSinceLastStateChange_out, OCT_index* framesSinceLastStateChange_out) {
+    iOCT_buttonState buttonState = *(iOCT_buttonState*)eOCT_pool_access(&iOCT_inputSystem_inst.buttonStates, button, 0);
+
+    if (timeSinceLastStateChange_out) {
+        *timeSinceLastStateChange_out = buttonState.timeSinceLastStateChange;
+    }
+    if (framesSinceLastStateChange_out) {
+        *framesSinceLastStateChange_out = buttonState.framesSinceLastStateChange;
+    }
+    return buttonState.state;
+}
+
+void iOCT_button_updateState(OCT_BUTTON button, OCT_buttonStates pressOrRelease) {
+    iOCT_buttonState* buttonState = (iOCT_buttonState*)eOCT_pool_access(&iOCT_inputSystem_inst.buttonStates, button, 0);
+
+    buttonState->state = pressOrRelease;
+    buttonState->timeSinceLastStateChange = 0;
+    buttonState->framesSinceLastStateChange = 0;
+    buttonState->updatedThisFrame = true;
+}

@@ -11,6 +11,7 @@ bool OCT_transform2D_attach(OCT_handle entity, OCT_handle parentEntity);
  * @return Delta position
  */
 OCT_vec2 OCT_transform2D_moveTo(OCT_handle entity, OCT_vec2 destination);
+OCT_vec2 OCT_transform2D_moveBy(OCT_handle entity, OCT_vec2 deltaXY);
 /*!
  * Rotates to the given angle in degrees
  * @param entity

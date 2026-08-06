@@ -29,7 +29,7 @@ add_library(Core STATIC
         internal/events/events_int.h
         internal/events/events.c
         internal/events/types_int.h
-        engine/hardware/keys.h
+        include/hardware/buttons.h
         internal/globals/globals_int.h
         internal/globals/types_int.h
         internal/globals/globals.c

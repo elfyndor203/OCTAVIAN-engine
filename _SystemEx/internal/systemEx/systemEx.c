@@ -13,18 +13,20 @@ void system_init_systemEx() {
 }
 
 static void iOCT_input_keyCallback(OCT_index eventIndex) {
-    eOCT_pool keyEventPool = *eOCT_field_getSourcePool(OCT_HANDLE_NULL, iOCT_systemEx_inst.keyCache);
+    eOCT_pool buttonEventPool = *eOCT_field_getSourcePool(OCT_HANDLE_NULL, iOCT_systemEx_inst.keyCache);
     eOCT_pool pressEventPool = *eOCT_field_getSourcePool(OCT_HANDLE_NULL, iOCT_systemEx_inst.keyPressCache);
     eOCT_pool releaseEventPool = *eOCT_field_getSourcePool(OCT_HANDLE_NULL, iOCT_systemEx_inst.keyReleaseCache);
 
-    int key = *(int*)eOCT_field_read(keyEventPool, iOCT_systemEx_inst.keyCache, eventIndex);
-    bool pressed = *(bool*)eOCT_field_read(keyEventPool, iOCT_systemEx_inst.keyPressCache, eventIndex);
-    bool released = *(bool*)eOCT_field_read(keyEventPool, iOCT_systemEx_inst.keyReleaseCache, eventIndex);
+    OCT_BUTTON button = *(int*)eOCT_field_read(buttonEventPool, iOCT_systemEx_inst.keyCache, eventIndex);
+    bool pressed = *(bool*)eOCT_field_read(buttonEventPool, iOCT_systemEx_inst.keyPressCache, eventIndex);
+    bool released = *(bool*)eOCT_field_read(buttonEventPool, iOCT_systemEx_inst.keyReleaseCache, eventIndex);
 
+    printf("Button ");
     if (pressed) {
-        printf("Key %c pressed\n", key);
+        printf(" pressed\n");
     }
     if (released) {
-        printf("Key %c released\n", key);
+        printf(" released\n");
+        printf("AAAAAAAAAAAAAAA");
     }
 }

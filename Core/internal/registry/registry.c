@@ -483,15 +483,15 @@ static void iOCT_registry_distributeFields() {
 			eOCT_fieldRequest* request = &requestArray[requestCtr];
 			eOCT_fieldDescription match;
 
-			eOCT_fieldTicket* key = request->ticketCache_ifLocal;
+			eOCT_fieldTicket* ticket = request->ticketCache_ifLocal;
 			if (iOCT_registry_findField(request->name, &match)) {	// if there is a match
-				key->name = match.name;
-				key->type = match.type;
-				key->global = match.global_reg;
-				key->providerType = match.providerType;
-				key->offsetFromStruct = match.offset;
-				key->providerTypeIndex = match.providerIndex_reg;
-				key->globalPool = iOCT_registry_findGlobalPool(match);
+				ticket->name = match.name;
+				ticket->type = match.type;
+				ticket->global = match.global_reg;
+				ticket->providerType = match.providerType;
+				ticket->offsetFromStruct = match.offset;
+				ticket->providerTypeIndex = match.providerIndex_reg;
+				ticket->globalPool = iOCT_registry_findGlobalPool(match);
 
 				request->fulfilled_reg = true;
 				request->providerType_reg = match.providerType;

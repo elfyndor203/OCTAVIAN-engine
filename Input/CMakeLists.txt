@@ -9,6 +9,7 @@ add_library(Input STATIC
         internal/input/inputs.c
         include/OCT_Inputs.h
         include/inputs.h
+        internal/input/types_int.h
 )
 
 target_include_directories(Input
