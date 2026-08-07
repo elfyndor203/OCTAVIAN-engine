@@ -483,7 +483,7 @@ static void iOCT_registry_distributeFields() {
 			eOCT_fieldRequest* request = &requestArray[requestCtr];
 			eOCT_fieldDescription match;
 
-			eOCT_fieldTicket* ticket = request->ticketCache_ifLocal;
+			eOCT_fieldTicket* ticket = request->ticketCache;
 			if (iOCT_registry_findField(request->name, &match)) {	// if there is a match
 				ticket->name = match.name;
 				ticket->type = match.type;

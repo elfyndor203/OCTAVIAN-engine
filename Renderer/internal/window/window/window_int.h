@@ -54,4 +54,5 @@ void iOCT_window_keyCallback(GLFWwindow* window, int key, int scancode, int acti
 void iOCT_window_mouseButtonCallback(GLFWwindow* window, int button, int action, int modifiers);
 void iOCT_window_mouseMoveCallback(GLFWwindow* window, double xPos, double yPos);
 void iOCT_window_focusCallback(GLFWwindow* window, int focused);
+void iOCT_window_sizeCallback(GLFWwindow* window, int width, int height);
 

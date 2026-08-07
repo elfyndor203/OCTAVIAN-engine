@@ -4,14 +4,15 @@ add_library(OCTAVIANEngine STATIC
         SYSTEMS_BUILD/scheduler.c
         internal/system/engineSystem.h
         internal/system/types_int.h
+        SYSTEMS_BUILD/HEADERS.h
 )
 
 target_include_directories(OCTAVIANEngine
         PUBLIC
             ${CMAKE_CURRENT_SOURCE_DIR}/include
+            ${CMAKE_CURRENT_SOURCE_DIR}/SYSTEMS_BUILD
         PRIVATE
             ${CMAKE_CURRENT_SOURCE_DIR}/internal
-            ${CMAKE_CURRENT_SOURCE_DIR}/SYSTEMS_BUILD
 )
 
 set_target_properties(OCTAVIANEngine PROPERTIES
@@ -28,6 +29,7 @@ target_link_libraries(OCTAVIANEngine
         Renderer
         Input
         Platform
+        Physics
     PRIVATE
         WorldSystem
         _SystemExSystem
@@ -35,4 +37,5 @@ target_link_libraries(OCTAVIANEngine
         RendererSystem
         InputSystem
         PlatformSystem
+        PhysicsSystem
 )

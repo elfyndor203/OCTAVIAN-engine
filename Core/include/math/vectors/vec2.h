@@ -31,6 +31,6 @@ bool OCT_vec2_equal(OCT_vec2 vectorA, OCT_vec2 vectorB, float threshold);
 float OCT_vec2_radians(OCT_vec2 vectorA, OCT_vec2 vectorB);
 float OCT_vec2_degrees(OCT_vec2 vectorA, OCT_vec2 vectorB);
 
-OCT_vec2 OCT_vec2_norm(OCT_vec2 vectorA);
+OCT_vec2 OCT_vec2_unit(OCT_vec2 vectorA);
 OCT_vec2 OCT_vec2_neg(OCT_vec2 vectorA);
 

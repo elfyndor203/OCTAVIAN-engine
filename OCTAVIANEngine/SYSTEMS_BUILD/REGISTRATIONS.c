@@ -1,10 +1,11 @@
-#include "systems_build.h"
+#include "../internal/system/systems_build.h"
 
 #include "systemDescription_sysEx.h"
 #include "systemDescription_platform.h"
 #include "systemDescription_world.h"
 #include "systemDescription_renderer.h"
 #include "systemDescription_input.h"
+#include "systemDescription_physics.h"
 
 void init_OCT_registerAllSystems() {
 	//system_register_systemEx();
@@ -14,4 +15,5 @@ void init_OCT_registerAllSystems() {
 	system_register_WINDOW();
 	system_register_RENDERER();
 	system_register_INPUT();
+	system_register_PHYSICS();
 };

@@ -32,7 +32,7 @@ void system_register_RENDERER() {
     eOCT_fieldRequest transform2D = {
         .name = "globalTransform2D",
         .type = eOCT_DATATYPE_MAT3,
-        .ticketCache_ifLocal = &iOCT_renderer_inst.transform2DTicket,
+        .ticketCache = &iOCT_renderer_inst.transform2DTicket,
         .optional = false,
     };
 

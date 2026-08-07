@@ -3,7 +3,7 @@
 
 #include "OCT_Core_eng.h"
 
-OCT_BUTTON iOCT_glfwToOCTButtonKeyMap[GLFW_KEY_LAST + GLFW_MOUSE_BUTTON_LAST + 1];
+OCT_BUTTON iOCT_glfwToOCTButtonKeyMap[GLFW_KEY_LAST + GLFW_MOUSE_BUTTON_LAST + 2];
 
 OCT_BUTTON iOCT_getOCTButtonFromGLFW(int glfwKeyCode, bool mouse) {
     return iOCT_glfwToOCTButtonKeyMap[glfwKeyCode + (mouse * iOCT_GLFW_MOUSE_BUTTONS_OFFSET)];

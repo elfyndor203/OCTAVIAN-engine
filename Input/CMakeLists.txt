@@ -17,6 +17,7 @@ target_include_directories(Input
         ${CMAKE_CURRENT_SOURCE_DIR}/include
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/internal
+        ${CMAKE_CURRENT_SOURCE_DIR}/system
 )
 
 set_target_properties(Input PROPERTIES

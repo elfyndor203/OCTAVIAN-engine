@@ -23,6 +23,7 @@ void eOCT_INPUT_update() {
 
         if (button->updatedThisFrame) {
             button->updatedThisFrame = false;
+            continue;
         }
 
         if (button->state == OCT_BUTTONSTATE_PRESSED) {

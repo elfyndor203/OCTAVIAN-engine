@@ -51,7 +51,7 @@ union eOCT_dataUnion {
 struct eOCT_fieldRequest {
 	const char* name;
 	eOCT_dataTypes type;
-	eOCT_fieldTicket* ticketCache_ifLocal;
+	eOCT_fieldTicket* ticketCache;
 	// eOCT_fieldTicket_global* ticketCache_ifGlobal;
 	//eOCT_fieldAccess access;
 	bool optional;

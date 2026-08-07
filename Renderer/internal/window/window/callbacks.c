@@ -59,3 +59,14 @@ void iOCT_window_focusCallback(GLFWwindow* window, int focused) {
         iOCT_windowSystem_inst.focusedWindowID = iOCT_window_findByGLFWWindowPtr(window)->windowID;
     }
 }
+
+void iOCT_window_sizeCallback(GLFWwindow* window, int width, int height) {
+    iOCT_window* resized = iOCT_window_findByGLFWWindowPtr(window);
+    iOCT_window_activate(*resized);
+
+    int frameBufferX;
+    int frameBufferY;
+    glfwGetFramebufferSize(window, &frameBufferX, &frameBufferY);
+    glViewport(0, 0, frameBufferX, frameBufferY);
+    resized->currentResolution = (OCT_vec2){(float)width, (float)height};
+}

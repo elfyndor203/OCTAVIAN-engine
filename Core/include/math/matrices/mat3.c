@@ -73,8 +73,8 @@ OCT_mat3 OCT_mat3_inverse(OCT_mat3 m) {
 
 OCT_mat3 OCT_mat3_translate(OCT_mat3 m, OCT_vec2 translation) {
     OCT_mat3 result = m;
-    result.c2r0 = translation.x;
-    result.c2r1 = translation.y;
+    result.c2r0 += translation.x;
+    result.c2r1 += translation.y;
     return result;
 }
 

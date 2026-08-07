@@ -2,6 +2,7 @@
 #include "math/units/conversions.h"
 #include "math/definitions/defaultValues.h"
 #include <math.h>
+#include "errors/errors_eng.h"
 
 const OCT_vec2 OCT_vec2_zero = { 0, 0 };
 typedef OCT_vec2(*OCT_vector2D_vector2D_Fx)(OCT_vec2, OCT_vec2); // Vector2D operation function pointer
@@ -91,6 +92,7 @@ OCT_vec2 OCT_vec2_mul(OCT_vec2 vectorA, float scalar) {
 }
 OCT_vec2 OCT_vec2_div(OCT_vec2 vectorA, float scalar) {
 	if (scalar == 0) {
+		OCT_ERROR_LOG(OCT_ERR_DIVIDE_BY_ZERO, "Vector division by zero");
 		return vectorA;
 	}
 	OCT_vec2 resultantVector = {
@@ -142,7 +144,7 @@ float OCT_vec2_degrees(OCT_vec2 vectorA, OCT_vec2 vectorB) {
 #pragma endregion
 
 #pragma region other
-OCT_vec2 OCT_vec2_norm(OCT_vec2 vectorA) {
+OCT_vec2 OCT_vec2_unit(OCT_vec2 vectorA) {
 	float mag = OCT_vec2_mag(vectorA);
 	if (mag != 0) {
 		return OCT_vec2_div(vectorA, mag);

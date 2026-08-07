@@ -2,7 +2,7 @@
 
 #include "OCT_Core_eng.h"
 
-#include "../internal/platformSystem_int.h"
+#include "platformSystem_int.h"
 
 void system_register_PLATFORM() {
     eOCT_fieldDescription time = {

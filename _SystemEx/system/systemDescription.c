@@ -23,19 +23,19 @@ void system_register_systemEx() {
 				.name = "glfwKeys",
 				.type = eOCT_DATATYPE_INT64,
 				.optional = false,
-				.ticketCache_ifLocal = &iOCT_systemEx_inst.keyCache
+				.ticketCache = &iOCT_systemEx_inst.keyCache
 			};
 			eOCT_fieldRequest keyPress = {
 				.name = "glfwKeyPress",
 				.type = eOCT_DATATYPE_BOOL,
 				.optional = false,
-				.ticketCache_ifLocal = &iOCT_systemEx_inst.keyPressCache
+				.ticketCache = &iOCT_systemEx_inst.keyPressCache
 			};
 			eOCT_fieldRequest keyRelease = {
 				.name = "glfwKeyRelease",
 				.type = eOCT_DATATYPE_BOOL,
 				.optional = false,
-				.ticketCache_ifLocal = &iOCT_systemEx_inst.keyReleaseCache
+				.ticketCache = &iOCT_systemEx_inst.keyReleaseCache
 			};
 	//
 

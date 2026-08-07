@@ -33,6 +33,11 @@ struct eOCT_componentKey {
     OCT_index entityHandleValueOffset;
 };
 
+// struct eOCT_dataPoolKey {
+//     const char* name;
+//
+//     OCT_index dataPoolTypeIndex;
+// };
 struct eOCT_eventKey {
     const char* name;
 
