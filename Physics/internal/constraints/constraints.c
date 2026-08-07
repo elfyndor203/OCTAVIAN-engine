@@ -58,11 +58,11 @@ void iOCT_constraintSolve_rope(iOCT_constraint_rope2D constraint, eOCT_contextTo
     OCT_vec2 fromCenterUnit = OCT_vec2_unit(fromCenter);
     OCT_vec2 correctedPos = OCT_vec2_add(OCT_vec2_mul(fromCenterUnit, constraint.length), *centerPos);
 
-    // float radialSpeed = OCT_vec2_dot(toMovePhys->v_lin, fromCenterUnit);
-    //
-    // if (radialSpeed > 0) {
-    //     OCT_vec2 correctionVel = OCT_vec2_mul(fromCenterUnit, radialSpeed);
-    //     toMovePhys->v_lin = OCT_vec2_sub(toMovePhys->v_lin, correctionVel);
-    // }
+    float radialSpeed = OCT_vec2_dot(toMovePhys->v_lin, fromCenterUnit);
+
+    if (radialSpeed > 0) {
+        OCT_vec2 correctionVel = OCT_vec2_mul(fromCenterUnit, radialSpeed);
+        toMovePhys->v_lin = OCT_vec2_sub(toMovePhys->v_lin, correctionVel);
+    }
     *toMovePos = correctedPos;
 }

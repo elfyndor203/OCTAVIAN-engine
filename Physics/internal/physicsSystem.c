@@ -44,6 +44,6 @@ void eOCT_PHYSICS_update(OCT_handle context) {
         iOCT_physics2D* physics = &physicsArray[physCtr];
         OCT_vec2 position = *(OCT_vec2*)eOCT_entity_getFieldOnce(physics->entityHandle, iOCT_physicsSystem_inst.position2DTicket);
         OCT_vec2 frameDelta = OCT_vec2_sub(position, physics->prevPos);
-        physics->v_lin = OCT_vec2_div(frameDelta, iOCT_physicsSystem_inst.dt);
+        // physics->v_lin = OCT_vec2_div(frameDelta, iOCT_physicsSystem_inst.dt);
     }
 }
