@@ -27,6 +27,7 @@ void eOCT_PHYSICS_update(OCT_handle context) {
             continue;
         }
         OCT_vec2* position = (OCT_vec2*)eOCT_entity_getField(contextToken, physics->entityHandle, iOCT_physicsSystem_inst.position2DTicket);
+        physics->prevPos = *position;
         iOCT_physics2D_integrateEuler(physics, position, iOCT_physicsSystem_inst.dt);
     }
 
@@ -37,5 +38,12 @@ void eOCT_PHYSICS_update(OCT_handle context) {
             iOCT_constraint_rope2D rope = ropeArray[ropeCtr];
             iOCT_constraintSolve_rope(rope, contextToken);
         }
+    }
+
+    for (OCT_index physCtr = 0; physCtr < physicsPool->count; physCtr++) {
+        iOCT_physics2D* physics = &physicsArray[physCtr];
+        OCT_vec2 position = *(OCT_vec2*)eOCT_entity_getFieldOnce(physics->entityHandle, iOCT_physicsSystem_inst.position2DTicket);
+        OCT_vec2 frameDelta = OCT_vec2_sub(position, physics->prevPos);
+        physics->v_lin = OCT_vec2_div(frameDelta, iOCT_physicsSystem_inst.dt);
     }
 }

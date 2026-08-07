@@ -15,6 +15,7 @@ struct iOCT_physics2D {
     OCT_vec2 f_frame;
     OCT_vec2 f_const;
 
+    OCT_vec2 prevPos;
     bool fixed;
 };
 

@@ -19,6 +19,7 @@ void OCT_physics2D_attach(OCT_handle entity, float mass, bool fixed) {
         .f_const = OCT_vec2_zero,   // does not include gravity
         .f_frame = OCT_vec2_zero,
         .v_lin = OCT_vec2_zero,
+        .prevPos = OCT_vec2_zero,
         .fixed = fixed
     };
     eOCT_entity_attachComponentOnce(entity, iOCT_physicsSystem_inst.physics2DKey, &newPhysics, NULL);

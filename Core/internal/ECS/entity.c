@@ -124,7 +124,7 @@ void* eOCT_entity_getComponentOnce(OCT_handle entity, eOCT_componentKey componen
 	}
 	return dataLoc;
 }
-void* eOCT_entity_getComponentBUGGED(eOCT_contextToken contextToken, OCT_handle entity, eOCT_componentKey component) {
+void* eOCT_entity_getComponent(eOCT_contextToken contextToken, OCT_handle entity, eOCT_componentKey component) {
 	iOCT_entityContext* context = contextToken.contextPtr;
 	OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
 	void* dataLoc = iOCT_entity_getComponent(context, entityIndex, component.componentTypeIndex);
