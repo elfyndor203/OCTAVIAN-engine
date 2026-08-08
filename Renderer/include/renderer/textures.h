@@ -1,5 +1,5 @@
 #pragma once
 #include "OCT_Core.h"
 
-OCT_handle OCT_textureGroup_open(OCT_vec2 dimensions, OCT_index maxCount);
-OCT_handle OCT_texture_new(OCT_handle textureGroup, const char* path);
+OCT_global OCT_textureGroup_open(OCT_vec2 dimensions, OCT_index maxCount);
+OCT_global OCT_texture_new(OCT_global textureGroup, const char* path);

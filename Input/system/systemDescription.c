@@ -52,6 +52,12 @@ void system_register_INPUT() {
         .optional = false,
         .ticketCache = &iOCT_inputSystem_inst.mousePositionYTicket
     };
+    eOCT_fieldRequest mouseScroll = {
+        .name = "glfwMouseScrollDelta",
+        .type = eOCT_DATATYPE_FLOAT32,
+        .optional = false,
+        .ticketCache = &iOCT_inputSystem_inst.mouseScrollTicket
+    };
     eOCT_fieldRequest activeCamera = {
         .name = "screenToWorldMatrix",
         .type = eOCT_DATATYPE_MAT3,
@@ -70,7 +76,7 @@ void system_register_INPUT() {
         .providedComponents = eOCT_POOL_EMPTY,
         .providedDataPools = eOCT_POOL_EMPTY,
         .providedEvents = eOCT_POOL_EMPTY,
-        .requestedFields = eOCT_generateFieldRequestPool(10, key, keyPress, keyRelease, mouseButton, mouseButtonPress, mouseButtonRelease, mouseMoveX, mouseMoveY, activeCamera, deltaTime),
+        .requestedFields = eOCT_generateFieldRequestPool(11, key, keyPress, keyRelease, mouseButton, mouseButtonPress, mouseButtonRelease, mouseMoveX, mouseMoveY, mouseScroll, activeCamera, deltaTime),
         .initFx = system_init_INPUT
     };
 

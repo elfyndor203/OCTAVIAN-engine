@@ -8,7 +8,7 @@
 
 static OCT_vec2 iOCT_physics2D_resolveFrameNetForce(iOCT_physics2D* physics2D);
 
-void OCT_physics2D_attach(OCT_handle entity, float mass, bool fixed) {
+void OCT_physics2D_attach(OCT_local entity, float mass, bool fixed) {
     if (mass <= 0) {
         OCT_ERROR_LOG(OCT_EXIT_INVALID_ARGUMENT, "Entities must have positive mass. Fix in place or adjust gravity instead.");
     }
@@ -27,7 +27,7 @@ void OCT_physics2D_attach(OCT_handle entity, float mass, bool fixed) {
     printf("Attached physics2D to entity %zu\n", entity.objectID);
 }
 
-OCT_vec2 OCT_physics2D_setVelocity(OCT_handle entity, OCT_vec2 velocity) {
+OCT_vec2 OCT_physics2D_setVelocity(OCT_local entity, OCT_vec2 velocity) {
     iOCT_physics2D* physics = eOCT_entity_getComponentOnce(entity, iOCT_physicsSystem_inst.physics2DKey);
 
     OCT_vec2 oldVelocity = physics->v_lin;
@@ -35,28 +35,28 @@ OCT_vec2 OCT_physics2D_setVelocity(OCT_handle entity, OCT_vec2 velocity) {
     return OCT_vec2_sub(velocity, oldVelocity);
 }
 
-OCT_vec2 OCT_physics2D_addImpulse(OCT_handle entity, OCT_vec2 impulse) {
+OCT_vec2 OCT_physics2D_addImpulse(OCT_local entity, OCT_vec2 impulse) {
     iOCT_physics2D* physics = eOCT_entity_getComponentOnce(entity, iOCT_physicsSystem_inst.physics2DKey);
 
     physics->v_lin = OCT_vec2_add(physics->v_lin, OCT_vec2_div(impulse, physics->mass));
     return physics->v_lin;
 }
 
-OCT_vec2 OCT_physics2D_addForceContinuous(OCT_handle entity, OCT_vec2 force) {
+OCT_vec2 OCT_physics2D_addForceContinuous(OCT_local entity, OCT_vec2 force) {
     iOCT_physics2D* physics = eOCT_entity_getComponentOnce(entity, iOCT_physicsSystem_inst.physics2DKey);
 
     physics->f_const = OCT_vec2_add(physics->f_const, force);
     return physics->f_const;
 }
 
-OCT_vec2 OCT_physics2D_addForceInstantaneous(OCT_handle entity, OCT_vec2 force) {
+OCT_vec2 OCT_physics2D_addForceInstantaneous(OCT_local entity, OCT_vec2 force) {
     iOCT_physics2D* physics = eOCT_entity_getComponentOnce(entity, iOCT_physicsSystem_inst.physics2DKey);
 
     physics->f_frame = OCT_vec2_add(physics->f_frame, force);
     return physics->f_frame;
 }
 
-float OCT_physics2D_setGravity(OCT_handle entity, float gravityStrength) {
+float OCT_physics2D_setGravity(OCT_local entity, float gravityStrength) {
     iOCT_physics2D* physics = eOCT_entity_getComponentOnce(entity, iOCT_physicsSystem_inst.physics2DKey);
 
     float oldGravity = physics->gravityStrength;
@@ -64,7 +64,7 @@ float OCT_physics2D_setGravity(OCT_handle entity, float gravityStrength) {
     return gravityStrength - oldGravity;
 }
 
-OCT_vec2 OCT_physics2D_read(OCT_handle entity, float* massOut, float* gravityOut, OCT_vec2* netForcesOut) {
+OCT_vec2 OCT_physics2D_read(OCT_local entity, float* massOut, float* gravityOut, OCT_vec2* netForcesOut) {
     iOCT_physics2D* physics = eOCT_entity_getComponentOnce(entity, iOCT_physicsSystem_inst.physics2DKey);
 
     if (massOut) {
@@ -77,6 +77,14 @@ OCT_vec2 OCT_physics2D_read(OCT_handle entity, float* massOut, float* gravityOut
         *netForcesOut = OCT_vec2_add(OCT_vec2_add(physics->f_const, physics->f_frame), OCT_vec2_mul(iOCT_physicsSystem_inst.worldGravity, physics->gravityStrength));
     }
     return physics->v_lin;
+}
+OCT_vec2 OCT_physics2D_readImplicit(OCT_local entity) {
+    iOCT_physics2D* physics = eOCT_entity_getComponentOnce(entity, iOCT_physicsSystem_inst.physics2DKey);
+
+    OCT_vec2 position = *(OCT_vec2*)eOCT_entity_getFieldOnce(entity, iOCT_physicsSystem_inst.position2DTicket);
+    OCT_vec2 deltaPos = OCT_vec2_sub(position, physics->prevPos);
+
+    return OCT_vec2_div(deltaPos, iOCT_physicsSystem_inst.dt);
 }
 
 void iOCT_physics2D_integrateEuler(iOCT_physics2D* physics2D, OCT_vec2* position, float dt) {

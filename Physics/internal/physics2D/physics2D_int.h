@@ -5,7 +5,7 @@
 #include <stdbool.h>
 
 struct iOCT_physics2D {
-    OCT_handle entityHandle;
+    OCT_local entityHandle;
 
     float mass;
     float gravityStrength;
@@ -20,3 +20,4 @@ struct iOCT_physics2D {
 };
 
 void iOCT_physics2D_integrateEuler(iOCT_physics2D* physics2D, OCT_vec2* position, float dt);
+void iOCT_physics2D_conserveL(iOCT_physics2D* center, iOCT_physics2D* target, float originalDistance, float newDistance);

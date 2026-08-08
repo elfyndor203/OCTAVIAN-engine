@@ -9,7 +9,7 @@
 #include "ECS/ECS_int.h"
 #include "globals/globals_int.h"
 
-static eOCT_pool* iOCT_getEventPool(eOCT_eventDescription eventDesc, OCT_handle contextHandle, eOCT_pool** callbackPoolOut);
+static eOCT_pool* iOCT_getEventPool(eOCT_eventDescription eventDesc, OCT_local contextHandle, eOCT_pool** callbackPoolOut);
 
 iOCT_eventManager iOCT_eventManager_open(OCT_ID ownerID) {
     eOCT_pool eventDescPool = iOCT_registry_inst.globalEvents;
@@ -64,7 +64,7 @@ void eOCT_event_broadcastGlobal(eOCT_eventKey eventKey, void* event) {
     }
 }
 
-void eOCT_event_subscribe(eOCT_fieldTicket eventField, OCT_handle contextHandle, eOCT_eventCallbackFx callback) {
+void eOCT_event_subscribe(eOCT_fieldTicket eventField, OCT_local contextHandle, eOCT_eventCallbackFx callback) {
     if (eventField.providerType != eOCT_DATAPATTERN_EVENT) {
         OCT_ERROR_LOG(OCT_EXIT_SOURCE_MISMATCH, "Tried to set callback for field that does not come from an event");
         return;
@@ -89,7 +89,7 @@ void eOCT_event_subscribe(eOCT_fieldTicket eventField, OCT_handle contextHandle,
 //     return eOCT_pool_access(eventPool, eventEntryIndex, eventField.fieldOffset_reg);
 // }
 
-static eOCT_pool* iOCT_getEventPool(eOCT_eventDescription eventDesc, OCT_handle contextHandle, eOCT_pool** callbackPoolOut) {
+static eOCT_pool* iOCT_getEventPool(eOCT_eventDescription eventDesc, OCT_local contextHandle, eOCT_pool** callbackPoolOut) {
     iOCT_eventManager* eventManager;
     eOCT_pool* eventPool;
     eOCT_pool* callbackPool;

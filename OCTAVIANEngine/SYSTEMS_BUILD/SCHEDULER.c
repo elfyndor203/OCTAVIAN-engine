@@ -13,7 +13,7 @@ void OCT_engine_frame_start() {
     eOCT_PLATFORM_update();
     eOCT_INPUT_update();
 }
-void OCT_engine_updateContext(OCT_handle context) {
+void OCT_engine_updateContext(OCT_global context) {
     eOCT_entityContext_prepare(context);
 
     eOCT_WORLD_update(context);
@@ -22,5 +22,6 @@ void OCT_engine_updateContext(OCT_handle context) {
 }
 
 void OCT_engine_frame_show() {
+    eOCT_INPUT_clear();
     eOCT_WINDOW_finishFrame();
 }

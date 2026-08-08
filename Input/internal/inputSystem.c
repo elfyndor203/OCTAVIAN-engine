@@ -7,16 +7,17 @@ iOCT_inputSystem iOCT_inputSystem_inst = {0};
 static void iOCT_buttonStates_init();
 
 void system_init_INPUT() {
-    eOCT_event_subscribe(iOCT_inputSystem_inst.keyTicket, OCT_HANDLE_NULL, iOCT_input_keyCallback);
-    eOCT_event_subscribe(iOCT_inputSystem_inst.mouseButtonTicket, OCT_HANDLE_NULL, iOCT_input_mouseButtonCallback);
-    eOCT_event_subscribe(iOCT_inputSystem_inst.mousePositionXTicket, OCT_HANDLE_NULL, iOCT_input_mouseMoveCallback); // __NOTE__ subscribing to two fields can result in double callbacks right now
+    eOCT_event_subscribe(iOCT_inputSystem_inst.keyTicket, OCT_LOCAL_NULL, iOCT_input_keyCallback);
+    eOCT_event_subscribe(iOCT_inputSystem_inst.mouseButtonTicket, OCT_LOCAL_NULL, iOCT_input_mouseButtonCallback);
+    eOCT_event_subscribe(iOCT_inputSystem_inst.mousePositionXTicket, OCT_LOCAL_NULL, iOCT_input_mouseMoveCallback); // __NOTE__ subscribing to two fields can result in double callbacks right now
+    eOCT_event_subscribe(iOCT_inputSystem_inst.mouseScrollTicket, OCT_LOCAL_NULL, iOCT_input_mouseScrollCallback);
 
     iOCT_inputSystem_inst.buttonStates = eOCT_pool_open(iOCT_inputSystem_inst.systemID, (OCT_index)OCT_BUTTONS_TOTAL, sizeof(iOCT_buttonState));
     iOCT_buttonStates_init();
 }
 
 void eOCT_INPUT_update() {
-    double deltaTime = *(double*)eOCT_field_readOnce(iOCT_inputSystem_inst.deltaTimeTicket, OCT_INDEX_NULL, OCT_HANDLE_NULL);
+    double deltaTime = *(double*)eOCT_field_readOnce(iOCT_inputSystem_inst.deltaTimeTicket, OCT_INDEX_NULL, OCT_GLOBAL_NULL);
 
     for (OCT_index buttonCtr = 0; buttonCtr < OCT_BUTTONS_TOTAL; buttonCtr++) {
         iOCT_buttonState* button = eOCT_pool_access(&iOCT_inputSystem_inst.buttonStates, buttonCtr, 0);
@@ -41,6 +42,11 @@ void eOCT_INPUT_update() {
             button->framesSinceLastStateChange++;
         }
     }
+
+}
+
+void eOCT_INPUT_clear() {
+    iOCT_inputSystem_inst.mouseScrollDelta = 0;
 }
 
 static void iOCT_buttonStates_init() {

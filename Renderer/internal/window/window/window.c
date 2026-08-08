@@ -9,8 +9,9 @@
 
 #include "window/windowSystem_int.h"
 #include "renderer/renderer_int.h"
+#include "window/inputs/inputs_int.h"
 
-OCT_handle OCT_window_open(const char* name, unsigned int sizeX, unsigned int sizeY, OCT_vec4 color) {
+OCT_global OCT_window_open(const char* name, unsigned int sizeX, unsigned int sizeY, OCT_vec4 color) {
     printf("\nOpening window %s\n", name);
     GLFWwindow* windowPtr = glfwCreateWindow(sizeX, sizeY, name, NULL, iOCT_windowSystem_inst.rootWindow);
     glfwMakeContextCurrent(windowPtr);
@@ -24,6 +25,7 @@ OCT_handle OCT_window_open(const char* name, unsigned int sizeX, unsigned int si
     glfwSetKeyCallback(windowPtr, iOCT_window_keyCallback);
     glfwSetMouseButtonCallback(windowPtr, iOCT_window_mouseButtonCallback);
     glfwSetCursorPosCallback(windowPtr, iOCT_window_mouseMoveCallback);
+    glfwSetScrollCallback(windowPtr, iOCT_window_mouseScrollCallback);
     glfwSetWindowFocusCallback(windowPtr, iOCT_window_focusCallback);
     glfwSetWindowSizeCallback(windowPtr, iOCT_window_sizeCallback);
 
@@ -42,14 +44,15 @@ OCT_handle OCT_window_open(const char* name, unsigned int sizeX, unsigned int si
     newWindow->windowPtr = windowPtr;
     newWindow->targetResolution = (OCT_vec2){ (float)sizeX, (float)sizeY };
     newWindow->currentResolution = (OCT_vec2){ (float)sizeX, (float)sizeY };
-    newWindow->activeCameraSourceEntity = OCT_HANDLE_NULL;
+    newWindow->activeCameraSourceEntity = OCT_LOCAL_NULL;
     newWindow->cameraUniformLocation = glGetUniformLocation(iOCT_renderer_inst.spriteShaderProgram, "cameraProj");
 
     glGenVertexArrays(1, &newVAO);
     newWindow->VAO = newVAO;
-    OCT_handle windowHandle = {
-        .containerID = OCT_ID_ECS,
+    OCT_global windowHandle = {
+        .containerID = OCT_ID_NULL,
         .objectID = newID,
+        .systemID = iOCT_windowSystem_inst.systemID
     };
 
     iOCT_setupNewSpriteVAO(newWindow->VAO);
@@ -60,7 +63,7 @@ OCT_handle OCT_window_open(const char* name, unsigned int sizeX, unsigned int si
     return windowHandle;
 }
 
-bool OCT_window_isOpen(OCT_handle windowHandle) {
+bool OCT_window_isOpen(OCT_global windowHandle) {
     // iOCT_window* window = (iOCT_window*)eOCT_getByID(&iOCT_windowSystem_inst.windowMPool.IDMap, &iOCT_windowSystem_inst.windowMPool.pool, windowHandle.objectID);
     iOCT_window* window = (iOCT_window*)eOCT_mappedPool_getByID(&iOCT_windowSystem_inst.windowMPool, windowHandle.objectID);
     if (!window) {
@@ -90,7 +93,7 @@ void iOCT_window_activate(iOCT_window window) {
 }
 
 OCT_mat3 iOCT_window_screenToWorld(iOCT_window window) {
-    if (OCT_handle_isNULL(window.activeCameraSourceEntity)) {
+    if (OCT_local_isNULL(window.activeCameraSourceEntity)) {
         return OCT_mat3_identity;
     }
     iOCT_camera2D camera = *(iOCT_camera2D*)eOCT_entity_getComponentOnce(window.activeCameraSourceEntity, iOCT_renderer_inst.camera2DKey);

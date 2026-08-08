@@ -6,13 +6,15 @@
 #include "physics2D/physics2D_int.h"
 #include "physicsSystem_int.h"
 
-struct iOCT_constraint_rope2D {
+struct iOCT_rope2D {
     OCT_ID constraintID;
 
-    OCT_handle entityA;
-    OCT_handle entityB;
+    OCT_local entityA;
+    OCT_local entityB;
 
     float length;
+
+    bool enabled;
 };
 
-void iOCT_constraintSolve_rope(iOCT_constraint_rope2D constraint, eOCT_contextToken contextToken);
+void iOCT_constraintSolve_rope(iOCT_rope2D rope, eOCT_contextToken contextToken);

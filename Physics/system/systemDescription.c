@@ -19,9 +19,9 @@ void system_register_PHYSICS() {
 
     eOCT_dataPoolDescription rope2D = {
         .name = "rope2D",
-        .stride = sizeof(iOCT_constraint_rope2D),
+        .stride = sizeof(iOCT_rope2D),
         .providedFields = eOCT_POOL_EMPTY,
-        .elementIDValueOffset = offsetof(iOCT_constraint_rope2D, constraintID),
+        .elementIDValueOffset = offsetof(iOCT_rope2D, constraintID),
         .keyCacheLocation = &iOCT_physicsSystem_inst.rope2DKey,
         .sort = false,
         .global = false

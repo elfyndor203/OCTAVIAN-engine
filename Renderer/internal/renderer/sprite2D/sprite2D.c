@@ -16,7 +16,7 @@
 
 uint64_t generateSortKey(OCT_index drawLayer, OCT_index texGroupIndex);
 
-void OCT_sprite2D_attach(OCT_handle entity, OCT_handle texture, OCT_vec4 uv, OCT_vec4 tintColor, OCT_vec2 dimensions, OCT_index drawLayer) {
+void OCT_sprite2D_attach(OCT_local entity, OCT_global texture, OCT_vec4 uv, OCT_vec4 tintColor, OCT_vec2 dimensions, OCT_index drawLayer) {
     // OCT_index texGroupIndex = eOCT_IDMap_getIndex(&iOCT_renderer_inst.textureGroupMap, texture.containerID);
     OCT_index texGroupIndex = eOCT_IDMap_getIndex(&iOCT_renderer_inst.textureGroupMPool.IDMap, texture.containerID);
     iOCT_sprite2D newSprite = {
@@ -59,7 +59,7 @@ uint64_t generateSortKey(OCT_index drawLayer, OCT_index texGroupIndex) {
     return ((uint64_t)layerBits << 32) | (uint64_t)texBits;
 }
 
-void iOCT_sprite2D_root(OCT_handle rootEntity) {
+void iOCT_sprite2D_root(OCT_local rootEntity) {
     OCT_sprite2D_attach(rootEntity, iOCT_renderer_inst.gizmoTex, (OCT_vec4){0.0, 0.0, 1.0, 1.0}, OCT_TINT_COLOR_NONE, (OCT_vec2){100.0f, 100.0f}, 1); // skips layers in between
 }
 

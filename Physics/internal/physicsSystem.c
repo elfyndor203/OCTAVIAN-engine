@@ -15,7 +15,7 @@ void iOCT_physicsSystem_init() {
     iOCT_physicsSystem_inst.constraintSolveIterations = iOCT_PHYSICS_CONSTRAINT_SOLVE_ITERATIONS_DEFAULT;
 }
 
-void eOCT_PHYSICS_update(OCT_handle context) {
+void eOCT_PHYSICS_update(OCT_global context) {
     eOCT_pool* physicsPool = eOCT_component_getPool(context, iOCT_physicsSystem_inst.physics2DKey);
     iOCT_physics2D* physicsArray = (iOCT_physics2D*)physicsPool->array;
     eOCT_contextToken contextToken = eOCT_context_getToken(context);
@@ -31,10 +31,10 @@ void eOCT_PHYSICS_update(OCT_handle context) {
     }
 
     eOCT_pool* ropePool = &eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.rope2DKey, context)->pool;
-    iOCT_constraint_rope2D* ropeArray = (iOCT_constraint_rope2D*)ropePool->array;
+    iOCT_rope2D* ropeArray = (iOCT_rope2D*)ropePool->array;
     for (OCT_index iteration = 0; iteration < iOCT_physicsSystem_inst.constraintSolveIterations; iteration++) {
         for (OCT_index ropeCtr = 0; ropeCtr < ropePool->count; ropeCtr++) {
-            iOCT_constraint_rope2D rope = ropeArray[ropeCtr];
+            iOCT_rope2D rope = ropeArray[ropeCtr];
             iOCT_constraintSolve_rope(rope, contextToken);
         }
     }

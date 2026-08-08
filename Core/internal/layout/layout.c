@@ -1,17 +1,20 @@
 #include "layout/types.h"
 
-OCT_handle OCT_HANDLE_NULL = {OCT_ID_NULL, OCT_ID_NULL, OCT_ID_NULL};
-
-bool OCT_handle_isNULL(OCT_handle handle) {
-    if (handle.objectID == OCT_ID_NULL || handle.containerID == OCT_ID_NULL) {
+bool OCT_local_isNULL(OCT_local handle) {
+    if (handle.objectID == OCT_ID_NULL || OCT_global_isNULL(handle.contextHandle)) {
         return true;
     }
-    else {
-        return false;
-    }
+    return false;
 }
 
-bool OCT_handle_isEqual(OCT_handle handle1, OCT_handle handle2) {
+bool OCT_global_isNULL(OCT_global handle) {
+    if (handle.objectID == OCT_ID_NULL || handle.systemID == OCT_ID_NULL) {
+        return true;
+    }
+    return false;
+}
+
+bool OCT_handle_isEqual(OCT_local handle1, OCT_local handle2) {
     if (handle1.objectID == handle2.objectID
         && handle1.containerID == handle2.containerID) {
         return true;

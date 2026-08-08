@@ -12,7 +12,7 @@ struct iOCT_spriteData {
 };
 
 struct iOCT_sprite2D {
-    OCT_handle entityHandle;
+    OCT_local entityHandle;
 
     OCT_ID windowID;
     OCT_index drawLayer;
@@ -24,4 +24,4 @@ struct iOCT_sprite2D {
     iOCT_spriteData spriteData;
 };
 
-void iOCT_sprite2D_root(OCT_handle rootEntity);
+void iOCT_sprite2D_root(OCT_local rootEntity);

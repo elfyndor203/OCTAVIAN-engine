@@ -4,7 +4,7 @@
 
 #include "ECS/entityContext_int.h"
 
-eOCT_pool* eOCT_field_getSourcePool(OCT_handle contextHandle, eOCT_fieldTicket fieldTicket) {
+eOCT_pool* eOCT_field_getSourcePool(OCT_global contextHandle, eOCT_fieldTicket fieldTicket) {
     if (fieldTicket.global && fieldTicket.globalPool) {
         return fieldTicket.globalPool;
     }
@@ -37,7 +37,7 @@ void* eOCT_field_read(eOCT_pool sourcePool, eOCT_fieldTicket fieldDetails, OCT_i
     void* fieldLoc = eOCT_pool_access(&sourcePool, entryIndex, fieldDetails.offsetFromStruct);
     return fieldLoc;
 }
-void* eOCT_field_readOnce(eOCT_fieldTicket fieldTicket, OCT_index entryIndex, OCT_handle contextHandle) {
+void* eOCT_field_readOnce(eOCT_fieldTicket fieldTicket, OCT_index entryIndex, OCT_global contextHandle) {
     eOCT_pool* sourcePool;
     OCT_index actualIndex;
     if (fieldTicket.global && fieldTicket.globalPool) {
@@ -60,7 +60,7 @@ void* eOCT_field_readOnce(eOCT_fieldTicket fieldTicket, OCT_index entryIndex, OC
     return eOCT_field_read(*sourcePool, fieldTicket, actualIndex);
 }
 
-eOCT_pool* eOCT_component_getPool(OCT_handle contextHandle, eOCT_componentKey componentKey) {
+eOCT_pool* eOCT_component_getPool(OCT_global contextHandle, eOCT_componentKey componentKey) {
     iOCT_entityContext* context = iOCT_entityContext_get(contextHandle.objectID);
 
     eOCT_pool* sourcePool = &((eOCT_pool*)context->components.array)[componentKey.componentTypeIndex];
@@ -79,7 +79,7 @@ eOCT_pool* eOCT_event_getPoolGlobal(eOCT_eventKey eventKey, eOCT_pool** callback
     }
     return sourcePool;
 }
-eOCT_pool* eOCT_event_getPoolLocal(eOCT_eventKey eventKey, OCT_handle contextHandle, eOCT_pool** callbackPoolOut) {
+eOCT_pool* eOCT_event_getPoolLocal(eOCT_eventKey eventKey, OCT_global contextHandle, eOCT_pool** callbackPoolOut) {
     if (eventKey.global) {
         OCT_ERROR_LOG(OCT_EXIT_INVALID_ARGUMENT, "Provided event is global. Accessed locally.");
         return NULL;
@@ -102,7 +102,7 @@ eOCT_dataUnion* eOCT_single_getGlobal(eOCT_singleKey singleKey) {
     return (eOCT_dataUnion*)eOCT_pool_access(singleKey.globalPool, singleKey.singleTypeIndex, 0);
 }
 
-eOCT_dataUnion* eOCT_single_getLocal(eOCT_singleKey singleKey, OCT_handle contextHandle) {
+eOCT_dataUnion* eOCT_single_getLocal(eOCT_singleKey singleKey, OCT_global contextHandle) {
     if (singleKey.global) {
         OCT_ERROR_LOG(OCT_EXIT_INVALID_ARGUMENT, "Provided single is global. Accessed locally.");
         return NULL;
@@ -119,7 +119,7 @@ eOCT_mappedPool* eOCT_dataPool_getGlobal(eOCT_dataPoolKey dataPoolKey) {
     }
     return dataPoolKey.globalMappedPool;
 }
-eOCT_mappedPool* eOCT_dataPool_getLocal(eOCT_dataPoolKey dataPoolKey, OCT_handle contextHandle) {
+eOCT_mappedPool* eOCT_dataPool_getLocal(eOCT_dataPoolKey dataPoolKey, OCT_global contextHandle) {
     if (dataPoolKey.global) {
         OCT_ERROR_LOG(OCT_EXIT_INVALID_ARGUMENT, "Provided dataPool is global. Accessed locally.");
     }

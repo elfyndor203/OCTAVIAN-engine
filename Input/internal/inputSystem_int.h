@@ -14,10 +14,12 @@ struct iOCT_inputSystem {
     eOCT_fieldTicket mouseButtonReleaseTicket;
     eOCT_fieldTicket mousePositionXTicket;
     eOCT_fieldTicket mousePositionYTicket;
+    eOCT_fieldTicket mouseScrollTicket;
     eOCT_fieldTicket cameraMatrixTicket;
     eOCT_fieldTicket deltaTimeTicket;
 
     OCT_vec2 mousePosition;
+    float mouseScrollDelta;
 
     eOCT_pool buttonStates;
 };

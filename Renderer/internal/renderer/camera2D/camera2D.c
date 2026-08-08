@@ -8,8 +8,8 @@
 #include "window/window/window_int.h"
 #include "window/windowSystem_int.h"
 
-void OCT_camera2D_attach(OCT_handle entity, OCT_vec2 position, float rotation, OCT_vec2 viewFrameSize, OCT_handle window) {
-    if (OCT_handle_isNULL(entity) || OCT_handle_isNULL(window)) {
+void OCT_camera2D_attach(OCT_local entity, OCT_vec2 position, float rotation, OCT_vec2 viewFrameSize, OCT_global window) {
+    if (OCT_local_isNULL(entity) || OCT_global_isNULL(window)) {
         OCT_ERROR_LOG(OCT_EXIT_NULL_HANDLE, "Entity or window does not exist");
     }
 

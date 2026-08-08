@@ -16,7 +16,7 @@ struct iOCT_window {
     OCT_vec2 currentResolution;
 
     OCT_vec2 cursorDelta;
-    OCT_handle activeCameraSourceEntity;
+    OCT_local activeCameraSourceEntity;
     GLint cameraUniformLocation;
 
     GLuint VAO;
@@ -36,6 +36,9 @@ struct iOCT_mouseMoveEvent {
     float xPos;
     float yPos;
 };
+struct iOCT_mouseScrollEvent {
+    float yDelta;
+};
 
 void iOCT_window_wipe();
 void iOCT_window_show();
@@ -53,6 +56,7 @@ void iOCT_window_callback_resize(GLFWwindow* window, int newWidth, int newHeight
 void iOCT_window_keyCallback(GLFWwindow* window, int key, int scancode, int action, int modifiers);
 void iOCT_window_mouseButtonCallback(GLFWwindow* window, int button, int action, int modifiers);
 void iOCT_window_mouseMoveCallback(GLFWwindow* window, double xPos, double yPos);
+void iOCT_window_mouseScrollCallback(GLFWwindow* window, double xOffset, double yOffset);
 void iOCT_window_focusCallback(GLFWwindow* window, int focused);
 void iOCT_window_sizeCallback(GLFWwindow* window, int width, int height);
 

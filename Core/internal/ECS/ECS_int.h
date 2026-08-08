@@ -26,4 +26,4 @@ extern iOCT_ECS iOCT_ECS_inst;
 /// <returns></returns>
 void iOCT_ECS_addComponentType();
 OCT_index iOCT_ECS_addDataPool(eOCT_dataPoolDescription desc, bool global);
-OCT_handle iOCT_getContextHandle(const iOCT_entityContext* context);
+OCT_local iOCT_getContextHandle(const iOCT_entityContext* context);

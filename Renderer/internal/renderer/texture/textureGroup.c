@@ -13,7 +13,7 @@
 #define TEXTURE_BASE_LEVEL 0
 #define TEMP_MIPMAPS 1
 
-OCT_handle OCT_textureGroup_open(OCT_vec2 dimensions, OCT_index maxCount) {
+OCT_global OCT_textureGroup_open(OCT_vec2 dimensions, OCT_index maxCount) {
     OCT_ID systemID = iOCT_renderer_inst.systemID;
     eOCT_IDMap texMap = eOCT_IDMap_open(systemID, maxCount);
 
@@ -36,30 +36,10 @@ OCT_handle OCT_textureGroup_open(OCT_vec2 dimensions, OCT_index maxCount) {
     // iOCT_textureGroup* newTexGroupLoc;
     OCT_ID newID;
     eOCT_mappedPool_addEntry(&iOCT_renderer_inst.textureGroupMPool, &newTexGroup, &newID, NULL);
-    // newTexGroupLoc->textureGroupID = newID;
 
-    // eOCT_pool* textureGroupPool = &iOCT_renderer_inst.textureGroupPool;
-    // eOCT_IDMap* textureGroupMap = &iOCT_renderer_inst.textureGroupMap;
-    // OCT_index newIndex;
-    // OCT_ID newID;
-    // iOCT_textureGroup* newTexGroup = eOCT_pool_addEntryOld(textureGroupPool, &newIndex);
-    // newID = eOCT_IDMap_register(textureGroupMap, newIndex);
-    // // set values
-    // newTexGroup->dimensions = dimensions;
-    // newTexGroup->glTexArray = texArray;
-    // newTexGroup->textureMap = texMap;
-    // newTexGroup->textureGroupID = newID;
-    // newTexGroup->textureCount = 0;
-
-    // // update layers
-    // OCT_index* layer;
-    // for (OCT_index layerCtr = 0; layerCtr < iOCT_renderer_inst.layerCountPool.count; layerCtr++) {
-    //     layer = (OCT_index*)eOCT_pool_access(&iOCT_renderer_inst.layerCountPool, layerCtr, 0);
-    //     *layer += 1;
-    // }
-    OCT_handle newHandle = {
-        .objectID = newID,
-        .containerID = systemID,
+    OCT_global newHandle = {
+        .systemID = iOCT_renderer_inst.systemID,
+        .objectID = newID
     };
 
     printf("Created new texture group\n");
@@ -67,12 +47,12 @@ OCT_handle OCT_textureGroup_open(OCT_vec2 dimensions, OCT_index maxCount) {
     return newHandle;
 }
 
-OCT_handle OCT_texture_new(OCT_handle textureGroup, const char* path) {
+OCT_global OCT_texture_new(OCT_global textureGroup, const char* path) {
     const unsigned char* pixels = eOCT_image_load(path);
     if (!pixels) {
         perror("Can't open");
         OCT_ERROR_LOG(OCT_EXIT_FAILED_TO_OPEN_FILE, "Failed to load image");
-        return OCT_HANDLE_NULL;
+        return OCT_GLOBAL_NULL;
     }
 
     // eOCT_IDMap* groupMap = &iOCT_renderer_inst.textureGroupMap;
@@ -90,9 +70,10 @@ OCT_handle OCT_texture_new(OCT_handle textureGroup, const char* path) {
 
     OCT_ID newTexID = eOCT_IDMap_register(&texGroup->textureMap, newTexLayer);
 
-    OCT_handle newHandle = {
+    OCT_global newHandle = {
         .objectID = newTexID,
         .containerID = texGroup->textureGroupID,
+        .systemID = iOCT_renderer_inst.systemID
     };
 
     printf("Loaded new texture\n");

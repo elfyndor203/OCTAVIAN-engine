@@ -37,7 +37,7 @@ struct iOCT_renderer {
     GLuint spriteShaderProgram;
 
     // provided at init
-    OCT_handle gizmoTex;
+    OCT_global gizmoTex;
 
     // uniforms
     GLint cameraUniform;

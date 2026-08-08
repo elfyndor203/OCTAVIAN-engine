@@ -48,7 +48,7 @@ static unsigned int spriteIndices[] = {
 };
 
 static void iOCT_setInstanceOffset(GLuint VAO, GLuint VBO, size_t byteOffset);
-static OCT_handle iOCT_initGizmoTex();
+static OCT_global iOCT_initGizmoTex();
 
 void system_init_RENDERER() {
     OCT_ID systemID = iOCT_renderer_inst.systemID;
@@ -120,7 +120,7 @@ void system_init_RENDERER() {
     glBindVertexArray(0);
 }
 
-void iOCT_renderer_uploadAll(OCT_handle contextHandle) {
+void iOCT_renderer_uploadAll(OCT_global contextHandle) {
     eOCT_pool_clear(&iOCT_renderer_inst.spriteFullDataBuffer);
 
     // Source
@@ -183,7 +183,7 @@ void iOCT_renderer_uploadAll(OCT_handle contextHandle) {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void iOCT_renderer_drawAll(OCT_handle contextHandle) {
+void iOCT_renderer_drawAll(OCT_global contextHandle) {
     eOCT_pool* windowPool = &iOCT_windowSystem_inst.windowMPool.pool;
     iOCT_window* windowArray = (iOCT_window*)windowPool->array;
     eOCT_pool* spritePool = eOCT_component_getPool(contextHandle, iOCT_renderer_inst.sprite2DKey);
@@ -272,7 +272,7 @@ void iOCT_setupNewSpriteVAO(GLuint VAO) {
     glVertexAttribDivisor(attrib_transformCol2, 1);
 }
 
-void eOCT_RENDERER_update(OCT_handle contextHandle) {
+void eOCT_RENDERER_update(OCT_global contextHandle) {
     iOCT_renderer_uploadAll(contextHandle);
     iOCT_renderer_drawAll(contextHandle);
 }
@@ -292,9 +292,9 @@ static void iOCT_setInstanceOffset(GLuint VAO, GLuint VBO, size_t byteOffset) {
     glVertexAttribPointer(attrib_transformCol2, 3, GL_FLOAT, GL_FALSE, sizeof(iOCT_spriteFullData), (void*)(transformBase + offsetof(OCT_mat3, c2r0) + byteOffset));
 }
 
-static OCT_handle iOCT_initGizmoTex() {
-    OCT_handle systemTexGroup = OCT_textureGroup_open(iOCT_SYSTEMTEX_DIMENSIONS, 1);
-    OCT_handle gizmoTex = OCT_texture_new(systemTexGroup, "../OCTAVIAN/OCTAVIANEngine/Renderer/resources/frameGizmo.png"); // __NOTE__ CHANGE PATH METHOD
+static OCT_global iOCT_initGizmoTex() {
+    OCT_global systemTexGroup = OCT_textureGroup_open(iOCT_SYSTEMTEX_DIMENSIONS, 1);
+    OCT_global gizmoTex = OCT_texture_new(systemTexGroup, "../OCTAVIAN/OCTAVIANEngine/Renderer/resources/frameGizmo.png"); // __NOTE__ CHANGE PATH METHOD
     return gizmoTex;
 }
 

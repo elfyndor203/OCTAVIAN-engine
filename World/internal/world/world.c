@@ -8,7 +8,7 @@ iOCT_world iOCT_world_inst = { 0 };
 void iOCT_world_init() {
 }
 
-void eOCT_WORLD_update(OCT_handle contextHandle) {
+void eOCT_WORLD_update(OCT_global contextHandle) {
     eOCT_pool* transformPool = (eOCT_pool*)eOCT_component_getPool(contextHandle, iOCT_world_inst.transform2DKey);
     iOCT_transform2D* transformArray = (iOCT_transform2D*)transformPool->array;
 

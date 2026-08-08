@@ -121,6 +121,20 @@ void system_register_WINDOW() {
         .keyCacheLocation = &iOCT_windowSystem_inst.mouseMoveEventKey
     };
 
+    eOCT_fieldDescription mouseScrollDelta = {
+        .name = "glfwMouseScrollDelta",
+        .providerType = eOCT_DATAPATTERN_EVENT,
+        .offset = offsetof(iOCT_mouseScrollEvent, yDelta),
+        .type = eOCT_DATATYPE_FLOAT32
+    };
+    eOCT_eventDescription mouseScrollEvents = {
+        .name = "mouseScrollEvents",
+        .providedFields = eOCT_generateFieldDescriptionPool(1, mouseScrollDelta),
+        .stride = sizeof(iOCT_mouseScrollEvent),
+        .global = true,
+        .keyCacheLocation = &iOCT_windowSystem_inst.mouseScrollEventKey
+    };
+
     eOCT_fieldDescription screenToWorld = {
         .name = "screenToWorldMatrix",
         .providerType = eOCT_DATAPATTERN_SINGLE,
@@ -137,7 +151,7 @@ void system_register_WINDOW() {
         .name = "Window",
         .providedDataPools = eOCT_POOL_EMPTY,
         .providedComponents = eOCT_POOL_EMPTY,
-        .providedEvents = eOCT_generateEventDescriptionPool(3, keyEvents, mouseButtonEvents, mouseMoveEvents),
+        .providedEvents = eOCT_generateEventDescriptionPool(4, keyEvents, mouseButtonEvents, mouseMoveEvents, mouseScrollEvents),
         .providedSingles = eOCT_generateSingleDescriptionPool(1, screenToWorldMatrix),
         .requestedFields = eOCT_POOL_EMPTY,
         .initFx = system_init_WINDOW

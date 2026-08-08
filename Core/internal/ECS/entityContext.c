@@ -15,9 +15,9 @@
 
 static eOCT_pool iOCT_entityContext_initComponentPools();
 static eOCT_pool iOCT_entityContext_initDataPools();
-static OCT_handle iOCT_entityContext_initRootEntity(iOCT_entityContext* context);
+static OCT_local iOCT_entityContext_initRootEntity(iOCT_entityContext* context);
 
-OCT_handle OCT_entityContext_open(OCT_handle* rootOut) {
+OCT_global OCT_entityContext_open(OCT_local* rootOut) {
 	OCT_ID newID;
 	iOCT_entityContext* newContext = eOCT_mappedPool_addEntry(&iOCT_ECS_inst.contextMPool, NULL, &newID, NULL);
 
@@ -34,14 +34,14 @@ OCT_handle OCT_entityContext_open(OCT_handle* rootOut) {
 	newContext->components = iOCT_entityContext_initComponentPools();
 	newContext->dataPools = iOCT_entityContext_initDataPools();
 	newContext->events = iOCT_eventManager_open(newID);
-	OCT_handle rootEntity = iOCT_entityContext_initRootEntity(newContext);
+	OCT_local rootEntity = iOCT_entityContext_initRootEntity(newContext);
 	if (rootOut) {
 		*rootOut = rootEntity;
 	}
 
 		// finalize
-	OCT_handle contextHandle = {
-		.containerID = OCT_ID_NULL,
+	OCT_global contextHandle = {
+		.systemID = OCT_ID_ECS,
 		.objectID = newID,
 	};
 	printf("Allocated entityContext %"PRIu64"\n", newID);
@@ -83,8 +83,8 @@ static eOCT_pool iOCT_entityContext_initDataPools() {
 	return containerPool;
 }
 
-static OCT_handle iOCT_entityContext_initRootEntity(iOCT_entityContext* context) {
-	OCT_handle rootEntity = iOCT_entity_new(context);
+static OCT_local iOCT_entityContext_initRootEntity(iOCT_entityContext* context) {
+	OCT_local rootEntity = iOCT_entity_new(context);
 
 	const OCT_index componentsTotal = iOCT_registry_inst.components.count;
 	for (OCT_index componentCtr = 0; componentCtr < componentsTotal; componentCtr++) {
@@ -99,7 +99,7 @@ static OCT_handle iOCT_entityContext_initRootEntity(iOCT_entityContext* context)
 	return rootEntity;
 }
 
-eOCT_contextToken eOCT_context_getToken(OCT_handle contextHandle) {
+eOCT_contextToken eOCT_context_getToken(OCT_global contextHandle) {
 	iOCT_entityContext* context = iOCT_entityContext_get(contextHandle.objectID);
 
 	eOCT_contextToken newToken = {
@@ -119,7 +119,7 @@ void eOCT_context_invalidateToken(eOCT_contextToken* token) {
 	token->entities = NULL;
 	token->components = NULL;
 }
-eOCT_pool* eOCT_context_getComponentPool(OCT_handle contextHandle, eOCT_componentDescription component) {
+eOCT_pool* eOCT_context_getComponentPool(OCT_local contextHandle, eOCT_componentDescription component) {
 	iOCT_entityContext* context = iOCT_entityContext_get(contextHandle.objectID);
 	return iOCT_context_getComponentPool(context, component.componentTypeIndex_reg);
 }
@@ -146,13 +146,13 @@ eOCT_pool* iOCT_context_getComponentPool(iOCT_entityContext* context, OCT_index 
 // 	return pool;
 // }
 
-void OCT_entityContext_dumpEntityPool(OCT_handle contextHandle) {
+void OCT_entityContext_dumpEntityPool(OCT_global contextHandle) {
 	// iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, contextHandle.objectID);
 	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_mappedPool_getByID(&iOCT_ECS_inst.contextMPool, contextHandle.objectID);
 	eOCT_pool_dump(&context->entities);
 }
 
-void eOCT_entityContext_prepare(OCT_handle contextHandle) {
+void eOCT_entityContext_prepare(OCT_global contextHandle) {
 	iOCT_entityContext* context = iOCT_entityContext_get(contextHandle.objectID);
 	iOCT_eventManager_clear(&context->events);
 }

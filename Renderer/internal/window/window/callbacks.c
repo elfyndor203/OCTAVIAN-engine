@@ -52,6 +52,14 @@ void iOCT_window_mouseMoveCallback(GLFWwindow* window, double xPos, double yPos)
     eOCT_event_broadcastGlobal(iOCT_windowSystem_inst.mouseMoveEventKey, &mouseMoveEvent);
 }
 
+void iOCT_window_mouseScrollCallback(GLFWwindow* window, double xOffset, double yOffset) {
+    iOCT_mouseScrollEvent mouseScrollEvent = {
+        .yDelta = (float)yOffset,
+    };
+
+    eOCT_event_broadcastGlobal(iOCT_windowSystem_inst.mouseScrollEventKey, &mouseScrollEvent);
+}
+
 void iOCT_window_resizeCallback(GLFWwindow* window, int width, int height) {}
 
 void iOCT_window_focusCallback(GLFWwindow* window, int focused) {

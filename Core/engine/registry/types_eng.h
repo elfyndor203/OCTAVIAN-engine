@@ -37,5 +37,5 @@ typedef struct eOCT_singleDescription eOCT_singleDescription;
 typedef union eOCT_dataUnion eOCT_dataUnion;
 
 typedef void (*eOCT_systemInitFx)(void);
-typedef void (*eOCT_systemUpdateFx)(OCT_handle);
+typedef void (*eOCT_systemUpdateFx)(OCT_local);
 

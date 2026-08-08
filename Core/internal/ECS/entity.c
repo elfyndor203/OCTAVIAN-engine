@@ -32,62 +32,31 @@ static OCT_index* iOCT_entity_getComponentIndexEntry(iOCT_entityContext* context
 static void iOCT_entity_resolveIndices(iOCT_entityContext* context, eOCT_pool* componentPool, eOCT_componentKey component, OCT_index skip);
 
 #pragma region basics
-OCT_handle OCT_entity_new(OCT_handle contextHandle) {
+OCT_local OCT_entity_new(OCT_global contextHandle) {
 	//printf("Context ID: %zu\n", contextHandle.objectID);
 	// iOCT_entityContext* context = eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, contextHandle.objectID);
 	iOCT_entityContext* context = eOCT_mappedPool_getByID(&iOCT_ECS_inst.contextMPool, contextHandle.objectID);
 	//printf("Context: %p\n", context);
-	return iOCT_entity_new(context);
+	OCT_local entityHandle = iOCT_entity_new(context);
+	entityHandle.contextHandle = contextHandle;
+	return entityHandle;
 }
-OCT_handle iOCT_entity_new(iOCT_entityContext* context) {
+OCT_local iOCT_entity_new(iOCT_entityContext* context) {
 	OCT_index newIndex;
 	// eOCT_pool_addEntryOld(&context->entityPool, &newIndex);
 	eOCT_pool_addEntryNew(&context->entities, NULL, &newIndex);
 	OCT_ID newID = eOCT_IDMap_register(&context->entityIDMap, newIndex);
 
-	return (OCT_handle) {
+	return (OCT_local) {
 		.objectID = newID,
-		.containerID = context->contextID
+		.containerID = context->contextID,
+		.contextHandle = {
+		.systemID = OCT_ID_ECS,
+		.objectID = context->contextID}
 	};
 }
 
-// void* eOCT_entity_attachComponentOld(OCT_handle entity, eOCT_componentKey component) {
-// 	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, entity.containerID);
-// 	OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
-//
-// 	return iOCT_entity_attachComponent(context, entityIndex, component, false, 0);
-// }
-// void* eOCT_entity_attachComponentSorted(OCT_handle entity, eOCT_componentKey component, OCT_index sortValue) {		// __NOTE__ DOESNT UPDATE OTHER ENTRIES
-// 	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, entity.containerID);
-// 	OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
-//
-// 	return iOCT_entity_attachComponent(context, entityIndex, component, true, sortValue);
-// }
-// void* iOCT_entity_attachComponent(iOCT_entityContext* context, OCT_index entityIndex, eOCT_componentKey component, bool sort, OCT_index sortValue) {
-// 	// goes to the slot in the entity pool
-// 	OCT_index* entityComponentEntry = iOCT_entity_getComponentIndexEntry(context, entityIndex, component);
-//
-// 	// gets the index within the component's pool
-// 	eOCT_pool* componentPool = iOCT_context_getComponentPool(context, component.componentTypeIndex);
-// 	OCT_index destinationIndex;
-// 	void* dataLoc;
-// 	if (sort) {
-// 		dataLoc = eOCT_pool_addEntrySorted(componentPool, sortValue, &destinationIndex);
-// 		iOCT_entity_resolveIndices(context, componentPool, component, destinationIndex);	// sorting may shuffle other entries
-// 	}
-// 	else {
-// 		dataLoc = eOCT_pool_addEntry(componentPool, &destinationIndex);
-// 	}
-//
-// 	// saves that index in the entity slot
-// 	*entityComponentEntry = destinationIndex;
-// 	//__NOTE__
-// 	//printf("Attached component\n");
-//
-// 	return dataLoc;
-// }
-
-void* eOCT_entity_attachComponentOnce(OCT_handle entity, eOCT_componentKey componentKey, void* source, OCT_index* outIndex) {
+void* eOCT_entity_attachComponentOnce(OCT_local entity, eOCT_componentKey componentKey, void* source, OCT_index* outIndex) {
 	// iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, entity.containerID);
 	iOCT_entityContext* context = eOCT_mappedPool_getByID(&iOCT_ECS_inst.contextMPool, entity.containerID);
 	OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
@@ -109,7 +78,7 @@ void* eOCT_entity_attachComponentOnce(OCT_handle entity, eOCT_componentKey compo
 
 #pragma region accessors
 
-void* eOCT_entity_getComponentOnce(OCT_handle entity, eOCT_componentKey component) {
+void* eOCT_entity_getComponentOnce(OCT_local entity, eOCT_componentKey component) {
 	// iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, entity.containerID);
 	iOCT_entityContext* context = eOCT_mappedPool_getByID(&iOCT_ECS_inst.contextMPool, entity.containerID);
 
@@ -124,7 +93,7 @@ void* eOCT_entity_getComponentOnce(OCT_handle entity, eOCT_componentKey componen
 	}
 	return dataLoc;
 }
-void* eOCT_entity_getComponent(eOCT_contextToken contextToken, OCT_handle entity, eOCT_componentKey component) {
+void* eOCT_entity_getComponent(eOCT_contextToken contextToken, OCT_local entity, eOCT_componentKey component) {
 	iOCT_entityContext* context = contextToken.contextPtr;
 	OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
 	void* dataLoc = iOCT_entity_getComponent(context, entityIndex, component.componentTypeIndex);
@@ -135,7 +104,7 @@ void* eOCT_entity_getComponent(eOCT_contextToken contextToken, OCT_handle entity
 	return dataLoc;
 }
 
-void* eOCT_entity_getField(eOCT_contextToken contextToken, OCT_handle entity, eOCT_fieldTicket field) {
+void* eOCT_entity_getField(eOCT_contextToken contextToken, OCT_local entity, eOCT_fieldTicket field) {
 	if (!contextToken.valid) {
 		OCT_ERROR_LOG(OCT_EXIT_STALE_REFERENCE, "Context token invalid");
 	}
@@ -152,7 +121,7 @@ void* eOCT_entity_getField(eOCT_contextToken contextToken, OCT_handle entity, eO
 
 	return fieldLoc;
 }
-void* eOCT_entity_getFieldOnce(OCT_handle entity, eOCT_fieldTicket field) {
+void* eOCT_entity_getFieldOnce(OCT_local entity, eOCT_fieldTicket field) {
 	iOCT_entityContext* context = iOCT_entityContext_get(entity.containerID);
 	OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
 
@@ -182,7 +151,7 @@ void* iOCT_entity_getComponent(iOCT_entityContext* context, OCT_index entityInde
 #pragma endregion
 
 #pragma region utils
-bool OCT_entity_sameContext(OCT_handle entity1, OCT_handle entity2) {
+bool OCT_entity_sameContext(OCT_local entity1, OCT_local entity2) {
 	if (entity1.containerID == entity2.containerID) {
 		return true;
 	}
@@ -191,7 +160,7 @@ bool OCT_entity_sameContext(OCT_handle entity1, OCT_handle entity2) {
 	}
 }
 
-bool OCT_entity_fromContext(OCT_handle entity, OCT_handle context) {
+bool OCT_entity_fromContext(OCT_local entity, OCT_local context) {
 	if (entity.containerID == context.objectID) {
 		return true;
 	}
@@ -200,27 +169,21 @@ bool OCT_entity_fromContext(OCT_handle entity, OCT_handle context) {
 	}
 }
 
-OCT_handle eOCT_entity_getHandle(OCT_handle context, OCT_ID entityID) {
-	OCT_handle entityHandle = {
+OCT_local eOCT_entity_getHandle(OCT_local context, OCT_ID entityID) {
+	OCT_local entityHandle = {
 		.containerID = context.objectID,
 		.objectID = entityID,
-		.handleType = OCT_ID_NULL
 	};
 	return entityHandle;
 }
-OCT_handle eOCT_entity_getContextHandle(OCT_handle entity) {
-	if (entity.objectID == OCT_ID_NULL) {
-		OCT_ERROR_LOG(OCT_EXIT_REFERENCE_DOES_NOT_EXIST, "Bad entity ID");
-	}
-	OCT_handle contextHandle = {
-		.containerID = OCT_ID_ECS,
-		.objectID = entity.containerID,
-		.handleType = OCT_ID_NULL
-	};
-	return contextHandle;
-}
+// OCT_global eOCT_entity_getContextHandle(OCT_local entity) {
+// 	if (entity.objectID == OCT_ID_NULL) {
+// 		OCT_ERROR_LOG(OCT_EXIT_REFERENCE_DOES_NOT_EXIST, "Bad entity ID");
+// 	}
+// 	return entity.contextHandle;
+// }
 
-bool eOCT_entity_hasComponentOnce(OCT_handle entity, eOCT_componentKey component) {
+bool eOCT_entity_hasComponentOnce(OCT_local entity, eOCT_componentKey component) {
 	iOCT_entityContext* context = iOCT_entityContext_get(entity.containerID);
 	OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
 
@@ -266,7 +229,7 @@ static void iOCT_entity_resolveIndices(iOCT_entityContext* context, eOCT_pool* c
 		if (compIndex == skip) {	// for when creating a new entry, the ID will already be resolved by itself later
 			continue;
 		}
-		OCT_handle entity = *(OCT_handle*)eOCT_pool_access(componentPool, compIndex, component.entityHandleValueOffset);
+		OCT_local entity = *(OCT_local*)eOCT_pool_access(componentPool, compIndex, component.entityHandleValueOffset);
 		OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
 		OCT_index* componentSlot = iOCT_entity_getComponentIndexEntry(context, entityIndex, component);
 
