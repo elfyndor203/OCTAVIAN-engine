@@ -11,7 +11,7 @@ iOCT_platformSystem iOCT_platformSystem_inst = { 0 };
 void iOCT_platformSystem_init() {
     glfwInit();
 
-    eOCT_single_get(iOCT_platformSystem_inst.timeTicket, OCT_HANDLE_NULL)->double64 = 0;
+    eOCT_single_getGlobal(iOCT_platformSystem_inst.timeTicket)->double64 = 0;
     glfwSetTime(0);
 }
 

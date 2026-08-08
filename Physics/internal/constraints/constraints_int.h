@@ -7,6 +7,8 @@
 #include "physicsSystem_int.h"
 
 struct iOCT_constraint_rope2D {
+    OCT_ID constraintID;
+
     OCT_handle entityA;
     OCT_handle entityB;
 

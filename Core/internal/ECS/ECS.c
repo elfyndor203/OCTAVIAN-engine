@@ -8,8 +8,8 @@
 #include "entityContext_int.h"
 #include "events/events_int.h"
 
-static OCT_index iOCT_ECS_addContextDataPool(eOCT_dataPoolDescription desc);
-static OCT_index iOCT_ECS_addGlobalDataPool(eOCT_dataPoolDescription desc);
+// static OCT_index iOCT_ECS_addContextDataPool(eOCT_dataPoolDescription desc);
+// static OCT_index iOCT_ECS_addGlobalDataPool(eOCT_dataPoolDescription desc);
 
 iOCT_ECS iOCT_ECS_inst = { 0 };
 
@@ -19,10 +19,10 @@ void init_OCT_ECS_init() {
 	// iOCT_ECS_inst.contextPool = eOCT_pool_open(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, sizeof(iOCT_entityContext));
 	iOCT_ECS_inst.contextMPool = eOCT_mappedPool_open(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, sizeof(iOCT_entityContext), offsetof(iOCT_entityContext, contextID));
 
-	iOCT_ECS_inst.dataPoolSizeAndOrderList = eOCT_pool_open(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, sizeof(size_t));
-
-	iOCT_ECS_inst.globalDataMap = eOCT_IDMap_open(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT);
-	iOCT_ECS_inst.globalDataPools = eOCT_pool_open(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, sizeof(eOCT_pool));
+	// iOCT_ECS_inst.dataPoolSizeAndOrderList = eOCT_pool_open(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, sizeof(size_t));
+	//
+	// iOCT_ECS_inst.globalDataMap = eOCT_IDMap_open(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT);
+	// iOCT_ECS_inst.globalDataPools = eOCT_pool_open(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, sizeof(eOCT_pool));
 
 	printf("| ECS initialized\n");
 }
@@ -32,16 +32,16 @@ void init_OCT_ECS_build() {
 #pragma endregion
 
 #pragma region pool tracking
-OCT_index iOCT_ECS_addDataPool(eOCT_dataPoolDescription desc, bool global) {
-	if (global) {
-		//printf("Added global data pool\n");
-		return iOCT_ECS_addGlobalDataPool(desc);
-	}
-	else {
-		printf("Added context data pool\n");
-		return iOCT_ECS_addContextDataPool(desc);
-	}
-}
+// OCT_index iOCT_ECS_addDataPool(eOCT_dataPoolDescription desc, bool global) {
+// 	if (global) {
+// 		//printf("Added global data pool\n");
+// 		return iOCT_ECS_addGlobalDataPool(desc);
+// 	}
+// 	else {
+// 		printf("Added context data pool\n");
+// 		return iOCT_ECS_addContextDataPool(desc);
+// 	}
+// }
 
 // eOCT_pool* eOCT_getDataPool_global(eOCT_dataPoolDescription dataPoolDescription, eOCT_IDMap** IDMapOut) {
 // 	if (!dataPoolDescription.global) {
@@ -114,22 +114,23 @@ OCT_index iOCT_ECS_addDataPool(eOCT_dataPoolDescription desc, bool global) {
 // 	.objectID = context->contextID
 // 	};
 // }
+#pragma endregion
 
 #pragma region static
-static OCT_index iOCT_ECS_addContextDataPool(eOCT_dataPoolDescription desc) {
-	OCT_index index;
-
-	size_t* strideDestination = (size_t*)eOCT_pool_addEntryOld(&iOCT_ECS_inst.dataPoolSizeAndOrderList, &index);
-	*strideDestination = desc.stride;
-
-	return index;
-}
-static OCT_index iOCT_ECS_addGlobalDataPool(eOCT_dataPoolDescription desc) {
-	OCT_index index;
-
-	eOCT_pool* poolDestination = eOCT_pool_addEntryOld(&iOCT_ECS_inst.globalDataPools, &index);
-	*poolDestination = eOCT_pool_open(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, desc.stride);
-
-	return index;
-}
+// static OCT_index iOCT_ECS_addContextDataPool(eOCT_dataPoolDescription desc) {
+// 	OCT_index index;
+//
+// 	size_t* strideDestination = (size_t*)eOCT_pool_addEntryOld(&iOCT_ECS_inst.dataPoolSizeAndOrderList, &index);
+// 	*strideDestination = desc.stride;
+//
+// 	return index;
+// }
+// static OCT_index iOCT_ECS_addGlobalDataPool(eOCT_dataPoolDescription desc) {
+// 	OCT_index index;
+//
+// 	eOCT_pool* poolDestination = eOCT_pool_addEntryOld(&iOCT_ECS_inst.globalDataPools, &index);
+// 	*poolDestination = eOCT_pool_open(OCT_ID_ECS, eOCT_POOL_CAPACITY_DEFAULT, desc.stride);
+//
+// 	return index;
+// }
 #pragma endregion

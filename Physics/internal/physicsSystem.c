@@ -13,7 +13,6 @@ void iOCT_physicsSystem_init() {
     iOCT_physicsSystem_inst.dt = 1.0 / OCT_PHYSICS_REFRESH_DEFAULT;
 
     iOCT_physicsSystem_inst.constraintSolveIterations = iOCT_PHYSICS_CONSTRAINT_SOLVE_ITERATIONS_DEFAULT;
-    iOCT_physicsSystem_inst.ropeConstraints = eOCT_pool_open(iOCT_physicsSystem_inst.systemID, eOCT_POOL_CAPACITY_DEFAULT, sizeof(iOCT_constraint_rope2D));
 }
 
 void eOCT_PHYSICS_update(OCT_handle context) {
@@ -31,7 +30,7 @@ void eOCT_PHYSICS_update(OCT_handle context) {
         iOCT_physics2D_integrateEuler(physics, position, iOCT_physicsSystem_inst.dt);
     }
 
-    eOCT_pool* ropePool = &iOCT_physicsSystem_inst.ropeConstraints;
+    eOCT_pool* ropePool = &eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.rope2DKey, context)->pool;
     iOCT_constraint_rope2D* ropeArray = (iOCT_constraint_rope2D*)ropePool->array;
     for (OCT_index iteration = 0; iteration < iOCT_physicsSystem_inst.constraintSolveIterations; iteration++) {
         for (OCT_index ropeCtr = 0; ropeCtr < ropePool->count; ropeCtr++) {
@@ -40,10 +39,10 @@ void eOCT_PHYSICS_update(OCT_handle context) {
         }
     }
 
-    for (OCT_index physCtr = 0; physCtr < physicsPool->count; physCtr++) {
-        iOCT_physics2D* physics = &physicsArray[physCtr];
-        OCT_vec2 position = *(OCT_vec2*)eOCT_entity_getFieldOnce(physics->entityHandle, iOCT_physicsSystem_inst.position2DTicket);
-        OCT_vec2 frameDelta = OCT_vec2_sub(position, physics->prevPos);
-        // physics->v_lin = OCT_vec2_div(frameDelta, iOCT_physicsSystem_inst.dt);
-    }
+    // for (OCT_index physCtr = 0; physCtr < physicsPool->count; physCtr++) {
+    //     iOCT_physics2D* physics = &physicsArray[physCtr];
+    //     OCT_vec2 position = *(OCT_vec2*)eOCT_entity_getFieldOnce(physics->entityHandle, iOCT_physicsSystem_inst.position2DTicket);
+    //     OCT_vec2 frameDelta = OCT_vec2_sub(position, physics->prevPos);
+    //     // physics->v_lin = OCT_vec2_div(frameDelta, iOCT_physicsSystem_inst.dt);
+    // }
 }

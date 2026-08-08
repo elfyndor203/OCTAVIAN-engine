@@ -8,9 +8,12 @@ struct iOCT_registry {
 	eOCT_pool systems;	// systemDesc list
 
 	eOCT_pool components; // stable copies
-	eOCT_pool dataPools;
-	eOCT_pool events;
+	eOCT_pool globalDataPools;
+	eOCT_pool localDataPools;
+	eOCT_pool globalEvents;
+	eOCT_pool localEvents;
 	eOCT_pool globalSingles;
+	eOCT_pool localSingles;
 
 	eOCT_pool fields;	  // field copies
 

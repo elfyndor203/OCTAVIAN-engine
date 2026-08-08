@@ -42,7 +42,7 @@ OCT_handle OCT_entity_new(OCT_handle contextHandle) {
 OCT_handle iOCT_entity_new(iOCT_entityContext* context) {
 	OCT_index newIndex;
 	// eOCT_pool_addEntryOld(&context->entityPool, &newIndex);
-	eOCT_pool_addEntryNew(&context->entityPool, NULL, &newIndex);
+	eOCT_pool_addEntryNew(&context->entities, NULL, &newIndex);
 	OCT_ID newID = eOCT_IDMap_register(&context->entityIDMap, newIndex);
 
 	return (OCT_handle) {
@@ -159,7 +159,7 @@ void* eOCT_entity_getFieldOnce(OCT_handle entity, eOCT_fieldTicket field) {
 	OCT_index* entityBase = iOCT_entity_get(context, entityIndex);
 	OCT_index componentIndex = *(entityBase + field.providerTypeIndex);
 
-	eOCT_pool* componentPool = (eOCT_pool*)eOCT_pool_access(&context->componentPools, field.providerTypeIndex, 0);
+	eOCT_pool* componentPool = (eOCT_pool*)eOCT_pool_access(&context->components, field.providerTypeIndex, 0);
 	void* fieldLoc = eOCT_pool_access(componentPool, componentIndex, field.offsetFromStruct);
 
 	return fieldLoc;
@@ -248,7 +248,7 @@ bool eOCT_entity_hasComponentOnce(OCT_handle entity, eOCT_componentKey component
 
 #pragma region statics
 static OCT_index* iOCT_entity_get(iOCT_entityContext* context, OCT_index entityIndex) {
-	OCT_index* array = (OCT_index*)context->entityPool.array;
+	OCT_index* array = (OCT_index*)context->entities.array;
 	return &array[entityIndex * iOCT_registry_inst.components.count];
 }
 

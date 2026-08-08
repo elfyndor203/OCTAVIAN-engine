@@ -47,6 +47,14 @@ struct eOCT_eventKey {
     eOCT_pool* globalCallbackPool;
 };
 
+struct eOCT_dataPoolKey {
+    const char* name;
+
+    OCT_index dataPoolTypeIndex;
+    bool global;
+    eOCT_mappedPool* globalMappedPool;
+};
+
 struct eOCT_singleKey {
     const char* name;
 
@@ -60,5 +68,9 @@ void* eOCT_field_read(eOCT_pool sourcePool, eOCT_fieldTicket fieldDetails, OCT_i
 void* eOCT_field_readOnce(eOCT_fieldTicket fieldTicket, OCT_index entryIndex, OCT_handle contextHandle);
 
 eOCT_pool* eOCT_component_getPool(OCT_handle contextHandle, eOCT_componentKey componentKey);
-eOCT_pool* eOCT_event_getPool(eOCT_eventKey eventKey, OCT_handle contextHandle, eOCT_pool** callbackPoolOut);
-eOCT_dataUnion* eOCT_single_get(eOCT_singleKey singleKey, OCT_handle contextHandle);
+eOCT_pool* eOCT_event_getPoolGlobal(eOCT_eventKey eventKey, eOCT_pool** callbackPoolOut);
+eOCT_pool* eOCT_event_getPoolLocal(eOCT_eventKey eventKey, OCT_handle contextHandle, eOCT_pool** callbackPoolOut);
+eOCT_dataUnion* eOCT_single_getGlobal(eOCT_singleKey singleKey);
+eOCT_dataUnion* eOCT_single_getLocal(eOCT_singleKey singleKey, OCT_handle contextHandle);
+eOCT_mappedPool* eOCT_dataPool_getGlobal(eOCT_dataPoolKey dataPoolKey);
+eOCT_mappedPool* eOCT_dataPool_getLocal(eOCT_dataPoolKey dataPoolKey, OCT_handle contextHandle);

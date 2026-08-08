@@ -9,7 +9,7 @@ add_library(Physics STATIC
         internal/physics2D/physics2D.c
         include/physics2D/physics2D.h
         include/OCT_Physics.h
-        internal/constraints/constraints.c
+        internal/constraints/rope2D.c
         internal/constraints/constraints_int.h
         internal/constraints/types_int.h
         include/physics2D/constraints.h

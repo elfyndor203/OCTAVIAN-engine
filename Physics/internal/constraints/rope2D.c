@@ -1,17 +1,32 @@
 #include "constraints_int.h"
 
-void OCT_constrain_rope2D(OCT_handle entityA, OCT_handle entityB, float length) {
+OCT_handle OCT_rope2D_constrain(OCT_handle entityA, OCT_handle entityB, float length) {
     if (!eOCT_entity_hasComponentOnce(entityA, iOCT_physicsSystem_inst.physics2DKey) || !eOCT_entity_hasComponentOnce(entityB, iOCT_physicsSystem_inst.physics2DKey)) {
         OCT_ERROR_LOG(OCT_EXIT_REQUIREMENT_NOT_MET, "Entities must both have physics components attached");
-        return;
+        return OCT_HANDLE_NULL;
+    }
+    if (OCT_entity_sameContext(entityA, entityB) == false) {
+        OCT_ERROR_LOG(OCT_EXIT_REQUIREMENT_NOT_MET, "Entities must be from the same context");
+        return OCT_HANDLE_NULL;
     }
 
+    OCT_handle contextHandle = eOCT_entity_getContextHandle(entityA);
     iOCT_constraint_rope2D rope = {
         .entityA = entityA,
         .entityB = entityB,
         .length = length
     };
-    eOCT_pool_addEntryNew(&iOCT_physicsSystem_inst.ropeConstraints, &rope, NULL);
+    OCT_handle ropeHandle = {
+        .containerID = contextHandle.objectID
+    };
+    eOCT_mappedPool* ropeMPool = eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.rope2DKey, contextHandle);
+    eOCT_mappedPool_addEntry(ropeMPool, &rope, &ropeHandle.objectID, NULL);
+
+    return ropeHandle;
+}
+
+void OCT_rope2D_edit(OCT_handle rope2D, float newLength) {
+    
 }
 
 void iOCT_constraintSolve_rope(iOCT_constraint_rope2D constraint, eOCT_contextToken contextToken) {

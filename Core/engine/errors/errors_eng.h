@@ -24,7 +24,7 @@ X(OCT_EXIT_ACCESS_DENIED,				iOCT_FATAL,		"Access denied") \
 X(OCT_EXIT_OUT_OF_BOUNDS, 				iOCT_FATAL,		"Out of bounds") \
 X(OCT_EXIT_SOURCE_MISMATCH,             iOCT_FATAL,		"Source mismatch") \
 X(OCT_EXIT_REGISTRATION_FAILED,         iOCT_FATAL,		"Registration failed") \
-X(OCT_EXIT_REQUIREMENT_NOT_MET,        iOCT_FATAL,		"Requirement not met")\
+X(OCT_EXIT_REQUIREMENT_NOT_MET,         iOCT_FATAL,		"Requirement not met")\
 X(OCT_EXIT_INVALID_ARGUMENT,			iOCT_FATAL,		"Invalid argument") \
 \
 X(OCT_ERR_DIVIDE_BY_ZERO,				iOCT_ERROR,		"Division by zero") \

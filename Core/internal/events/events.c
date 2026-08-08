@@ -12,7 +12,7 @@
 static eOCT_pool* iOCT_getEventPool(eOCT_eventDescription eventDesc, OCT_handle contextHandle, eOCT_pool** callbackPoolOut);
 
 iOCT_eventManager iOCT_eventManager_open(OCT_ID ownerID) {
-    eOCT_pool eventDescPool = iOCT_registry_inst.events;
+    eOCT_pool eventDescPool = iOCT_registry_inst.globalEvents;
     eOCT_eventDescription* eventDescArray = (eOCT_eventDescription*)eventDescPool.array;
 
     eOCT_pool eventPools = eOCT_pool_open(ownerID, eventDescPool.count, sizeof(eOCT_pool));
@@ -47,10 +47,10 @@ void iOCT_eventManager_clear(iOCT_eventManager* manager) {
     }
 }
 
-void eOCT_event_broadcast(eOCT_eventKey eventKey, OCT_handle contextHandle, void* event) {
+void eOCT_event_broadcastGlobal(eOCT_eventKey eventKey, void* event) {
     eOCT_pool* eventPool;
     eOCT_pool* callbackPool;
-    eventPool = eOCT_event_getPool(eventKey, contextHandle, &callbackPool);
+    eventPool = eOCT_event_getPoolGlobal(eventKey, &callbackPool);
 
     // add to the frame's events
     OCT_index eventIndex;
@@ -99,7 +99,7 @@ static eOCT_pool* iOCT_getEventPool(eOCT_eventDescription eventDesc, OCT_handle 
     }
     else {
         iOCT_entityContext* context = iOCT_entityContext_get(contextHandle.objectID);
-        eventManager = &context->eventManager;
+        eventManager = &context->events;
     }
     eventPool = (eOCT_pool*)eOCT_pool_access(&eventManager->eventPools, providerIndex, 0);
     callbackPool = (eOCT_pool*)eOCT_pool_access(&eventManager->callbackPools, providerIndex, 0);

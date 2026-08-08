@@ -89,8 +89,12 @@ struct eOCT_dataPoolDescription {
 	const char* name;
 	size_t stride;
 	eOCT_pool providedFields;
-	eOCT_dataPoolDescription* cacheLocation;
+	size_t elementIDValueOffset;
+	eOCT_dataPoolKey* keyCacheLocation;
 	bool global;
+
+	bool sort;
+	OCT_index sortValueOffset;
 
 	OCT_index dataPoolTypeIndex_reg;
 };

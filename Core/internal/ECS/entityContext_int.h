@@ -14,12 +14,12 @@ struct iOCT_entityContext {
 	OCT_ID contextID;
 
 	eOCT_IDMap entityIDMap;		// uses a separate map + pool because entityIDs aren't stored in a known position within an entity
-	eOCT_pool entityPool;
-	eOCT_pool componentPools;
-	eOCT_pool systemDataPools;
-	eOCT_pool singles;
+	eOCT_pool entities;
+	eOCT_pool components;	// pool of eOCT_pools
+	eOCT_pool dataPools;	// pool of eOCT_mappedPools
+	eOCT_pool singles;		// pool of eOCT_dataUnions
 
-	iOCT_eventManager eventManager;
+	iOCT_eventManager events;
 };
 
 //iOCT_entityContext* iOCT_entityContext_get(OCT_ID entityContextID);

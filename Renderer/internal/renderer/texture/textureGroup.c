@@ -34,7 +34,8 @@ OCT_handle OCT_textureGroup_open(OCT_vec2 dimensions, OCT_index maxCount) {
         .textureCount = 0
     };
     // iOCT_textureGroup* newTexGroupLoc;
-    OCT_ID newID = eOCT_mappedPool_addEntry(&iOCT_renderer_inst.textureGroupMPool, &newTexGroup, NULL, NULL);
+    OCT_ID newID;
+    eOCT_mappedPool_addEntry(&iOCT_renderer_inst.textureGroupMPool, &newTexGroup, &newID, NULL);
     // newTexGroupLoc->textureGroupID = newID;
 
     // eOCT_pool* textureGroupPool = &iOCT_renderer_inst.textureGroupPool;

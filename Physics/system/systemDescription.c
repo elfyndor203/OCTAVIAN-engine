@@ -2,6 +2,8 @@
 
 #include "physics2D/physics2D_int.h"
 #include "physicsSystem_int.h"
+#include "constraints/types_int.h"
+#include "constraints/constraints_int.h"
 
 void system_register_PHYSICS() {
     eOCT_componentDescription physics2D = {
@@ -15,6 +17,16 @@ void system_register_PHYSICS() {
         .keyCacheLocation = &iOCT_physicsSystem_inst.physics2DKey
     };
 
+    eOCT_dataPoolDescription rope2D = {
+        .name = "rope2D",
+        .stride = sizeof(iOCT_constraint_rope2D),
+        .providedFields = eOCT_POOL_EMPTY,
+        .elementIDValueOffset = offsetof(iOCT_constraint_rope2D, constraintID),
+        .keyCacheLocation = &iOCT_physicsSystem_inst.rope2DKey,
+        .sort = false,
+        .global = false
+
+    };
     eOCT_fieldRequest transform2D = {
         .name = "globalTransform2D",
         .optional = false,
@@ -31,7 +43,7 @@ void system_register_PHYSICS() {
     eOCT_systemDescription physicsSystem = {
         .name = "Physics",
         .providedComponents = eOCT_generateComponentDescriptionPool(1, physics2D),
-        .providedDataPools = eOCT_POOL_EMPTY,
+        .providedDataPools = eOCT_generateDataPoolDescriptionPool(1, rope2D),
         .providedEvents = eOCT_POOL_EMPTY,
         .providedSingles = eOCT_POOL_EMPTY,
         .requestedFields = eOCT_generateFieldRequestPool(2, transform2D, position2D),

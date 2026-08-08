@@ -11,6 +11,7 @@ struct iOCT_globals {
 
     eOCT_pool globalSingles;
     iOCT_eventManager globalEvents;
+    eOCT_pool globalDataPools;
 };
 
 extern iOCT_globals iOCT_globals_inst;

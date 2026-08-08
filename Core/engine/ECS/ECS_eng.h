@@ -42,6 +42,6 @@ eOCT_pool* eOCT_getFieldSourcePool(OCT_handle contextHandle, eOCT_fieldRequest f
 // void* eOCT_addGlobalDataEntry(eOCT_dataPoolDescription dataPoolDescription, bool createID, OCT_ID* IDOut);
 // void* eOCT_getGlobalDataEntry(eOCT_dataPoolDescription dataPoolDescription, OCT_ID dataID);
 // void* eOCT_getGlobalDataField(eOCT_fieldRequest fieldRequest, OCT_ID dataID);
-void eOCT_event_broadcast(eOCT_eventKey eventDesc, OCT_handle contextHandle, void* event);
+void eOCT_event_broadcastGlobal(eOCT_eventKey eventDesc, void* event);
 void eOCT_event_subscribe(eOCT_fieldTicket eventField, OCT_handle contextHandle, eOCT_eventCallbackFx callback);
 // void* eOCT_event_read(eOCT_fieldRequest eventField, OCT_handle contextHandle, OCT_index eventEntryIndex);

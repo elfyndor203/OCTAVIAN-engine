@@ -23,8 +23,8 @@ void iOCT_timer_update() {
 	double currentTime = glfwGetTime();
 	double deltaTime = currentTime - iOCT_platformSystem_inst.previousFrameTime;
 
-	eOCT_single_get(iOCT_platformSystem_inst.timeTicket, OCT_HANDLE_NULL)->double64 = currentTime;
-	eOCT_single_get(iOCT_platformSystem_inst.deltaTimeTicket, OCT_HANDLE_NULL)->double64 = deltaTime;
+	eOCT_single_getGlobal(iOCT_platformSystem_inst.timeTicket)->double64 = currentTime;
+	eOCT_single_getGlobal(iOCT_platformSystem_inst.deltaTimeTicket)->double64 = deltaTime;
 
 	iOCT_platformSystem_inst.previousFrameTime = currentTime;
 }

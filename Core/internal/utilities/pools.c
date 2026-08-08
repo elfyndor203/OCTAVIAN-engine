@@ -17,7 +17,7 @@ eOCT_pool eOCT_POOL_EMPTY = {
 	.capacity = 0,
 	.count = 0,
 	.elementSize = 0,
-	.ownerID = OCT_ID_NULL
+	.ownerSystemID = OCT_ID_NULL
 };
 eOCT_pool_fillSetting eOCT_POOL_FILLSETTING_NONE = {
 	.fillStyle = eOCT_POOL_FILLSTYLE_NONE,
@@ -31,10 +31,10 @@ eOCT_pool_fillSetting eOCT_POOL_FILLSETTING_ZEROS = {
 static void* iOCT_findDestination(eOCT_pool* pool, size_t targetSortValue, OCT_index* outIndex);
 
 #pragma region basic functions
-eOCT_pool eOCT_pool_open(OCT_ID ownerID, OCT_index capacity, size_t elementSize) {
+eOCT_pool eOCT_pool_open(OCT_ID ownerSystemID, OCT_index capacity, size_t elementSize) {
 	eOCT_pool pool = { 0 };
 
-	pool.ownerID = ownerID;					// set default values
+	pool.ownerSystemID = ownerSystemID;					// set default values
 	pool.count = 0;
 	pool.capacity = capacity;
 	pool.elementSize = elementSize;
@@ -331,7 +331,7 @@ void eOCT_pool_dump(eOCT_pool* pool) {
 	}
 
 	printf("==== eOCT_pool dump (%p) ====\n", (const void*)pool);
-	printf("  ownerID      : %"PRIu64"\n", pool->ownerID);
+	printf("  ownerID      : %"PRIu64"\n", pool->ownerSystemID);
 	printf("  count        : %zu\n", (size_t)pool->count);
 	printf("  capacity     : %zu\n", (size_t)pool->capacity);
 	printf("  elementSize  : %zu bytes\n", pool->elementSize);

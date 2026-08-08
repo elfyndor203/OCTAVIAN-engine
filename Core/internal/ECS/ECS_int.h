@@ -10,11 +10,11 @@ struct iOCT_ECS {
 	// eOCT_pool contextPool;
 	eOCT_mappedPool contextMPool;
 
-	eOCT_pool dataPoolSizeAndOrderList;
+	// eOCT_pool dataPoolSizeAndOrderList;
 
 	// global data
-	eOCT_IDMap globalDataMap;
-	eOCT_pool globalDataPools;
+	// eOCT_IDMap globalDataMap;
+	// eOCT_pool globalDataPools;
 };
 
 extern iOCT_ECS iOCT_ECS_inst;

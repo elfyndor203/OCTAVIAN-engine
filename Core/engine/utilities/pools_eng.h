@@ -36,7 +36,7 @@ struct eOCT_pool_fillSetting {
 /// </summary>
 struct eOCT_pool {
 	// pool metadata
-	OCT_ID ownerID;
+	OCT_ID ownerSystemID;
 
 	// array metadata
 	OCT_index count;
@@ -55,7 +55,7 @@ extern eOCT_pool eOCT_POOL_EMPTY;
 extern eOCT_pool_fillSetting eOCT_POOL_FILLSETTING_NONE;
 extern eOCT_pool_fillSetting eOCT_POOL_FILLSETTING_ZEROS;
 
-eOCT_pool eOCT_pool_open(OCT_ID ownerID, OCT_index capacity, size_t elementSize);
+eOCT_pool eOCT_pool_open(OCT_ID ownerSystemID, OCT_index capacity, size_t elementSize);
 /// <summary>
 /// Returns a void* pointer to the pool slot to be written into which should be cast to the correct type. Optionally returns the index of the slot to be used for ID registration.
 /// </summary>
