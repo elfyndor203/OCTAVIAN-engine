@@ -26,5 +26,6 @@ typedef struct OCT_local {
 
 bool OCT_local_isNULL(OCT_local handle);
 bool OCT_global_isNULL(OCT_global handle);
-bool OCT_handle_isEqual(OCT_local handle1, OCT_local handle2);
+bool OCT_local_isEqual(OCT_local handle1, OCT_local handle2);
+bool OCT_global_isEqual(OCT_global handle1, OCT_global handle2);
 

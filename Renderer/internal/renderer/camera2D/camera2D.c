@@ -1,5 +1,6 @@
 #include "camera2D_int.h"
 #include "renderer/types_int.h"
+#include "renderer/camera2D.h"
 
 #include <assert.h>
 
@@ -17,6 +18,7 @@ void OCT_camera2D_attach(OCT_local entity, OCT_vec2 position, float rotation, OC
         .entityHandle = entity,
         .position = position,
         .rotation = rotation,
+        .zoom = 1,
         .viewFrameSize = viewFrameSize,
         .cameraMatrix = OCT_mat3_generate(position, viewFrameSize, rotation)
     };
@@ -33,4 +35,14 @@ void OCT_camera2D_attach(OCT_local entity, OCT_vec2 position, float rotation, OC
     // iOCT_window* targetWindow = (iOCT_window*)eOCT_getByID(&iOCT_windowSystem_inst.windowMPool.IDMap, &iOCT_windowSystem_inst.windowMPool.pool, window.objectID);
     iOCT_window* targetWindow = (iOCT_window*)eOCT_mappedPool_getByID(&iOCT_windowSystem_inst.windowMPool, window.objectID);
     targetWindow->activeCameraSourceEntity = entity;
+}
+void OCT_camera2D_zoomBy(OCT_local entity, float factor) {
+    if (OCT_local_isEqual(entity, OCT_CAMERA_FOCUSED)) {
+        iOCT_window* focusedWindow = eOCT_mappedPool_getByID(&iOCT_windowSystem_inst.windowMPool, iOCT_windowSystem_inst.focusedWindowID);
+        entity = focusedWindow->activeCameraSourceEntity;
+    }
+    iOCT_camera2D* camera = eOCT_entity_getComponentOnce(entity, iOCT_renderer_inst.camera2DKey);
+
+    camera->zoom = factor;
+    camera->cameraMatrix = OCT_mat3_scale(camera->cameraMatrix, (OCT_vec2){factor, factor});
 }
