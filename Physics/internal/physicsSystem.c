@@ -35,7 +35,7 @@ void eOCT_PHYSICS_update(OCT_global context) {
     for (OCT_index iteration = 0; iteration < iOCT_physicsSystem_inst.constraintSolveIterations; iteration++) {
         for (OCT_index ropeCtr = 0; ropeCtr < ropePool->count; ropeCtr++) {
             iOCT_rope2D rope = ropeArray[ropeCtr];
-            iOCT_constraintSolve_rope(rope, contextToken);
+            iOCT_rope2D_solve(rope, contextToken);
         }
     }
 

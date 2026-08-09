@@ -16,10 +16,10 @@ void OCT_physics2D_attach(OCT_local entity, float mass, bool fixed) {
         .entityHandle = entity,
         .mass = mass,
         .gravityStrength = 1,
-        .f_const = OCT_vec2_zero,   // does not include gravity
-        .f_frame = OCT_vec2_zero,
-        .v_lin = OCT_vec2_zero,
-        .prevPos = OCT_vec2_zero,
+        .f_const = OCT_VEC2_ZERO,   // does not include gravity
+        .f_frame = OCT_VEC2_ZERO,
+        .v_lin = OCT_VEC2_ZERO,
+        .prevPos = OCT_VEC2_ZERO,
         .fixed = fixed
     };
     eOCT_entity_attachComponentOnce(entity, iOCT_physicsSystem_inst.physics2DKey, &newPhysics, NULL);
@@ -106,7 +106,7 @@ static OCT_vec2 iOCT_physics2D_resolveFrameNetForce(iOCT_physics2D* physics2D) {
     OCT_vec2 constWGravity = OCT_vec2_add(gravity, physics2D->f_const);
     OCT_vec2 fNet = OCT_vec2_add(constWGravity, physics2D->f_frame);
 
-    physics2D->f_frame = OCT_vec2_zero;
+    physics2D->f_frame = OCT_VEC2_ZERO;
 
     return fNet;
 }

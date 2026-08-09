@@ -95,7 +95,7 @@ bool OCT_rope2D_enable(OCT_local rope2D) {
     return changed;
 }
 
-void iOCT_constraintSolve_rope(iOCT_rope2D rope, eOCT_contextToken contextToken) {
+void iOCT_rope2D_solve(iOCT_rope2D rope, eOCT_contextToken contextToken) {
     if (!rope.enabled) {
         return;
     }

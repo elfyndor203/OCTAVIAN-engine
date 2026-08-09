@@ -3,8 +3,10 @@
 #include "math/definitions/defaultValues.h"
 #include <math.h>
 #include "errors/errors_eng.h"
+#include "math/definitions/aliases.h"
+#include "utilities/utilities.h"
 
-const OCT_vec2 OCT_vec2_zero = { 0, 0 };
+// const OCT_vec2 OCT_VEC2_ZERO = { 0, 0 };
 typedef OCT_vec2(*OCT_vector2D_vector2D_Fx)(OCT_vec2, OCT_vec2); // Vector2D operation function pointer
 
 static OCT_vector2D_vector2D_Fx iOCT_vec2_Fx[4] = {
@@ -104,7 +106,7 @@ OCT_vec2 OCT_vec2_div(OCT_vec2 vectorA, float scalar) {
 OCT_vec2 OCT_vec2_rotate(OCT_vec2 vectorA, float degrees) {
 	float radians = OCT_deg2rad(degrees);
 
-	OCT_vec2 resultantVector = OCT_vec2_zero;
+	OCT_vec2 resultantVector = OCT_VEC2_ZERO;
 	float cosTheta = cosf(radians);
 	float sinTheta = sinf(radians);
 
@@ -121,7 +123,7 @@ float OCT_vec2_mag(OCT_vec2 vectorA) {
 }
 bool OCT_vec2_equal(OCT_vec2 vectorA, OCT_vec2 vectorB, float threshold) {
 	if (threshold <= 0.0f) {
-		threshold = OCT_FLOAT_EQUAL_EPSILON;
+		threshold = OCT_FLOAT_EPSILON;
 	}
 
 	if (fabsf(vectorB.x - vectorA.x) < threshold && fabsf(vectorB.y - vectorA.y) < threshold) {
@@ -150,11 +152,42 @@ OCT_vec2 OCT_vec2_unit(OCT_vec2 vectorA) {
 		return OCT_vec2_div(vectorA, mag);
 	}
 	else {
-		return OCT_vec2_zero;
+		return OCT_VEC2_ZERO;
 	}
 }
 
 OCT_vec2 OCT_vec2_neg(OCT_vec2 vectorA) {
 	return (OCT_vec2) { -vectorA.x, -vectorA.y };
+}
+
+OCT_vec2 OCT_vec2_normal(OCT_vec2 vectorA, OCT_AorB ccwOrCw) {
+	if (ccwOrCw == OCT_B) {
+		OCT_vec2 cwNormal = (OCT_vec2){vectorA.y, -vectorA.x};
+		return cwNormal;
+	}
+	return (OCT_vec2){-vectorA.y, vectorA.x};
+}
+
+OCT_vec2 OCT_vec2_projVertices(OCT_vec2 axis, OCT_vec2* vertices, OCT_index count) {
+	float min = OCT_vec2_dot(axis, vertices[0]);
+	float max = min;
+
+	float proj;
+	for (int v = 1; v < count; v++) {
+		proj = OCT_vec2_dot(axis, vertices[v]);
+		if (proj < min) {
+			min = proj;
+		}
+		else if (proj > max) {
+			max = proj;
+		}
+	}
+
+	return (OCT_vec2) { min, max };
+}
+
+float OCT_vec2_overlap(OCT_vec2 vectorA, OCT_vec2 vectorB) {
+	float overlap = fminf(vectorA.y, vectorB.y) - fmaxf(vectorA.x, vectorB.x);
+	return overlap;
 }
 #pragma endregion

@@ -29,4 +29,4 @@ struct iOCT_hitbox2D {
     bool enabled;
 };
 
-void iOCT_constraintSolve_rope(iOCT_rope2D rope, eOCT_contextToken contextToken);
+void iOCT_rope2D_solve(iOCT_rope2D rope, eOCT_contextToken contextToken);

@@ -12,3 +12,5 @@
 
 #include "math/shapes/rect2.h"
 #include "math/shapes/shapes.h"
+
+#include "math/lines/line2.h"

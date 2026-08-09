@@ -19,7 +19,7 @@ bool OCT_transform2D_attach(OCT_local entity, OCT_local parentEntity) {
 	iOCT_transform2D transform = {
 		.entityHandle = entity,
 		.parentEntityHandle = parentEntity,
-		.position = OCT_vec2_zero,
+		.position = OCT_VEC2_ZERO,
 		.rotation = 0.0f,
 		.scale = (OCT_vec2){1.0f, 1.0f},
 		.localMatrix = OCT_mat3_identity,
@@ -86,7 +86,7 @@ void iOCT_transform2D_generateRoot(OCT_local rootEntity) {
 	iOCT_transform2D rootTransform = {
 		.entityHandle = rootEntity,
 		.parentEntityHandle = rootEntity,
-		.position = OCT_vec2_zero,
+		.position = OCT_VEC2_ZERO,
 		.rotation = 0.0f,
 		.scale = (OCT_vec2){1.0f, 1.0f},
 		.localMatrix = OCT_mat3_identity,

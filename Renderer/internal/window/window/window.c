@@ -83,7 +83,7 @@ void iOCT_window_close(iOCT_window* window) {
 }
 
 void iOCT_window_poll(iOCT_window* window) {
-    window->cursorDelta = OCT_vec2_zero;
+    window->cursorDelta = OCT_VEC2_ZERO;
     glfwPollEvents();
 }
 
