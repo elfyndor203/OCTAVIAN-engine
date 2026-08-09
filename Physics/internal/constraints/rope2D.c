@@ -1,6 +1,6 @@
 #include "constraints_int.h"
 
-OCT_local OCT_rope2D_constrain(OCT_local entityA, OCT_local entityB, float length) {
+OCT_local OCT_rope2D_new(OCT_local entityA, OCT_local entityB, float length) {
     if (!eOCT_entity_hasComponentOnce(entityA, iOCT_physicsSystem_inst.physics2DKey) || !eOCT_entity_hasComponentOnce(entityB, iOCT_physicsSystem_inst.physics2DKey)) {
         OCT_ERROR_LOG(OCT_EXIT_REQUIREMENT_NOT_MET, "Entities must both have physics components attached");
         return OCT_LOCAL_NULL;
@@ -16,11 +16,14 @@ OCT_local OCT_rope2D_constrain(OCT_local entityA, OCT_local entityB, float lengt
         .length = length,
         .enabled = true
     };
-    OCT_local ropeHandle = {
-        .contextHandle = entityA.contextHandle
-    };
+
     eOCT_mappedPool* ropeMPool = eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.rope2DKey, entityA.contextHandle);
-    eOCT_mappedPool_addEntry(ropeMPool, &rope, &ropeHandle.objectID, NULL);
+    eOCT_mappedPool_addEntry(ropeMPool, &rope, &rope.ropeID, NULL);
+
+    OCT_local ropeHandle = {
+        .contextHandle = entityA.contextHandle,
+        .objectID = rope.ropeID
+    };
 
     return ropeHandle;
 }

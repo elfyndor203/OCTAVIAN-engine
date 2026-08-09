@@ -7,12 +7,24 @@
 #include "physicsSystem_int.h"
 
 struct iOCT_rope2D {
-    OCT_ID constraintID;
+    OCT_ID ropeID;
 
     OCT_local entityA;
     OCT_local entityB;
 
     float length;
+
+    bool enabled;
+};
+
+struct iOCT_hitbox2D {
+    OCT_ID hitboxID;
+
+    OCT_local entity;
+
+    OCT_vec2 dimensions;
+    OCT_vec2 position;
+    float rotation;
 
     bool enabled;
 };

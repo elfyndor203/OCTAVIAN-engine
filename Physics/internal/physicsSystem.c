@@ -25,7 +25,7 @@ void eOCT_PHYSICS_update(OCT_global context) {
         if (physics->fixed) {
             continue;
         }
-        OCT_vec2* position = (OCT_vec2*)eOCT_entity_getField(contextToken, physics->entityHandle, iOCT_physicsSystem_inst.position2DTicket);
+        OCT_vec2* position = (OCT_vec2*)eOCT_entity_getField(contextToken, physics->entityHandle, iOCT_physicsSystem_inst.position2DTicket);    // __NOTE__ THESE ARE LOCAL POSITIONS, NOT GLOBAL
         physics->prevPos = *position;
         iOCT_physics2D_integrateEuler(physics, position, iOCT_physicsSystem_inst.dt);
     }

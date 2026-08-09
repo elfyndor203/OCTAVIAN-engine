@@ -21,11 +21,19 @@ void system_register_PHYSICS() {
         .name = "rope2D",
         .stride = sizeof(iOCT_rope2D),
         .providedFields = eOCT_POOL_EMPTY,
-        .elementIDValueOffset = offsetof(iOCT_rope2D, constraintID),
+        .elementIDValueOffset = offsetof(iOCT_rope2D, ropeID),
         .keyCacheLocation = &iOCT_physicsSystem_inst.rope2DKey,
         .sort = false,
         .global = false
-
+    };
+    eOCT_dataPoolDescription hitbox2D = {
+        .name = "hitbox2D",
+        .stride = sizeof(iOCT_hitbox2D),
+        .providedFields = eOCT_POOL_EMPTY,
+        .elementIDValueOffset = offsetof(iOCT_hitbox2D, hitboxID),
+        .keyCacheLocation = &iOCT_physicsSystem_inst.hitbox2DKey,
+        .sort = false,
+        .global = false
     };
     eOCT_fieldRequest transform2D = {
         .name = "globalTransform2D",
@@ -43,7 +51,7 @@ void system_register_PHYSICS() {
     eOCT_systemDescription physicsSystem = {
         .name = "Physics",
         .providedComponents = eOCT_generateComponentDescriptionPool(1, physics2D),
-        .providedDataPools = eOCT_generateDataPoolDescriptionPool(1, rope2D),
+        .providedDataPools = eOCT_generateDataPoolDescriptionPool(2, rope2D, hitbox2D),
         .providedEvents = eOCT_POOL_EMPTY,
         .providedSingles = eOCT_POOL_EMPTY,
         .requestedFields = eOCT_generateFieldRequestPool(2, transform2D, position2D),

@@ -13,6 +13,7 @@ add_library(Physics STATIC
         internal/constraints/constraints_int.h
         internal/constraints/types_int.h
         include/physics2D/constraints.h
+        internal/constraints/hitbox2D.c
 )
 
 target_include_directories(Physics
