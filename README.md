@@ -1,4 +1,4 @@
-# OCTAVIAN
+# OCTAVIAN (OUTDATED README)
 OCTAVIAN is a WIP 2D game engine written in C. It uses a handle-based ECS-esque system, instanced rendering using OpenGL, and is designed to be modular. It has minimal dependencies: OpenGL using GLAD, GLFW, and stb_image. 
 
 Currently working on: Physics

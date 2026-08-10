@@ -1,20 +1,30 @@
-#include "timer_internal.h"
-#include "types_internal.h"
 
-#include "module/PLTModule_internal.h"
-#include <inttypes.h>
+#include "OCT_Core_eng.h"
+#include <GLFW/glfw3.h>
 
-void iOCT_timer_init() {
-	QueryPerformanceFrequency(&iOCT_PLTModule_instance.machineFreq);
-	QueryPerformanceCounter(&iOCT_PLTModule_instance.prevFrameCt);
-	QueryPerformanceCounter(&iOCT_PLTModule_instance.frameCt);
-}
+#include "platformSystem_int.h"
+
+// void iOCT_timer_init() {
+// 	QueryPerformanceFrequency(&iOCT_PLTModule_instance.machineFreq);
+// 	QueryPerformanceCounter(&iOCT_PLTModule_instance.prevFrameCt);
+// 	QueryPerformanceCounter(&iOCT_PLTModule_instance.frameCt);
+// }
+//
+// void iOCT_timer_update() {
+// 	iOCT_PLTModule_instance.prevFrameCt = iOCT_PLTModule_instance.frameCt;
+// 	QueryPerformanceCounter(&iOCT_PLTModule_instance.frameCt);
+// }
+
+// double OCT_timer_getDeltaTime() {
+// 	return (double)(iOCT_PLTModule_instance.frameCt.QuadPart - iOCT_PLTModule_instance.prevFrameCt.QuadPart) / (double)(iOCT_PLTModule_instance.machineFreq.QuadPart);
+// }
 
 void iOCT_timer_update() {
-	iOCT_PLTModule_instance.prevFrameCt = iOCT_PLTModule_instance.frameCt;
-	QueryPerformanceCounter(&iOCT_PLTModule_instance.frameCt);
-}
+	double currentTime = glfwGetTime();
+	double deltaTime = currentTime - iOCT_platformSystem_inst.previousFrameTime;
 
-double OCT_timer_getDeltaTime() {
-	return (double)(iOCT_PLTModule_instance.frameCt.QuadPart - iOCT_PLTModule_instance.prevFrameCt.QuadPart) / (double)(iOCT_PLTModule_instance.machineFreq.QuadPart);
+	eOCT_single_getGlobal(iOCT_platformSystem_inst.timeTicket)->double64 = currentTime;
+	eOCT_single_getGlobal(iOCT_platformSystem_inst.deltaTimeTicket)->double64 = deltaTime;
+
+	iOCT_platformSystem_inst.previousFrameTime = currentTime;
 }

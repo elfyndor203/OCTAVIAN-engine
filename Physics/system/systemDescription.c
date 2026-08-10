@@ -1,0 +1,68 @@
+#include "OCT_Core_eng.h"
+
+#include "physics2D/physics2D_int.h"
+#include "physicsSystem_int.h"
+#include "constraints/types_int.h"
+#include "constraints/constraints_int.h"
+
+void system_register_PHYSICS() {
+    eOCT_componentDescription physics2D = {
+        .name = "physics2D",
+        .entityHandleValueOffset = offsetof(iOCT_physics2D, entityHandle),
+        .providedFields = eOCT_POOL_EMPTY,
+        .sort = false,
+        .sortValueOffset = eOCT_POOL_SORT_NONE,
+        .stride = sizeof(iOCT_physics2D),
+        .rootAttachmentFx = NULL,
+        .keyCacheLocation = &iOCT_physicsSystem_inst.physics2DKey
+    };
+
+    eOCT_dataPoolDescription rope2D = {
+        .name = "rope2D",
+        .stride = sizeof(iOCT_rope2D),
+        .providedFields = eOCT_POOL_EMPTY,
+        .elementIDValueOffset = offsetof(iOCT_rope2D, ropeID),
+        .keyCacheLocation = &iOCT_physicsSystem_inst.rope2DKey,
+        .sort = false,
+        .global = false
+    };
+    eOCT_dataPoolDescription hitbox2D = {
+        .name = "hitbox2D",
+        .stride = sizeof(iOCT_hitbox2D),
+        .providedFields = eOCT_POOL_EMPTY,
+        .elementIDValueOffset = offsetof(iOCT_hitbox2D, hitboxID),
+        .keyCacheLocation = &iOCT_physicsSystem_inst.hitbox2DKey,
+        .sort = false,
+        .global = false
+    };
+    eOCT_fieldRequest transform2D = {
+        .name = "globalTransform2D",
+        .optional = false,
+        .ticketCache = &iOCT_physicsSystem_inst.transform2DTicket,
+        .type = eOCT_DATATYPE_MAT3,
+    };
+    eOCT_fieldRequest position2D = {
+        .name = "position",
+        .optional = false,
+        .ticketCache = &iOCT_physicsSystem_inst.position2DTicket,
+        .type = eOCT_DATATYPE_VEC2,
+    };
+    eOCT_fieldRequest rotation2D = {
+        .name = "rotation",
+        .optional = false,
+        .ticketCache = &iOCT_physicsSystem_inst.rotationTicket,
+        .type = eOCT_DATATYPE_FLOAT32,
+    };
+
+    eOCT_systemDescription physicsSystem = {
+        .name = "Physics",
+        .providedComponents = eOCT_generateComponentDescriptionPool(1, physics2D),
+        .providedDataPools = eOCT_generateDataPoolDescriptionPool(2, rope2D, hitbox2D),
+        .providedEvents = eOCT_POOL_EMPTY,
+        .providedSingles = eOCT_POOL_EMPTY,
+        .requestedFields = eOCT_generateFieldRequestPool(2, transform2D, position2D),
+        .initFx = iOCT_physicsSystem_init
+    };
+
+    iOCT_physicsSystem_inst.systemID = eOCT_registry_registerSystem(physicsSystem);
+}

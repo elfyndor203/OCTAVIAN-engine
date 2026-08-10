@@ -102,3 +102,26 @@ Headers for self.c
 #include <lib2.h>
 
 #include "other.h"
+
+__________________ NEW SYSTEM
+Where to store data depending on needs:
+
+PUBLIC:
+    COMPONENT:
+        component
+    OTHER:
+        Context-specific
+            dataPool (local)
+        Global
+            dataPool (global)
+PRIVATE:
+    COMPONENT:
+        component
+    OTHER:
+        Context-specific
+            dataPool (local)
+        Global
+            store internally
+
+
+

@@ -2,11 +2,14 @@
 
 in vec2 fragUV;
 in vec4 fragColor;
+in float fragArrayLayer;
+
+uniform sampler2DArray spriteTexArray;
 
 out vec4 outColor;
 
-uniform sampler2D tex;
 
 void main() {
-	outColor = texture(tex, fragUV) * fragColor;
+	vec4 texColor = texture(spriteTexArray, vec3(fragUV, fragArrayLayer));
+	outColor = texColor * fragColor;
 }

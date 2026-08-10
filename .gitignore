@@ -1,8 +1,12 @@
 /.vs/
+/.idea/
+/cmake-build-debug/
 /TrashForReference/
 **/x64
+/build/
 *.lnk
 *.exe
 *.pdb
 *.vcxproj.user
 *.vcxproj.filters
+*.vcxproj

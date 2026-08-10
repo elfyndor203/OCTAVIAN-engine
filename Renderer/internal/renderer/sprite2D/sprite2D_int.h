@@ -1,0 +1,27 @@
+#pragma once
+#include "renderer/types_int.h"
+
+#include "OCT_Core_eng.h"
+#include <glad/glad.h>
+
+struct iOCT_spriteData {
+    OCT_vec4 uv;
+    OCT_vec4 color;
+    OCT_vec2 dimensions;
+    GLuint texArrayLayer;
+};
+
+struct iOCT_sprite2D {
+    OCT_local entityHandle;
+
+    OCT_ID windowID;
+    OCT_index drawLayer;
+    OCT_ID texGroupID;
+    OCT_ID texID;
+    OCT_index sortKey;
+
+    OCT_mat3 spriteTransform;
+    iOCT_spriteData spriteData;
+};
+
+void iOCT_sprite2D_root(OCT_local rootEntity);
