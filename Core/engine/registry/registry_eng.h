@@ -23,6 +23,8 @@ typedef enum eOCT_dataTypes { //__NOTE__ typedef all types? or no
 	eOCT_DATATYPE_STRING64,
 	eOCT_DATATYPE_BOOL, // size? include all sizes or just specific?
 
+	eOCT_DATATYPE_HANDLE_LOCAL,
+	eOCT_DATATYPE_HANDLE_GLOBAL,
 	eOCT_DATATYPE_ID,
 	eOCT_DATATYPE_INDEX,
 	eOCT_DATATYPE_VEC2,
@@ -122,6 +124,8 @@ struct eOCT_systemDescription {
 	eOCT_pool providedEvents;
 	eOCT_pool providedSingles;
 	eOCT_pool requestedFields;
+
+	eOCT_contextInitFx contextInitFx;
 	eOCT_systemInitFx initFx;
 	// eOCT_systemUpdateFx updateFx;
 

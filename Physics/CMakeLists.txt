@@ -30,7 +30,7 @@ set_target_properties(Physics PROPERTIES
         C_EXTENSIONS OFF
 )
 
-target_link_libraries(Physics PUBLIC Core)
+target_link_libraries(Physics PUBLIC Core PRIVATE box2d)
 
 add_library(PhysicsSystem INTERFACE)
 target_include_directories(PhysicsSystem INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/system)
