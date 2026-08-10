@@ -23,4 +23,4 @@ OCT_vec2 OCT_rect2_vertices(OCT_rect2 rect, OCT_vec2* topL, OCT_vec2* botL, OCT_
 OCT_vec2 OCT_rect2_normals(OCT_rect2 rect, OCT_vec2* heightAxis);
 OCT_segment2 OCT_rect2_edges(OCT_rect2 rect, OCT_segment2* leftOut, OCT_segment2* bottomOut, OCT_segment2* rightOut);
 OCT_vec2 OCT_rect2_SAT(OCT_rect2 rectA, OCT_rect2 rectB, OCT_vec2* axisOut, float* overlapOut, OCT_AorB* referenceRectOut);
-OCT_vec2 OCT_rect2_contacts(OCT_rect2 referenceRectA, OCT_rect2 rectB, OCT_vec2 MTV, OCT_vec2 minAxis, float minOverlap, OCT_vec2* otherContactOut);
+OCT_AorB OCT_rect2_contacts(OCT_rect2 referenceRectA, OCT_rect2 rectB, OCT_vec2 MTV, OCT_vec2 minAxis, float minOverlap, OCT_vec2* contactAOut, OCT_vec2* contactBOut);

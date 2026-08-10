@@ -125,12 +125,12 @@ OCT_vec2 OCT_rect2_SAT(OCT_rect2 rectA, OCT_rect2 rectB, OCT_vec2* axisOut, floa
     return MTV;
 }
 
-OCT_vec2 OCT_rect2_contacts(OCT_rect2 referenceRectA, OCT_rect2 rectB, OCT_vec2 MTV, OCT_vec2 minAxis, float minOverlap, OCT_vec2* otherContactOut) {
+OCT_AorB OCT_rect2_contacts(OCT_rect2 referenceRectA, OCT_rect2 rectB, OCT_vec2 MTV, OCT_vec2 minAxis, float minOverlap, OCT_vec2* contactAOut, OCT_vec2* contactBOut) {
     if (OCT_vec2_equal(MTV, OCT_VEC2_ZERO, 0)) {
-        if (otherContactOut) {
-            *otherContactOut = OCT_VEC2_NULL;
+        if (contactBOut) {
+            *contactBOut = OCT_VEC2_NULL;
         }
-        return OCT_VEC2_NULL;
+        return OCT_NEITHER;
     }
     // finds the reference edge from the data provided by SAT
     OCT_segment2 refEdge = OCT_SEGMENT_NULL;
@@ -141,7 +141,7 @@ OCT_vec2 OCT_rect2_contacts(OCT_rect2 referenceRectA, OCT_rect2 rectB, OCT_vec2 
     bool refFound = false;
     for (OCT_index refEdgeCtr = 0; refEdgeCtr < 4; refEdgeCtr++) {
         OCT_segment2 edge = refEdges[refEdgeCtr];
-        OCT_vec2 normal = OCT_vec2_normal((OCT_vec2_sub(edge.end, edge.start)), OCT_B);
+        OCT_vec2 normal = OCT_vec2_perp((OCT_vec2_sub(edge.end, edge.start)), OCT_B);
         float dot = OCT_vec2_dot(normal, minAxis);
         if (1 - dot < OCT_FLOAT_EPSILON) {
             refEdge = edge;
@@ -150,7 +150,7 @@ OCT_vec2 OCT_rect2_contacts(OCT_rect2 referenceRectA, OCT_rect2 rectB, OCT_vec2 
     }
     if (!refFound) {
         OCT_ERROR_LOG(OCT_EXIT_INVALID_ARGUMENT, "Could not find reference edge with given axis");
-        return OCT_VEC2_NULL;
+        return OCT_NEITHER;
     }
     OCT_vec2 refEdgeUnit = OCT_vec2_unit((OCT_vec2_sub(refEdge.end, refEdge.start)));
     OCT_vec2 negRefEdgeUnit = OCT_vec2_neg(refEdgeUnit);
@@ -166,7 +166,7 @@ OCT_vec2 OCT_rect2_contacts(OCT_rect2 referenceRectA, OCT_rect2 rectB, OCT_vec2 
     float minDot = FLT_MAX;
     for (OCT_index edgeBCtr = 0; edgeBCtr < 4; edgeBCtr++) {
         OCT_segment2 edge = edgesB[edgeBCtr];
-        OCT_vec2 normal = OCT_vec2_normal((OCT_vec2_sub(edge.end, edge.start)), OCT_B);
+        OCT_vec2 normal = OCT_vec2_perp((OCT_vec2_sub(edge.end, edge.start)), OCT_B);
         float dot = OCT_vec2_dot(normal, minAxis);
         if (dot < minDot) {
             incidentEdge = edge;
@@ -185,23 +185,29 @@ OCT_vec2 OCT_rect2_contacts(OCT_rect2 referenceRectA, OCT_rect2 rectB, OCT_vec2 
         .offset = OCT_vec2_dot(refNormal, refEdge.start)
     };
 
+    OCT_AorB valids = OCT_BOTH;
     OCT_vec2 contact1 = sideClipped.start;
     OCT_vec2 contact2 = sideClipped.end;
     if (!OCT_vec2_equal(sideClipped.start, OCT_VEC2_NULL, 0.0f)) {
         float separation1 = OCT_vec2_dot(refNormal, sideClipped.start) - refFace.offset;
         if (separation1 > 0.0f) {
             contact1 = OCT_VEC2_NULL;
+            valids = OCT_AorB_makeFalse(valids, OCT_A);
         }
     }
     if (!OCT_vec2_equal(sideClipped.end, OCT_VEC2_NULL, 0.0f)) {
         float separation2 = OCT_vec2_dot(refNormal, sideClipped.end) - refFace.offset;
         if (separation2 > 0.0f) {
             contact2 = OCT_VEC2_NULL;
+            valids = OCT_AorB_makeFalse(valids, OCT_B);
         }
     }
 
-    if (otherContactOut) {
-        *otherContactOut = contact2;
+    if (contactAOut) {
+        *contactAOut = contact1;
     }
-    return contact1;
+    if (contactBOut) {
+        *contactBOut = contact2;
+    }
+    return valids;
 }

@@ -22,4 +22,12 @@ OCT_AorB OCT_AorB_makeTrue(OCT_AorB initial, OCT_AorB nowTrue) {
     return initial | nowTrue;
 }
 
+bool OCT_AorB_isTrue(OCT_AorB value, OCT_AorB toCheck) {
+    return value == toCheck || value == OCT_BOTH;
+}
+
+bool OCT_AorB_isFalse(OCT_AorB value, OCT_AorB toCheck) {
+    return !(value == toCheck || value == OCT_BOTH);
+}
+
 

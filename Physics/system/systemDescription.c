@@ -47,6 +47,12 @@ void system_register_PHYSICS() {
         .ticketCache = &iOCT_physicsSystem_inst.position2DTicket,
         .type = eOCT_DATATYPE_VEC2,
     };
+    eOCT_fieldRequest rotation2D = {
+        .name = "rotation",
+        .optional = false,
+        .ticketCache = &iOCT_physicsSystem_inst.rotationTicket,
+        .type = eOCT_DATATYPE_FLOAT32,
+    };
 
     eOCT_systemDescription physicsSystem = {
         .name = "Physics",

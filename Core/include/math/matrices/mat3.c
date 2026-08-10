@@ -78,6 +78,13 @@ OCT_mat3 OCT_mat3_translate(OCT_mat3 m, OCT_vec2 translation) {
     return result;
 }
 
+OCT_mat3 OCT_mat3_translateTo(OCT_mat3 m, OCT_vec2 translation) {
+    OCT_mat3 result = m;
+    result.c2r0 = translation.x;
+    result.c2r1 = translation.y;
+    return result;
+}
+
 OCT_mat3 OCT_mat3_scale(OCT_mat3 m, OCT_vec2 scale) {
     OCT_mat3 result = m;
     result.c0r0 *= scale.x;
@@ -90,7 +97,7 @@ OCT_mat3 OCT_mat3_scale(OCT_mat3 m, OCT_vec2 scale) {
     return result;
 }
 
-OCT_mat3 OCT_mat3_rotate(OCT_mat3 m, float rotation) {
+OCT_mat3 OCT_mat3_rotateTo(OCT_mat3 m, float rotation) {
     float cosRot = cosf(rotation);
     float sinRot = sinf(rotation);
     OCT_mat3 result = m;
@@ -100,6 +107,31 @@ OCT_mat3 OCT_mat3_rotate(OCT_mat3 m, float rotation) {
     result.c1r1 = cosRot;
     return result;
 }
+
+// claude generated
+OCT_mat3 OCT_mat3_rotate(OCT_mat3 m, float rotation) {
+    float cosRot = cosf(rotation);
+    float sinRot = sinf(rotation);
+    OCT_mat3 result = m;
+
+    float oldC0R0 = m.c0r0, oldC0R1 = m.c0r1;
+    float oldC1R0 = m.c1r0, oldC1R1 = m.c1r1;
+
+    result.c0r0 = cosRot * oldC0R0 - sinRot * oldC0R1;
+    result.c0r1 = sinRot * oldC0R0 + cosRot * oldC0R1;
+
+    result.c1r0 = cosRot * oldC1R0 - sinRot * oldC1R1;
+    result.c1r1 = sinRot * oldC1R0 + cosRot * oldC1R1;
+
+    return result;
+}
+// claude generated
+float OCT_mat3_getRotation(OCT_mat3 m) {
+    float len = sqrtf(m.c0r0 * m.c0r0 + m.c0r1 * m.c0r1);
+    return atan2f(m.c0r1 / len, m.c0r0 / len);
+}
+
+
 
 OCT_vec2 OCT_mat3_getScale(OCT_mat3 m) {
     return (OCT_vec2){m.c0r0, m.c1r1};

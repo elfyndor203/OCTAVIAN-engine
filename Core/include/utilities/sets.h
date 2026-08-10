@@ -14,3 +14,5 @@ bool OCT_AorB_one(OCT_AorB value);
 OCT_AorB OCT_AorB_NOT(OCT_AorB value);
 OCT_AorB OCT_AorB_makeFalse(OCT_AorB initial, OCT_AorB nowFalse);
 OCT_AorB OCT_AorB_makeTrue(OCT_AorB initial, OCT_AorB nowTrue);
+bool OCT_AorB_isTrue(OCT_AorB value, OCT_AorB toCheck);
+bool OCT_AorB_isFalse(OCT_AorB value, OCT_AorB toCheck);

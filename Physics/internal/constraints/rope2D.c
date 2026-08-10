@@ -58,11 +58,11 @@ void OCT_rope2D_length(OCT_local rope2D, float newLength) {
     OCT_vec2 toMovingUnit = OCT_vec2_unit(toMoving);
     OCT_vec2 tangentUnit = OCT_vec2_rotate(toMovingUnit, 90);
 
-    OCT_vec2 lin_momentum = OCT_vec2_mul(toMovePhys->v_lin, toMovePhys->mass);
+    OCT_vec2 lin_momentum = OCT_vec2_mul(toMovePhys->velocity, toMovePhys->mass);
     float ang_momentum = OCT_vec2_cross(toMoving, lin_momentum);
     float newVel = ang_momentum / (toMovePhys->mass * newLength);
 
-    toMovePhys->v_lin = OCT_vec2_mul(tangentUnit, newVel);
+    toMovePhys->velocity = OCT_vec2_mul(tangentUnit, newVel);
     rope->length = newLength;
 }
 
@@ -142,11 +142,11 @@ void iOCT_rope2D_solve(iOCT_rope2D rope, eOCT_contextToken contextToken) {
     OCT_vec2 fromCenterUnit = OCT_vec2_unit(fromCenter);
     OCT_vec2 correctedPos = OCT_vec2_add(OCT_vec2_mul(fromCenterUnit, rope.length), *centerPos);
 
-    float radialSpeed = OCT_vec2_dot(toMovePhys->v_lin, fromCenterUnit);
+    float radialSpeed = OCT_vec2_dot(toMovePhys->velocity, fromCenterUnit);
 
     if (radialSpeed > 0) {
         OCT_vec2 correctionVel = OCT_vec2_mul(fromCenterUnit, radialSpeed);
-        toMovePhys->v_lin = OCT_vec2_sub(toMovePhys->v_lin, correctionVel);
+        toMovePhys->velocity = OCT_vec2_sub(toMovePhys->velocity, correctionVel);
     }
     *toMovePos = correctedPos;
 }

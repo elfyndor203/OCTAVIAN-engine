@@ -30,3 +30,4 @@ struct iOCT_hitbox2D {
 };
 
 void iOCT_rope2D_solve(iOCT_rope2D rope, eOCT_contextToken contextToken);
+bool iOCT_hitbox2D_solve(iOCT_hitbox2D hitboxA, iOCT_hitbox2D hitboxB);

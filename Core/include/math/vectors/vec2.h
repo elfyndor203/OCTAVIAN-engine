@@ -38,7 +38,7 @@ float OCT_vec2_degrees(OCT_vec2 vectorA, OCT_vec2 vectorB);
 
 OCT_vec2 OCT_vec2_unit(OCT_vec2 vectorA);
 OCT_vec2 OCT_vec2_neg(OCT_vec2 vectorA);
-OCT_vec2 OCT_vec2_normal(OCT_vec2 vectorA, OCT_AorB ccwOrCw);
+OCT_vec2 OCT_vec2_perp(OCT_vec2 vectorA, OCT_AorB ccwOrCw);
 /*!
  * Projects any number of vertices onto an axis, and returns the line that the projected points span.
  * @param axis

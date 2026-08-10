@@ -160,7 +160,7 @@ OCT_vec2 OCT_vec2_neg(OCT_vec2 vectorA) {
 	return (OCT_vec2) { -vectorA.x, -vectorA.y };
 }
 
-OCT_vec2 OCT_vec2_normal(OCT_vec2 vectorA, OCT_AorB ccwOrCw) {
+OCT_vec2 OCT_vec2_perp(OCT_vec2 vectorA, OCT_AorB ccwOrCw) {
 	if (ccwOrCw == OCT_B) {
 		OCT_vec2 cwNormal = (OCT_vec2){vectorA.y, -vectorA.x};
 		return cwNormal;

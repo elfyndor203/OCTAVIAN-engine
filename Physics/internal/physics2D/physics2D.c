@@ -18,7 +18,7 @@ void OCT_physics2D_attach(OCT_local entity, float mass, bool fixed) {
         .gravityStrength = 1,
         .f_const = OCT_VEC2_ZERO,   // does not include gravity
         .f_frame = OCT_VEC2_ZERO,
-        .v_lin = OCT_VEC2_ZERO,
+        .velocity = OCT_VEC2_ZERO,
         .prevPos = OCT_VEC2_ZERO,
         .fixed = fixed
     };
@@ -30,16 +30,16 @@ void OCT_physics2D_attach(OCT_local entity, float mass, bool fixed) {
 OCT_vec2 OCT_physics2D_setVelocity(OCT_local entity, OCT_vec2 velocity) {
     iOCT_physics2D* physics = eOCT_entity_getComponentOnce(entity, iOCT_physicsSystem_inst.physics2DKey);
 
-    OCT_vec2 oldVelocity = physics->v_lin;
-    physics->v_lin = velocity;
+    OCT_vec2 oldVelocity = physics->velocity;
+    physics->velocity = velocity;
     return OCT_vec2_sub(velocity, oldVelocity);
 }
 
 OCT_vec2 OCT_physics2D_addImpulse(OCT_local entity, OCT_vec2 impulse) {
     iOCT_physics2D* physics = eOCT_entity_getComponentOnce(entity, iOCT_physicsSystem_inst.physics2DKey);
 
-    physics->v_lin = OCT_vec2_add(physics->v_lin, OCT_vec2_div(impulse, physics->mass));
-    return physics->v_lin;
+    physics->velocity = OCT_vec2_add(physics->velocity, OCT_vec2_div(impulse, physics->mass));
+    return physics->velocity;
 }
 
 OCT_vec2 OCT_physics2D_addForceContinuous(OCT_local entity, OCT_vec2 force) {
@@ -76,7 +76,7 @@ OCT_vec2 OCT_physics2D_read(OCT_local entity, float* massOut, float* gravityOut,
     if (netForcesOut) {
         *netForcesOut = OCT_vec2_add(OCT_vec2_add(physics->f_const, physics->f_frame), OCT_vec2_mul(iOCT_physicsSystem_inst.worldGravity, physics->gravityStrength));
     }
-    return physics->v_lin;
+    return physics->velocity;
 }
 OCT_vec2 OCT_physics2D_readImplicit(OCT_local entity) {
     iOCT_physics2D* physics = eOCT_entity_getComponentOnce(entity, iOCT_physicsSystem_inst.physics2DKey);
@@ -87,17 +87,19 @@ OCT_vec2 OCT_physics2D_readImplicit(OCT_local entity) {
     return OCT_vec2_div(deltaPos, iOCT_physicsSystem_inst.dt);
 }
 
-void iOCT_physics2D_integrateEuler(iOCT_physics2D* physics2D, OCT_vec2* position, float dt) {
+void iOCT_physics2D_integrateEuler(iOCT_physics2D* physics2D, OCT_vec2* position, float* rotation, float dt) {
     OCT_vec2 fNet = iOCT_physics2D_resolveFrameNetForce(physics2D);
     OCT_vec2 accel_lin = OCT_vec2_div(fNet, physics2D->mass);
 
     OCT_vec2 deltaVel_lin = OCT_vec2_mul(accel_lin, dt);
-    OCT_vec2 newVel_lin = OCT_vec2_add(deltaVel_lin, physics2D->v_lin);
+    OCT_vec2 newVel_lin = OCT_vec2_add(deltaVel_lin, physics2D->velocity);
     OCT_vec2 deltaPos = OCT_vec2_mul(newVel_lin, dt);
 
     *position = OCT_vec2_add(*position, deltaPos);
-    physics2D->v_lin = newVel_lin;
+    physics2D->velocity = newVel_lin;
 
+    float deltaRot = physics2D->angVelocity * dt;
+    *rotation += deltaRot;
     // printf("New velocity: %f, %f\n", physics2D->v_lin.x, physics2D->v_lin.y);
 }
 

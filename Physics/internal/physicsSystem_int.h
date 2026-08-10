@@ -11,6 +11,7 @@ struct iOCT_physicsSystem {
     eOCT_dataPoolKey hitbox2DKey;
     eOCT_fieldTicket transform2DTicket;
     eOCT_fieldTicket position2DTicket;
+    eOCT_fieldTicket rotationTicket;
 
     OCT_vec2 worldGravity;
     double dt;
