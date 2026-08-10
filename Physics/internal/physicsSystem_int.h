@@ -13,6 +13,8 @@ struct iOCT_physicsSystem {
     eOCT_fieldTicket position2DTicket;
     eOCT_fieldTicket rotationTicket;
 
+    eOCT_singleKey box2DWorldKey;
+
     OCT_vec2 worldGravity;
     double dt;
     OCT_index constraintSolveIterations;
@@ -21,3 +23,4 @@ struct iOCT_physicsSystem {
 extern iOCT_physicsSystem iOCT_physicsSystem_inst;
 
 void iOCT_physicsSystem_init();
+void iOCT_physicsSystem_setupContext(OCT_global context);

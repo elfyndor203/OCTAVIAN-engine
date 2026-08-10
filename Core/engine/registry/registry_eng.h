@@ -5,6 +5,8 @@
 #include "utilities/utilities_eng.h"
 #include "layout/types_eng.h"
 
+#define eOCT_DATAUNION_SIZE 36
+
 typedef enum eOCT_dataPattern {
 	eOCT_DATAPATTERN_COMPONENT = 1,
 	eOCT_DATAPATTERN_EVENT,
@@ -31,7 +33,9 @@ typedef enum eOCT_dataTypes { //__NOTE__ typedef all types? or no
 	eOCT_DATATYPE_VEC3,
 	eOCT_DATATYPE_VEC4,
 	eOCT_DATATYPE_MAT3,
-	eOCT_DATATYPE_MAT4
+	eOCT_DATATYPE_MAT4,
+
+	eOCT_DATATYPE_CUSTOM	// Must have a size of <= eOCT_DATAUNION_SIZE. Redefine if necessary. Won't be readable by other systems. Should be used for external API data that needs to be context-local.
 } eOCT_dataTypes;
 
 union eOCT_dataUnion {
@@ -48,6 +52,8 @@ union eOCT_dataUnion {
 	OCT_vec3 vec3;
 	OCT_vec4 vec4;
 	OCT_mat3 mat3;
+
+	char opaque[eOCT_DATAUNION_SIZE];
 };
 
 struct eOCT_fieldRequest {

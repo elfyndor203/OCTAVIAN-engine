@@ -15,7 +15,9 @@
 
 static eOCT_pool iOCT_entityContext_initComponentPools();
 static eOCT_pool iOCT_entityContext_initDataPools();
+static eOCT_pool iOCT_entityContext_initSingles();
 static OCT_local iOCT_entityContext_initRootEntity(iOCT_entityContext* context);
+static void iOCT_entityContext_initSystems(OCT_global contextHandle);
 
 OCT_global OCT_entityContext_open(OCT_local* rootOut) {
 	OCT_ID newID;
@@ -31,8 +33,10 @@ OCT_global OCT_entityContext_open(OCT_local* rootOut) {
 	};
 	eOCT_pool_setFill(&newContext->entities, noComponent); 	// mark all component indices as unset
 
+	// init components and root entity
 	newContext->components = iOCT_entityContext_initComponentPools();
 	newContext->dataPools = iOCT_entityContext_initDataPools();
+	newContext->singles = iOCT_entityContext_initSingles();
 	newContext->events = iOCT_eventManager_open(newID);
 	OCT_local rootEntity = iOCT_entityContext_initRootEntity(newContext);
 	if (rootOut) {
@@ -44,6 +48,8 @@ OCT_global OCT_entityContext_open(OCT_local* rootOut) {
 		.systemID = OCT_ID_ECS,
 		.objectID = newID,
 	};
+
+	iOCT_entityContext_initSystems(contextHandle);
 	printf("Allocated entityContext %"PRIu64"\n", newID);
 	return contextHandle;
 }
@@ -83,6 +89,16 @@ static eOCT_pool iOCT_entityContext_initDataPools() {
 	return containerPool;
 }
 
+static eOCT_pool iOCT_entityContext_initSingles() {
+	OCT_index localSinglesCt = iOCT_registry_inst.localSingles.count;
+
+	eOCT_pool singlesPool = eOCT_pool_open(OCT_ID_ECS, localSinglesCt, sizeof(eOCT_dataUnion));
+	for (OCT_index singleCtr = 0; singleCtr < localSinglesCt; singleCtr++) {
+		eOCT_pool_addEntryNew(&singlesPool, NULL, NULL);
+	}
+
+	return singlesPool;
+}
 static OCT_local iOCT_entityContext_initRootEntity(iOCT_entityContext* context) {
 	OCT_local rootEntity = iOCT_entity_new(context);
 
@@ -97,6 +113,17 @@ static OCT_local iOCT_entityContext_initRootEntity(iOCT_entityContext* context) 
 	}
 
 	return rootEntity;
+}
+
+static void iOCT_entityContext_initSystems(OCT_global contextHandle) {
+	eOCT_pool systemPool = iOCT_registry_inst.systems;
+
+	for (OCT_index systemCtr = 0; systemCtr < systemPool.count; systemCtr++) {
+		eOCT_systemDescription system = *(eOCT_systemDescription*)eOCT_pool_access(&systemPool, systemCtr, 0);
+		if (system.contextInitFx) {
+			system.contextInitFx(contextHandle);
+		}
+	}
 }
 
 eOCT_contextToken eOCT_context_getToken(OCT_global contextHandle) {

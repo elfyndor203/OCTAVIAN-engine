@@ -6,6 +6,18 @@
 #include "constraints/constraints_int.h"
 
 void system_register_PHYSICS() {
+    eOCT_fieldDescription box2DWorld = {
+        .name = "box2DWorld",
+        .offset = 0,
+        .providerType = eOCT_DATAPATTERN_SINGLE,
+        .type = eOCT_DATATYPE_CUSTOM
+    };
+    eOCT_singleDescription box2DWorldSingle = {
+        .name = "box2DWorld",
+        .providedField = box2DWorld,
+        .global = false,
+        .keyCacheLocation = &iOCT_physicsSystem_inst.box2DWorldKey
+    };
     eOCT_componentDescription physics2D = {
         .name = "physics2D",
         .entityHandleValueOffset = offsetof(iOCT_physics2D, entityHandle),
@@ -59,8 +71,9 @@ void system_register_PHYSICS() {
         .providedComponents = eOCT_generateComponentDescriptionPool(1, physics2D),
         .providedDataPools = eOCT_generateDataPoolDescriptionPool(2, rope2D, hitbox2D),
         .providedEvents = eOCT_POOL_EMPTY,
-        .providedSingles = eOCT_POOL_EMPTY,
+        .providedSingles = eOCT_generateSingleDescriptionPool(1, box2DWorldSingle),
         .requestedFields = eOCT_generateFieldRequestPool(2, transform2D, position2D),
+        .contextInitFx = iOCT_physicsSystem_setupContext,
         .initFx = iOCT_physicsSystem_init
     };
 

@@ -1,5 +1,6 @@
 #include "physicsSystem_int.h"
 
+#include <box2d/box2d.h>
 
 #include "physics2D/physics2D.h"
 #include "physics2D/physics2D_int.h"
@@ -17,9 +18,25 @@ void iOCT_physicsSystem_init() {
 }
 
 void iOCT_physicsSystem_setupContext(OCT_global context) {
+    b2WorldDef worldDef = b2DefaultWorldDef();
+    worldDef.gravity = (b2Vec2){iOCT_physicsSystem_inst.worldGravity.x, iOCT_physicsSystem_inst.worldGravity.y};
+    b2WorldId worldID = b2CreateWorld(&worldDef);
+    b2WorldId* worldSingle = (b2WorldId*)eOCT_single_getLocal(iOCT_physicsSystem_inst.box2DWorldKey, context);
+    *worldSingle = worldID;
+
+    b2BodyDef groundBodyDef = b2DefaultBodyDef();
+    groundBodyDef.position = (b2Vec2){0.0f, -10.0f};
+    b2BodyId groundId = b2CreateBody(worldID, &groundBodyDef);
+    b2Polygon groundBox = b2MakeBox(50.0f, 10.0f);
+    b2ShapeDef groundShapeDef = b2DefaultShapeDef();
+    b2CreatePolygonShape(groundId, &groundShapeDef, &groundBox);
+}
+
+void eOCT_PHYSICS_update(OCT_global context) {
 
 }
-void eOCT_PHYSICS_update(OCT_global context) {
+
+void eOCT_PHYSICS_updateCustom(OCT_global context) {
     eOCT_pool* physicsPool = eOCT_component_getPool(context, iOCT_physicsSystem_inst.physics2DKey);
     iOCT_physics2D* physicsArray = (iOCT_physics2D*)physicsPool->array;
     eOCT_contextToken contextToken = eOCT_context_getToken(context);
@@ -39,18 +56,18 @@ void eOCT_PHYSICS_update(OCT_global context) {
     iOCT_rope2D* ropeArray = (iOCT_rope2D*)ropePool->array;
     eOCT_pool* hitboxPool = &eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.hitbox2DKey, context)->pool;
     iOCT_hitbox2D* hitboxArray = (iOCT_hitbox2D*)hitboxPool->array;
-    // for (OCT_index iteration = 0; iteration < iOCT_physicsSystem_inst.constraintSolveIterations; iteration++) {
-    //     for (OCT_index ropeCtr = 0; ropeCtr < ropePool->count; ropeCtr++) {
-    //         iOCT_rope2D rope = ropeArray[ropeCtr];
-    //         iOCT_rope2D_solve(rope, contextToken);
-    //     }
-    //
-    //     for (OCT_index hitboxCtr = 0; hitboxCtr < hitboxPool->count; hitboxCtr++) {
-    //         iOCT_hitbox2D hitbox = hitboxArray[hitboxCtr];
-    //         for (OCT_index compareCtr = hitboxCtr + 1; compareCtr < hitboxPool->count; compareCtr++) {
-    //             iOCT_hitbox2D compare = hitboxArray[compareCtr];
-    //             iOCT_hitbox2D_solve(hitbox, compare);
-    //         }
-    //     }
-    // }
+    for (OCT_index iteration = 0; iteration < iOCT_physicsSystem_inst.constraintSolveIterations; iteration++) {
+        for (OCT_index ropeCtr = 0; ropeCtr < ropePool->count; ropeCtr++) {
+            iOCT_rope2D rope = ropeArray[ropeCtr];
+            iOCT_rope2D_solve(rope, contextToken);
+        }
+
+        for (OCT_index hitboxCtr = 0; hitboxCtr < hitboxPool->count; hitboxCtr++) {
+            iOCT_hitbox2D hitbox = hitboxArray[hitboxCtr];
+            for (OCT_index compareCtr = hitboxCtr + 1; compareCtr < hitboxPool->count; compareCtr++) {
+                iOCT_hitbox2D compare = hitboxArray[compareCtr];
+                iOCT_hitbox2D_solve(hitbox, compare);
+            }
+        }
+    }
 }
