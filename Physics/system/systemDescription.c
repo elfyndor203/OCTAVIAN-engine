@@ -20,11 +20,11 @@ void system_register_PHYSICS() {
     };
     eOCT_componentDescription physics2D = {
         .name = "physics2D",
-        .entityHandleValueOffset = offsetof(iOCT_physics2D, entityHandle),
+        .entityHandleValueOffset = offsetof(iOCT_physics2D_b2, entityHandle),
         .providedFields = eOCT_POOL_EMPTY,
         .sort = false,
         .sortValueOffset = eOCT_POOL_SORT_NONE,
-        .stride = sizeof(iOCT_physics2D),
+        .stride = sizeof(iOCT_physics2D_b2),
         .rootAttachmentFx = NULL,
         .keyCacheLocation = &iOCT_physicsSystem_inst.physics2DKey
     };
@@ -73,7 +73,7 @@ void system_register_PHYSICS() {
         .providedEvents = eOCT_POOL_EMPTY,
         .providedSingles = eOCT_generateSingleDescriptionPool(1, box2DWorldSingle),
         .requestedFields = eOCT_generateFieldRequestPool(2, transform2D, position2D),
-        .contextInitFx = iOCT_physicsSystem_setupContext,
+        .contextInitFx = iOCT_physicsSystem_contextSetup,
         .initFx = iOCT_physicsSystem_init
     };
 

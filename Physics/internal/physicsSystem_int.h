@@ -18,9 +18,11 @@ struct iOCT_physicsSystem {
     OCT_vec2 worldGravity;
     double dt;
     OCT_index constraintSolveIterations;
+
+    float unitsPerB2Meter;
 };
 
 extern iOCT_physicsSystem iOCT_physicsSystem_inst;
 
 void iOCT_physicsSystem_init();
-void iOCT_physicsSystem_setupContext(OCT_global context);
+void iOCT_physicsSystem_contextSetup(OCT_global context);

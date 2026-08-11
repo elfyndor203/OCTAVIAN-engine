@@ -8,7 +8,7 @@
 
 static OCT_vec2 iOCT_physics2D_resolveFrameNetForce(iOCT_physics2D* physics2D);
 
-void OCT_physics2D_attach(OCT_local entity, float mass, bool fixed) {
+void OCT_physics2D_attachOld(OCT_local entity, float mass, bool fixed) {
     if (mass <= 0) {
         OCT_ERROR_LOG(OCT_EXIT_INVALID_ARGUMENT, "Entities must have positive mass. Fix in place or adjust gravity instead.");
     }
@@ -23,6 +23,39 @@ void OCT_physics2D_attach(OCT_local entity, float mass, bool fixed) {
         .fixed = fixed
     };
     eOCT_entity_attachComponentOnce(entity, iOCT_physicsSystem_inst.physics2DKey, &newPhysics, NULL);
+
+    printf("Attached physics2D to entity %zu\n", entity.objectID);
+}
+
+void OCT_physics2D_attachNew(OCT_local entity, float mass, bool dynamic) {
+    OCT_mat3 transform = *(OCT_mat3*)eOCT_entity_getFieldOnce(entity, iOCT_physicsSystem_inst.transform2DTicket);
+    OCT_vec2 position = OCT_mat3_getTranslation(transform);
+
+    b2WorldId worldID = *(b2WorldId*)eOCT_single_getLocal(iOCT_physicsSystem_inst.box2DWorldKey, entity.contextHandle);
+
+    b2BodyDef newBodyDef = b2DefaultBodyDef();
+    newBodyDef.position = (b2Vec2){position.x, position.y};
+    newBodyDef.rotation = b2MakeRot(OCT_mat3_getRotation(transform));
+    b2BodyId newID;
+    if (dynamic) {
+        newBodyDef.type = b2_dynamicBody;
+
+        newID = b2CreateBody(worldID, &newBodyDef);
+
+        b2Polygon box = b2MakeBox(0.5f,0.5f);
+        b2ShapeDef shapeDef = b2DefaultShapeDef();
+        shapeDef.isSensor = true;
+        b2CreatePolygonShape(newID, &shapeDef, &box);
+    }
+    else {
+        newID = b2CreateBody(worldID, &newBodyDef);
+    }
+
+    iOCT_physics2D_b2 newPhysics = {
+        .entityHandle = entity,
+        .b2dBodyID = newID
+    };
+    iOCT_physics2D_b2* dataLoc = eOCT_entity_attachComponentOnce(entity, iOCT_physicsSystem_inst.physics2DKey, &newPhysics, NULL);
 
     printf("Attached physics2D to entity %zu\n", entity.objectID);
 }

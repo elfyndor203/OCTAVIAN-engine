@@ -1,6 +1,6 @@
 #include "constraints_int.h"
 
-OCT_local OCT_rope2D_new(OCT_local entityA, OCT_local entityB, float length) {
+OCT_local OCT_rope2D_new_OLD(OCT_local entityA, OCT_local entityB, float length) {
     if (!eOCT_entity_hasComponentOnce(entityA, iOCT_physicsSystem_inst.physics2DKey) || !eOCT_entity_hasComponentOnce(entityB, iOCT_physicsSystem_inst.physics2DKey)) {
         OCT_ERROR_LOG(OCT_EXIT_REQUIREMENT_NOT_MET, "Entities must both have physics components attached");
         return OCT_LOCAL_NULL;
@@ -28,7 +28,7 @@ OCT_local OCT_rope2D_new(OCT_local entityA, OCT_local entityB, float length) {
     return ropeHandle;
 }
 
-void OCT_rope2D_length(OCT_local rope2D, float newLength) {
+void OCT_rope2D_length_OLD(OCT_local rope2D, float newLength) {
     eOCT_mappedPool* ropeMPool = eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.rope2DKey, rope2D.contextHandle);
     iOCT_rope2D* rope = (iOCT_rope2D*)eOCT_mappedPool_getByID(ropeMPool, rope2D.objectID);
 
@@ -66,7 +66,7 @@ void OCT_rope2D_length(OCT_local rope2D, float newLength) {
     rope->length = newLength;
 }
 
-bool OCT_rope2D_disable(OCT_local rope2D) {
+bool OCT_rope2D_disable_OLD(OCT_local rope2D) {
     eOCT_mappedPool* ropeMPool = eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.rope2DKey, rope2D.contextHandle);
     iOCT_rope2D* rope = (iOCT_rope2D*)eOCT_mappedPool_getByID(ropeMPool, rope2D.objectID);
 
@@ -80,7 +80,7 @@ bool OCT_rope2D_disable(OCT_local rope2D) {
     rope->enabled = false;
     return changed;
 }
-bool OCT_rope2D_enable(OCT_local rope2D) {
+bool OCT_rope2D_enable_OLD(OCT_local rope2D) {
     eOCT_mappedPool* ropeMPool = eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.rope2DKey, rope2D.contextHandle);
     iOCT_rope2D* rope = (iOCT_rope2D*)eOCT_mappedPool_getByID(ropeMPool, rope2D.objectID);
 

@@ -17,7 +17,8 @@ void OCT_engine_updateContext(OCT_global context) {
     eOCT_entityContext_prepare(context);
 
     eOCT_WORLD_update(context);
-    eOCT_PHYSICS_updateCustom(context);
+    // eOCT_PHYSICS_updateCustomLoop(context);
+    eOCT_PHYSICS_update(context);
     eOCT_RENDERER_update(context);
 }
 

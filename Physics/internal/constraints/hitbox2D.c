@@ -3,9 +3,9 @@
 
 #include "physicsSystem_int.h"
 
-OCT_local OCT_hitbox2D_new(OCT_local entity, OCT_vec2 dimensions, OCT_vec2 position, float rotation) {
+OCT_local OCT_hitbox2D_new_OLD(OCT_local entity, OCT_vec2 dimensions, OCT_vec2 position, float rotation) {
     if (!eOCT_entity_hasComponentOnce(entity, iOCT_physicsSystem_inst.physics2DKey)) {
-        OCT_ERROR_LOG(OCT_EXIT_REQUIREMENT_NOT_MET, "Entities must both have physics components attached");
+        OCT_ERROR_LOG(OCT_EXIT_REQUIREMENT_NOT_MET, "Entities must have physics components attached");
         return OCT_LOCAL_NULL;
     }
 

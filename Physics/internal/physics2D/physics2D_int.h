@@ -3,6 +3,7 @@
 
 #include "OCT_Core_eng.h"
 #include <stdbool.h>
+#include <box2d/box2d.h>
 
 struct iOCT_physics2D {
     OCT_local entityHandle;
@@ -19,6 +20,12 @@ struct iOCT_physics2D {
 
     OCT_vec2 prevPos;
     bool fixed;
+};
+
+struct iOCT_physics2D_b2 {
+    OCT_local entityHandle;
+
+    b2BodyId b2dBodyID;
 };
 
 void iOCT_physics2D_integrateEuler(iOCT_physics2D* physics2D, OCT_vec2* position, float* rotation, float dt);

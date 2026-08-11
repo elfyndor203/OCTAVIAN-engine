@@ -14,6 +14,8 @@ add_library(Physics STATIC
         internal/constraints/types_int.h
         include/physics2D/constraints.h
         internal/constraints/hitbox2D.c
+        internal/constraints/collider2D.c
+        internal/constraints/collider2D_int.h
 )
 
 target_include_directories(Physics

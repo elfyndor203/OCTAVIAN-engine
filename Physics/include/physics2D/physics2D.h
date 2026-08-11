@@ -5,12 +5,13 @@
 #define OCT_GRAVITY_DEFAULT ((OCT_vec2){0.0f, -1000.0f})
 #define OCT_PHYSICS_REFRESH_DEFAULT 60
 
-void OCT_physics2D_attach(OCT_local entity, float mass, bool fixed);
-OCT_vec2 OCT_physics2D_setVelocity(OCT_local entity, OCT_vec2 velocity);
-OCT_vec2 OCT_physics2D_addImpulse(OCT_local entity, OCT_vec2 impulse);
-OCT_vec2 OCT_physics2D_addForceContinuous(OCT_local entity, OCT_vec2 force);
-OCT_vec2 OCT_physics2D_addForceInstantaneous(OCT_local entity, OCT_vec2 force);
-float OCT_physics2D_setGravity(OCT_local entity, float gravityStrength);
+// void OCT_physics2D_attachOld(OCT_local entity, float mass, bool fixed);
+void OCT_physics2D_attachNew(OCT_local entity, float mass, bool dynamic);
+// OCT_vec2 OCT_physics2D_setVelocity(OCT_local entity, OCT_vec2 velocity);
+// OCT_vec2 OCT_physics2D_addImpulse(OCT_local entity, OCT_vec2 impulse);
+// OCT_vec2 OCT_physics2D_addForceContinuous(OCT_local entity, OCT_vec2 force);
+// OCT_vec2 OCT_physics2D_addForceInstantaneous(OCT_local entity, OCT_vec2 force);
+// float OCT_physics2D_setGravity(OCT_local entity, float gravityStrength);
 /*!
  *
  * @param entity

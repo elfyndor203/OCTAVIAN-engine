@@ -10,6 +10,14 @@
 
 iOCT_physicsSystem iOCT_physicsSystem_inst = {0};
 
+void OCT_physicsSystem_config(OCT_index worldUnitsPerMeter) {
+    if (worldUnitsPerMeter == OCT_CONFIG_DEFAULT) {
+        iOCT_physicsSystem_inst.unitsPerB2Meter = 1.0f;
+    }
+    else {
+        iOCT_physicsSystem_inst.unitsPerB2Meter = (float)worldUnitsPerMeter;
+    }
+}
 void iOCT_physicsSystem_init() {
     iOCT_physicsSystem_inst.worldGravity = OCT_GRAVITY_DEFAULT;
     iOCT_physicsSystem_inst.dt = 1.0 / OCT_PHYSICS_REFRESH_DEFAULT;
@@ -17,26 +25,44 @@ void iOCT_physicsSystem_init() {
     iOCT_physicsSystem_inst.constraintSolveIterations = iOCT_PHYSICS_CONSTRAINT_SOLVE_ITERATIONS_DEFAULT;
 }
 
-void iOCT_physicsSystem_setupContext(OCT_global context) {
+void iOCT_physicsSystem_contextSetup(OCT_global context) {
     b2WorldDef worldDef = b2DefaultWorldDef();
-    worldDef.gravity = (b2Vec2){iOCT_physicsSystem_inst.worldGravity.x, iOCT_physicsSystem_inst.worldGravity.y};
+    worldDef.gravity = (b2Vec2){0.0f, -10.0f};
     b2WorldId worldID = b2CreateWorld(&worldDef);
     b2WorldId* worldSingle = (b2WorldId*)eOCT_single_getLocal(iOCT_physicsSystem_inst.box2DWorldKey, context);
     *worldSingle = worldID;
 
-    b2BodyDef groundBodyDef = b2DefaultBodyDef();
-    groundBodyDef.position = (b2Vec2){0.0f, -10.0f};
-    b2BodyId groundId = b2CreateBody(worldID, &groundBodyDef);
-    b2Polygon groundBox = b2MakeBox(50.0f, 10.0f);
-    b2ShapeDef groundShapeDef = b2DefaultShapeDef();
-    b2CreatePolygonShape(groundId, &groundShapeDef, &groundBox);
+    // b2BodyDef groundBodyDef = b2DefaultBodyDef();
+    // groundBodyDef.position = (b2Vec2){0.0f, -10.0f};
+    // b2BodyId groundId = b2CreateBody(worldID, &groundBodyDef);
+    // b2Polygon groundBox = b2MakeBox(50.0f, 10.0f);
+    // b2ShapeDef groundShapeDef = b2DefaultShapeDef();
+    // b2CreatePolygonShape(groundId, &groundShapeDef, &groundBox);
 }
 
 void eOCT_PHYSICS_update(OCT_global context) {
+    b2WorldId worldID = *(b2WorldId*)eOCT_single_getLocal(iOCT_physicsSystem_inst.box2DWorldKey, context);
 
+    b2World_Step(worldID, 1.0f / 60.0f, 4);
+
+    eOCT_pool* physicsPool = eOCT_component_getPool(context, iOCT_physicsSystem_inst.physics2DKey);
+    iOCT_physics2D_b2* physicsArray = (iOCT_physics2D_b2*)physicsPool->array;
+    eOCT_contextToken contextToken = eOCT_context_getToken(context);
+    for (OCT_index physCtr = 0; physCtr < physicsPool->count; physCtr++) {
+        iOCT_physics2D_b2* physics = &physicsArray[physCtr];
+
+        OCT_vec2* position = (OCT_vec2*)eOCT_entity_getField(contextToken, physics->entityHandle, iOCT_physicsSystem_inst.position2DTicket);    // __NOTE__ THESE ARE LOCAL POSITIONS, NOT GLOBAL
+        float* rotation = (float*)eOCT_entity_getField(contextToken, physics->entityHandle, iOCT_physicsSystem_inst.rotationTicket);
+        b2Vec2 newPos = b2Body_GetPosition(physics->b2dBodyID);
+        float newRot = b2Rot_GetAngle(b2Body_GetRotation(physics->b2dBodyID));
+
+        printf("new position: %f %f\n", newPos.x, newPos.y);
+        *position = OCT_vec2_mul((OCT_vec2){newPos.x, newPos.y}, iOCT_physicsSystem_inst.unitsPerB2Meter);
+        *rotation = newRot;
+    }
 }
 
-void eOCT_PHYSICS_updateCustom(OCT_global context) {
+void eOCT_PHYSICS_updateCustomLoop(OCT_global context) {
     eOCT_pool* physicsPool = eOCT_component_getPool(context, iOCT_physicsSystem_inst.physics2DKey);
     iOCT_physics2D* physicsArray = (iOCT_physics2D*)physicsPool->array;
     eOCT_contextToken contextToken = eOCT_context_getToken(context);
@@ -49,7 +75,7 @@ void eOCT_PHYSICS_updateCustom(OCT_global context) {
         OCT_vec2* position = (OCT_vec2*)eOCT_entity_getField(contextToken, physics->entityHandle, iOCT_physicsSystem_inst.position2DTicket);    // __NOTE__ THESE ARE LOCAL POSITIONS, NOT GLOBAL
         float* rotation = (float*)eOCT_entity_getField(contextToken, physics->entityHandle, iOCT_physicsSystem_inst.rotationTicket);
         physics->prevPos = *position;
-        iOCT_physics2D_integrateEuler(physics, position, rotation, iOCT_physicsSystem_inst.dt);
+        // iOCT_physics2D_integrateEuler(physics, position, rotation, iOCT_physicsSystem_inst.dt);
     }
 
     eOCT_pool* ropePool = &eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.rope2DKey, context)->pool;
