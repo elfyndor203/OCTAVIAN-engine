@@ -70,6 +70,7 @@ void* eOCT_pool_addEntryNew(eOCT_pool* pool, void* source, OCT_index* outIndex) 
 	}
 
 	OCT_index destinationIndex;
+	OCT_index entriesToMove;
 	if (pool->sort) {
 		size_t sortValue = *(size_t*)((char*)source + pool->sortValueOffset);
 		iOCT_findDestination(pool, sortValue, &destinationIndex);
@@ -77,7 +78,15 @@ void* eOCT_pool_addEntryNew(eOCT_pool* pool, void* source, OCT_index* outIndex) 
 	else {
 		destinationIndex = pool->count;
 	}
-	void* destinationBase = eOCT_pool_access(pool, pool->count, 0);
+	entriesToMove = pool->count - destinationIndex;
+
+	if (entriesToMove > 0) {
+		void* moveSource = eOCT_pool_access(pool, destinationIndex, 0);
+		void* moveDestination = eOCT_pool_access(pool, destinationIndex + 1, 0);
+		memmove(moveSource, moveDestination, pool->elementSize);
+	}
+
+	void* destinationBase = eOCT_pool_access(pool, destinationIndex, 0);
 	if (source) {
 		memcpy(destinationBase, source, pool->elementSize);
 	}
@@ -161,38 +170,38 @@ void eOCT_pool_free(eOCT_pool* pool) {
 // 	pool->count += count;
 // 	return slot;
 // }
-void* eOCT_pool_addEntrySorted(eOCT_pool* pool, OCT_index sortValue, OCT_index* outIndex) {
-	if (pool->sortValueOffset == eOCT_POOL_SORT_NONE) {
-		OCT_ERROR_LOG(OCT_ERR_CREATION_FAILED, "Cannot add sorted item to a pool without a sort setting");
-		return NULL;
-	}
-	if (pool->count == pool->capacity) {
-		iOCT_pool_expand(pool, 2);
-	}
-
-	// shift logic: shifts everything from the displaced slot to the end by 1
-	OCT_index slotIndex;		// slot of the added value
-	void* slot = iOCT_findDestination(pool, sortValue, &slotIndex);
-	void* displaceBase = (char*)slot + pool->elementSize;					// destination of the first displaced value
-	const OCT_index displaceCount = pool->count - slotIndex;
-	size_t displaceSize = pool->elementSize * displaceCount;	// size of everything after the added value
-	memmove(displaceBase, slot, displaceSize);
-
-	// // idmap update logic: calls a map update function for each entry displaced
-	// if (pool->mapSetting.shuffleCallback) {
-	// 	for (OCT_index updateCount = 0; updateCount < displaceCount; updateCount++) {
-	// 		OCT_index entryNewIndex = slotIndex + updateCount;
-	// 		OCT_ID entryID = *(OCT_ID*)(displaceBase + (updateCount * pool->elementSize) + pool->mapSetting.IDValueOffset); // base -> entry -> ID
-	// 		pool->mapSetting.shuffleCallback(pool->mapSetting.IDMap, entryID, entryNewIndex);	// can send a NULL IDMap if the callback does not need it, the standard remap can catch if necessary
-	// 	}
-	// }
-
-	if (outIndex) {
-		*outIndex = slotIndex;
-	}
-	pool->count++;
-	return slot;
-}
+// void* eOCT_pool_addEntrySorted(eOCT_pool* pool, OCT_index sortValue, OCT_index* outIndex) {
+// 	if (pool->sortValueOffset == eOCT_POOL_SORT_NONE) {
+// 		OCT_ERROR_LOG(OCT_ERR_CREATION_FAILED, "Cannot add sorted item to a pool without a sort setting");
+// 		return NULL;
+// 	}
+// 	if (pool->count == pool->capacity) {
+// 		iOCT_pool_expand(pool, 2);
+// 	}
+//
+// 	// shift logic: shifts everything from the displaced slot to the end by 1
+// 	OCT_index slotIndex;		// slot of the added value
+// 	void* slot = iOCT_findDestination(pool, sortValue, &slotIndex);
+// 	void* displaceBase = (char*)slot + pool->elementSize;					// destination of the first displaced value
+// 	const OCT_index displaceCount = pool->count - slotIndex;
+// 	size_t displaceSize = pool->elementSize * displaceCount;	// size of everything after the added value
+// 	memmove(displaceBase, slot, displaceSize);
+//
+// 	// // idmap update logic: calls a map update function for each entry displaced
+// 	// if (pool->mapSetting.shuffleCallback) {
+// 	// 	for (OCT_index updateCount = 0; updateCount < displaceCount; updateCount++) {
+// 	// 		OCT_index entryNewIndex = slotIndex + updateCount;
+// 	// 		OCT_ID entryID = *(OCT_ID*)(displaceBase + (updateCount * pool->elementSize) + pool->mapSetting.IDValueOffset); // base -> entry -> ID
+// 	// 		pool->mapSetting.shuffleCallback(pool->mapSetting.IDMap, entryID, entryNewIndex);	// can send a NULL IDMap if the callback does not need it, the standard remap can catch if necessary
+// 	// 	}
+// 	// }
+//
+// 	if (outIndex) {
+// 		*outIndex = slotIndex;
+// 	}
+// 	pool->count++;
+// 	return slot;
+// }
 bool eOCT_pool_fill(const eOCT_pool* pool, eOCT_pool_fillSetting fillSetting) {
 	if (fillSetting.fillStyle == eOCT_POOL_FILLSTYLE_NONE) {
 		printf("No fill setting chosen\n");

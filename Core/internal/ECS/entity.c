@@ -226,14 +226,34 @@ static OCT_index* iOCT_entity_getComponentIndexEntry(iOCT_entityContext* context
 }
 static void iOCT_entity_resolveIndices(iOCT_entityContext* context, eOCT_pool* componentPool, eOCT_componentKey component, OCT_index skip) {
 	for (OCT_index compIndex = 0; compIndex < componentPool->count; compIndex++) {
-		// if (compIndex == skip) {	// for when creating a new entry, the ID will already be resolved by itself later
-		// 	continue;
-		// }
+		if (compIndex == skip) {	// for when creating a new entry, the ID will already be resolved by itself later
+			continue;
+		}
 		OCT_local entity = *(OCT_local*)eOCT_pool_access(componentPool, compIndex, component.entityHandleValueOffset);
 		OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
 		OCT_index* componentSlot = iOCT_entity_getComponentIndexEntry(context, entityIndex, component);
 
+		if (*componentSlot != compIndex) {
+			printf("Index updated. Old index: %zu\n", *componentSlot);
+		}
+		printf("Entity %zu now has component of type %zu at index %zu\n", entity.objectID, component.componentTypeIndex, compIndex);
 		*componentSlot = compIndex;
 	}
 }
 #pragma endregion
+
+void OCT_entity_printAllComponentLinks(OCT_global contextHandle) {
+	iOCT_entityContext* context = iOCT_entityContext_get(contextHandle.objectID);
+
+	OCT_index* entityArray = (OCT_index*)context->entities.array;
+
+	for (OCT_index entityCtr = 0; entityCtr < context->entities.count; entityCtr++) {
+		OCT_index* entityBase = entityArray + entityCtr;
+		printf("Entity #%zu:\n", entityCtr);
+		for (OCT_index componentTypeCtr = 0; componentTypeCtr < context->components.count; componentTypeCtr++) {
+			OCT_index* componentIndexBase = entityBase + componentTypeCtr;
+			printf("  Component type %zu: Index: %zu\n", componentTypeCtr, *componentIndexBase);
+		}
+
+	}
+}
