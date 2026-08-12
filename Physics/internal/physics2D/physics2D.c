@@ -30,11 +30,12 @@ void OCT_physics2D_attachOld(OCT_local entity, float mass, bool fixed) {
 void OCT_physics2D_attachNew(OCT_local entity, float mass, bool dynamic) {
     OCT_mat3 transform = *(OCT_mat3*)eOCT_entity_getFieldOnce(entity, iOCT_physicsSystem_inst.transform2DTicket);
     OCT_vec2 position = OCT_mat3_getTranslation(transform);
+    OCT_vec2 positionMeters = OCT_vec2_div(position, iOCT_physicsSystem_inst.unitsPerB2Meter);
 
     b2WorldId worldID = *(b2WorldId*)eOCT_single_getLocal(iOCT_physicsSystem_inst.box2DWorldKey, entity.contextHandle);
 
     b2BodyDef newBodyDef = b2DefaultBodyDef();
-    newBodyDef.position = (b2Vec2){position.x, position.y};
+    newBodyDef.position = (b2Vec2){positionMeters.x, positionMeters.y};
     newBodyDef.rotation = b2MakeRot(OCT_mat3_getRotation(transform));
     b2BodyId newID;
     if (dynamic) {

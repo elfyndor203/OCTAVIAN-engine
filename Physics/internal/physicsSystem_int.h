@@ -3,6 +3,8 @@
 
 #include "OCT_Core_eng.h"
 
+#include <box2d/box2d.h>
+
 struct iOCT_physicsSystem {
     OCT_ID systemID;
 
@@ -26,3 +28,5 @@ extern iOCT_physicsSystem iOCT_physicsSystem_inst;
 
 void iOCT_physicsSystem_init();
 void iOCT_physicsSystem_contextSetup(OCT_global context);
+
+b2Vec2 iOCT_toB2Vec2(OCT_vec2);

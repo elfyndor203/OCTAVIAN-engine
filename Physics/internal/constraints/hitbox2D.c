@@ -58,12 +58,12 @@ bool iOCT_hitbox2D_solve(iOCT_hitbox2D hitboxA, iOCT_hitbox2D hitboxB) {
     OCT_rect2 rectA = {
         .dimensions = OCT_vec2_mul_eleWise(hitboxA.dimensions, OCT_mat3_getScale(*transformA)),
         .center = hitboxAGlobal,
-        .rotationDeg = hitboxA.rotation + OCT_rad2deg(OCT_mat3_getRotation(*transformA))
+        .rotationRad = hitboxA.rotation + OCT_mat3_getRotation(*transformA)
     };
     OCT_rect2 rectB = {
         .dimensions = OCT_vec2_mul_eleWise(hitboxB.dimensions, OCT_mat3_getScale(*transformB)),
         .center = hitboxBGlobal,
-        .rotationDeg = hitboxB.rotation + OCT_rad2deg(OCT_mat3_getRotation(*transformB))
+        .rotationRad = hitboxB.rotation + OCT_mat3_getRotation(*transformB)
     };
     OCT_vec2 sourceAxis;
     float overlap;

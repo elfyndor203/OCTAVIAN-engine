@@ -46,7 +46,10 @@ OCT_vec2 OCT_transform2D_moveTo(OCT_local entity, OCT_vec2 destination) {
 	iOCT_transform2D* transform = (iOCT_transform2D*)eOCT_entity_getComponentOnce(entity, iOCT_world_inst.transform2DKey);
 	OCT_vec2 originalPosition = transform->position;
 
+	iOCT_transform2D* parentTransform = (iOCT_transform2D*)eOCT_entity_getComponentOnce(transform->parentEntityHandle, iOCT_world_inst.transform2DKey);
 	transform->position = destination;
+	transform->localMatrix = OCT_mat3_translateTo(transform->localMatrix, destination);
+	transform->globalMatrix = OCT_mat3_mul(parentTransform->globalMatrix, transform->localMatrix);
 
 	return OCT_vec2_sub(transform->position, originalPosition);
 }

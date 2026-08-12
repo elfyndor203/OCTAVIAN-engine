@@ -13,24 +13,24 @@
 
 OCT_vec2 OCT_rect2_vertices(OCT_rect2 rect, OCT_vec2* topL, OCT_vec2* botL, OCT_vec2* botR) {
     OCT_vec2 halfDims = OCT_vec2_div(rect.dimensions, 2);
-    OCT_vec2 toTopR = OCT_vec2_rotate(halfDims, rect.rotationDeg);
+    OCT_vec2 toTopR = OCT_vec2_rotate(halfDims, rect.rotationRad);
     OCT_vec2 topR = OCT_vec2_add(toTopR, rect.center);
 
     if (topL) {
-        *topL = OCT_vec2_add(OCT_vec2_rotate((OCT_vec2){-halfDims.x, halfDims.y}, rect.rotationDeg), rect.center);
+        *topL = OCT_vec2_add(OCT_vec2_rotate((OCT_vec2){-halfDims.x, halfDims.y}, rect.rotationRad), rect.center);
     }
     if (botL) {
-        *botL = OCT_vec2_add(OCT_vec2_rotate((OCT_vec2){-halfDims.x, -halfDims.y}, rect.rotationDeg), rect.center);
+        *botL = OCT_vec2_add(OCT_vec2_rotate((OCT_vec2){-halfDims.x, -halfDims.y}, rect.rotationRad), rect.center);
     }
     if (botR) {
-        *botR = OCT_vec2_add(OCT_vec2_rotate((OCT_vec2){halfDims.x, -halfDims.y}, rect.rotationDeg), rect.center);
+        *botR = OCT_vec2_add(OCT_vec2_rotate((OCT_vec2){halfDims.x, -halfDims.y}, rect.rotationRad), rect.center);
     }
 
     return topR;
 }
 
 OCT_vec2 OCT_rect2_normals(OCT_rect2 rect, OCT_vec2* heightAxis) {
-    OCT_vec2 widthAxis = OCT_vec2_rotate((OCT_vec2) { 1, 0 }, rect.rotationDeg);
+    OCT_vec2 widthAxis = OCT_vec2_rotate((OCT_vec2) { 1, 0 }, rect.rotationRad);
     if (heightAxis) {
         *heightAxis = (OCT_vec2){ -widthAxis.y, widthAxis.x };
     }

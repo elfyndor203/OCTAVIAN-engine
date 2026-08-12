@@ -56,7 +56,7 @@ void OCT_rope2D_length_OLD(OCT_local rope2D, float newLength) {
 
     OCT_vec2 toMoving = OCT_vec2_sub(toMovePos, centerPos);
     OCT_vec2 toMovingUnit = OCT_vec2_unit(toMoving);
-    OCT_vec2 tangentUnit = OCT_vec2_rotate(toMovingUnit, 90);
+    OCT_vec2 tangentUnit = OCT_vec2_rotate(toMovingUnit, OCT_deg2rad(90.0f));
 
     OCT_vec2 lin_momentum = OCT_vec2_mul(toMovePhys->velocity, toMovePhys->mass);
     float ang_momentum = OCT_vec2_cross(toMoving, lin_momentum);

@@ -97,3 +97,8 @@ void eOCT_PHYSICS_updateCustomLoop(OCT_global context) {
         }
     }
 }
+
+
+b2Vec2 iOCT_toB2Vec2(OCT_vec2 octVec2) {
+    return (b2Vec2){octVec2.x, octVec2.y};
+}

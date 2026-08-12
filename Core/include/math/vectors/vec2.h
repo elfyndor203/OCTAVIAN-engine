@@ -29,7 +29,7 @@ OCT_vec2 OCT_vec2_div_eleWise(OCT_vec2 vectorA, OCT_vec2 vectorB);
 
 OCT_vec2 OCT_vec2_mul(OCT_vec2 vectorA, float scalar);
 OCT_vec2 OCT_vec2_div(OCT_vec2 vectorA, float scalar);
-OCT_vec2 OCT_vec2_rotate(OCT_vec2 vectorA, float degrees);
+OCT_vec2 OCT_vec2_rotate(OCT_vec2 vectorA, float radians);
 
 float OCT_vec2_mag(OCT_vec2 vectorA);
 bool OCT_vec2_equal(OCT_vec2 vectorA, OCT_vec2 vectorB, float threshold);
