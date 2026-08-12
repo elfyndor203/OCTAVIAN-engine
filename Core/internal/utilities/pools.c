@@ -367,10 +367,10 @@ static void* iOCT_findDestination(eOCT_pool* pool, size_t targetSortValue, OCT_i
 
 	while (start < end) {
 		OCT_index mid = start + (end - start) / 2;
-		OCT_index midValue = 0;
+		size_t midValue = 0;
 
-		midValue = *(OCT_index*)(array + (mid * pool->elementSize) + pool->sortValueOffset);
-		if (midValue < targetSortValue) {
+		midValue = *(size_t*)(array + (mid * pool->elementSize) + pool->sortValueOffset);
+		if (midValue <= targetSortValue) {
 			start = mid + 1;
 		}
 		else {
