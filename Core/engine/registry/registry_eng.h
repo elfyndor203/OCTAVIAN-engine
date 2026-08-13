@@ -3,7 +3,7 @@
 #include "ECS/types_eng.h"
 
 #include "utilities/utilities_eng.h"
-#include "layout/types_eng.h"
+#include "../data/types_eng.h"
 
 #define eOCT_DATAUNION_SIZE 36
 
@@ -69,6 +69,12 @@ struct eOCT_fieldRequest {
 	size_t fieldOffset_reg;
 	bool global_reg;
 	bool fulfilled_reg;
+};
+
+struct eOCT_componentExistenceRequest {
+	const char* name;
+
+	eOCT_componentExistenceKey* keyCache;
 };
 struct eOCT_fieldDescription {
 	const char* name;

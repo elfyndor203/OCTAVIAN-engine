@@ -215,6 +215,8 @@ bool eOCT_entity_hasComponent(OCT_local entity, eOCT_componentKey component, boo
 	}
 	return attached;
 }
+
+bool eOCT_entity_hasExternalComponent(OCT_local entity);
 #pragma endregion
 // OCT_index eOCT_entity_getComponentIndex(OCT_handle entity, eOCT_componentDescription component) {
 // 	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, entity.containerID);
