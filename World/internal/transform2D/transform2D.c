@@ -8,6 +8,8 @@
 
 #include "world/world_int.h"
 
+static void iOCT_transform2D_printAll(OCT_global context);
+
 bool OCT_transform2D_attach(OCT_local entity, OCT_local parentEntity) {
 	if (entity.containerID != parentEntity.containerID){
 		printf("Cannot parent to entity in different context\n");
@@ -15,7 +17,7 @@ bool OCT_transform2D_attach(OCT_local entity, OCT_local parentEntity) {
 	}
 	iOCT_transform2D parentTransform = *(iOCT_transform2D*)eOCT_entity_getComponentOnce(parentEntity, iOCT_world_inst.transform2DKey);
 
-	OCT_index outIndex;
+	OCT_index index;
 	iOCT_transform2D transform = {
 		.entityHandle = entity,
 		.parentEntityHandle = parentEntity,
@@ -27,7 +29,8 @@ bool OCT_transform2D_attach(OCT_local entity, OCT_local parentEntity) {
 		.depth = parentTransform.depth + 1
 	};
 
-	iOCT_transform2D* transformLoc = eOCT_entity_attachComponentOnce(entity, iOCT_world_inst.transform2DKey, &transform, &outIndex);
+	iOCT_transform2D* transformLoc = eOCT_entity_attachComponentOnce(entity, iOCT_world_inst.transform2DKey, &transform, &index);
+	printf("\nAttached at index %zu\n", index);
 	// iOCT_transform2D* transformLoc = (iOCT_transform2D*)eOCT_entity_attachComponentSorted(entity, iOCT_world_inst.transform2DKey, parentTransform.depth + 1);
 	// transformLoc->entityHandle = entity;
 	// transformLoc->parentEntityHandle = parentEntity;
@@ -38,7 +41,9 @@ bool OCT_transform2D_attach(OCT_local entity, OCT_local parentEntity) {
 	// transformLoc->globalMatrix = parentTransform.globalMatrix;
 	// transformLoc->depth = parentTransform.depth + 1;
 
-	printf("Attached transform with depth %zu\n", transformLoc->depth);
+	// printf("Attached transform with depth %zu\n", transformLoc->depth);
+
+	// iOCT_transform2D_printAll(entity.contextHandle);
 	return true;
 }
 
@@ -140,4 +145,26 @@ void iOCT_transform2D_propagate(OCT_global context) {
 	}
 
 	//eOCT_pool_dump(transformPool);
+}
+
+static void iOCT_transform2D_printAll(OCT_global context) {
+	eOCT_pool* transformPool = eOCT_component_getPool(context, iOCT_world_inst.transform2DKey);
+	iOCT_transform2D* transformArray = (iOCT_transform2D*)transformPool->array;
+
+	printf("TRANSFORMS:\n");
+
+	for (OCT_index transformCtr = 0; transformCtr < transformPool->count; transformCtr++) {
+		iOCT_transform2D transform = transformArray[transformCtr];
+
+		printf("Transform #%zu:\n", transformCtr);
+		printf("Entity:\n");
+		OCT_local_print(transform.entityHandle, 4);
+		printf("Parent:\n");
+		OCT_local_print(transform.parentEntityHandle, 4);
+		printf("  Position: %f %f UNITS \n", transform.position.x, transform.position.y);
+		printf("  Rotation: %f RADIANS \n", transform.rotation);
+		printf("  Scale: %f %f\n", transform.scale.x, transform.scale.y);
+		printf("  Depth: %zu\n", transform.depth);
+		printf("-----------\n");
+	}
 }

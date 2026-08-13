@@ -29,3 +29,6 @@ bool OCT_global_isNULL(OCT_global handle);
 bool OCT_local_isEqual(OCT_local handle1, OCT_local handle2);
 bool OCT_global_isEqual(OCT_global handle1, OCT_global handle2);
 
+void OCT_global_print(OCT_global handle, int indent);
+void OCT_local_print(OCT_local handle, int indent);
+

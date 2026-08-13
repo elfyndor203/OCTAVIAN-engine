@@ -1,3 +1,7 @@
+
+#include <stdio.h>
+#include <inttypes.h>
+
 #include "layout/types.h"
 
 bool OCT_local_isNULL(OCT_local handle) {
@@ -34,4 +38,20 @@ bool OCT_global_isEqual(OCT_global handle1, OCT_global handle2) {
     else {
         return false;
     }
+}
+
+void OCT_global_print(OCT_global handle, int indent) {
+    printf("%*c", indent, ' ');
+    printf("SystemID: %"PRIu64"\n", handle.systemID);
+    printf("%*c", indent, ' ');
+    printf("Container ID: %"PRIu64"\n", handle.containerID);
+    printf("%*c", indent, ' ');
+    printf("Object ID: %"PRIu64"\n", handle.objectID);
+}
+
+void OCT_local_print(OCT_local handle, int indent) {
+    printf("%*c", indent, ' ');
+    printf("Context ID: %"PRIu64"\n", handle.contextHandle.objectID);
+    printf("%*c", indent, ' ');
+    printf("Object ID: %"PRIu64"\n", handle.objectID);
 }

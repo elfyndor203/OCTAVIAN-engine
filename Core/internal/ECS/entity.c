@@ -233,10 +233,10 @@ static void iOCT_entity_resolveIndices(iOCT_entityContext* context, eOCT_pool* c
 		OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
 		OCT_index* componentSlot = iOCT_entity_getComponentIndexEntry(context, entityIndex, component);
 
-		if (*componentSlot != compIndex) {
-			printf("Index updated. Old index: %zu\n", *componentSlot);
-		}
-		printf("Entity %zu now has component of type %zu at index %zu\n", entity.objectID, component.componentTypeIndex, compIndex);
+		// if (*componentSlot != compIndex) {
+		// 	printf("Index updated. Old index: %zu\n", *componentSlot);
+		// }
+		// printf("Entity %zu now has component of type %zu at index %zu\n", entity.objectID, component.componentTypeIndex, compIndex);
 		*componentSlot = compIndex;
 	}
 }
@@ -248,7 +248,7 @@ void OCT_entity_printAllComponentLinks(OCT_global contextHandle) {
 	OCT_index* entityArray = (OCT_index*)context->entities.array;
 
 	for (OCT_index entityCtr = 0; entityCtr < context->entities.count; entityCtr++) {
-		OCT_index* entityBase = entityArray + entityCtr;
+		OCT_index* entityBase = entityArray + entityCtr * context->components.count;
 		printf("Entity #%zu:\n", entityCtr);
 		for (OCT_index componentTypeCtr = 0; componentTypeCtr < context->components.count; componentTypeCtr++) {
 			OCT_index* componentIndexBase = entityBase + componentTypeCtr;

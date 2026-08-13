@@ -83,7 +83,7 @@ void* eOCT_pool_addEntryNew(eOCT_pool* pool, void* source, OCT_index* outIndex) 
 	if (entriesToMove > 0) {
 		void* moveSource = eOCT_pool_access(pool, destinationIndex, 0);
 		void* moveDestination = eOCT_pool_access(pool, destinationIndex + 1, 0);
-		memmove(moveSource, moveDestination, pool->elementSize);
+		memmove(moveDestination, moveSource, pool->elementSize * entriesToMove);
 	}
 
 	void* destinationBase = eOCT_pool_access(pool, destinationIndex, 0);
