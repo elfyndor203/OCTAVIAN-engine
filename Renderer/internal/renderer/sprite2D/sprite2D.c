@@ -60,6 +60,6 @@ uint64_t generateSortKey(OCT_index drawLayer, OCT_index texGroupIndex) {
 }
 
 void iOCT_sprite2D_root(OCT_local rootEntity) {
-    OCT_sprite2D_attach(rootEntity, iOCT_renderer_inst.gizmoTex, (OCT_vec4){0.0, 0.0, 1.0, 1.0}, OCT_TINT_COLOR_NONE, (OCT_vec2){100.0f, 100.0f}, 1); // skips layers in between
+    OCT_sprite2D_attach(rootEntity, iOCT_renderer_inst.gizmoTex, (OCT_vec4){0.0, 0.0, 1.0, 1.0}, OCT_TINT_COLOR_NONE, (OCT_vec2){100.0f, 100.0f}, iOCT_LAYER_MAX); // skips layers in between
 }
 

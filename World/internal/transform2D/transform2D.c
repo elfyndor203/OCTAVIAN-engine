@@ -68,11 +68,11 @@ OCT_vec2 OCT_transform2D_moveBy(OCT_local entity, OCT_vec2 deltaXY) {
 	return transform->position;
 }
 
-float OCT_transform2D_rotateTo(OCT_local entity, float degrees) {
+float OCT_transform2D_rotateTo(OCT_local entity, float radians) {
 	iOCT_transform2D* transform = (iOCT_transform2D*)eOCT_entity_getComponentOnce(entity, iOCT_world_inst.transform2DKey);
-	float originalRotation = OCT_rad2deg(transform->rotation);
+	float originalRotation = transform->rotation;
 
-	transform->rotation = OCT_deg2rad(degrees);
+	transform->rotation = radians;
 
 	return transform->rotation - originalRotation;
 }

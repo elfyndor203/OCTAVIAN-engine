@@ -33,6 +33,8 @@ OCT_global OCT_window_open(const char* name, unsigned int sizeX, unsigned int si
     glfwGetFramebufferSize(windowPtr, &frameBufferX, &frameBufferY);
     glViewport(0, 0, frameBufferX, frameBufferY);
     glClearColor(color.x, color.y, color.z, color.a); // __NOTE__ PASS AS PARAM
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
 
     // init
     GLuint newVAO;
