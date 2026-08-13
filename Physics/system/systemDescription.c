@@ -72,7 +72,7 @@ void system_register_PHYSICS() {
         .providedDataPools = eOCT_generateDataPoolDescriptionPool(2, rope2D, hitbox2D),
         .providedEvents = eOCT_POOL_EMPTY,
         .providedSingles = eOCT_generateSingleDescriptionPool(1, box2DWorldSingle),
-        .requestedFields = eOCT_generateFieldRequestPool(2, transform2D, position2D),
+        .requestedFields = eOCT_generateFieldRequestPool(3, transform2D, position2D, rotation2D),
         .contextInitFx = iOCT_physicsSystem_contextSetup,
         .initFx = iOCT_physicsSystem_init
     };

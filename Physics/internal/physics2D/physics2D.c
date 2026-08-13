@@ -45,7 +45,7 @@ void OCT_physics2D_attachNew(OCT_local entity, float mass, bool dynamic) {
 
         b2Polygon box = b2MakeBox(0.5f,0.5f);
         b2ShapeDef shapeDef = b2DefaultShapeDef();
-        shapeDef.isSensor = true;
+        shapeDef.filter.categoryBits = 0;
         b2CreatePolygonShape(newID, &shapeDef, &box);
     }
     else {

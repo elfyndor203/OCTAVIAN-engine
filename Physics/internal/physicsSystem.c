@@ -21,6 +21,7 @@ void OCT_physicsSystem_config(OCT_index worldUnitsPerMeter) {
 void iOCT_physicsSystem_init() {
     iOCT_physicsSystem_inst.worldGravity = OCT_GRAVITY_DEFAULT;
     iOCT_physicsSystem_inst.dt = 1.0 / OCT_PHYSICS_REFRESH_DEFAULT;
+    iOCT_physicsSystem_inst.unitsPerB2Meter = 1;
 
     iOCT_physicsSystem_inst.constraintSolveIterations = iOCT_PHYSICS_CONSTRAINT_SOLVE_ITERATIONS_DEFAULT;
 }
