@@ -3,6 +3,7 @@
 
 #include "OCT_Core_eng.h"
 #include <stdio.h>
+#include <assert.h>
 
 #include "ECS/ECS_int.h"
 #include "entityContext_int.h"
@@ -44,6 +45,12 @@ OCT_local OCT_entity_new(OCT_global contextHandle) {
 	//printf("Context: %p\n", context);
 	OCT_local entityHandle = iOCT_entity_new(context);
 	entityHandle.contextHandle = contextHandle;
+
+	iOCT_entityMeta metadata = {
+		.componentsAttached = 0,
+		.componentsEnabled = 0
+	};
+	eOCT_entity_attachComponent(entityHandle, iOCT_ECS_inst.entityMetaKey, &metadata, NULL);
 	return entityHandle;
 }
 OCT_local iOCT_entity_new(iOCT_entityContext* context) {
@@ -84,12 +91,23 @@ void* eOCT_entity_attachComponent(OCT_local entity, eOCT_componentKey componentK
 	iOCT_entity_updateEnabledMask(entityMeta, componentKey.componentTypeIndex, OCT_A);
 	return dataLoc;
 }
+
+void iOCT_entity_attachMeta(OCT_local entity) {
+	iOCT_entityMeta metadata = {
+		.componentsAttached = 0,
+		.componentsEnabled = 0,
+		.entity = entity
+	};
+	eOCT_entity_attachComponent(entity, iOCT_ECS_inst.entityMetaKey, &metadata, NULL);
+}
 #pragma endregion
 
 #pragma region accessors
 
 void* eOCT_entity_getComponent(OCT_local entity, eOCT_componentKey component) {
-	// iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, entity.containerID);
+	if (!eOCT_entity_hasComponent(entity, component, NULL)) {
+		OCT_ERROR_LOG(OCT_EXIT_REFERENCE_DOES_NOT_EXIST, "Entity does not have this component attached");
+	}
 	iOCT_entityContext* context = eOCT_mappedPool_getByID(&iOCT_ECS_inst.contextMPool, entity.containerID);
 
 	if (!context) {
@@ -158,6 +176,7 @@ void* iOCT_entity_getComponent(iOCT_entityContext* context, OCT_index entityInde
 	void* dataLoc = eOCT_pool_access(componentPool, componentIndex, 0);
 	return dataLoc;
 }
+
 #pragma endregion
 
 #pragma region utils
@@ -194,7 +213,10 @@ OCT_local eOCT_entity_getHandle(OCT_local context, OCT_ID entityID) {
 // }
 
 bool eOCT_entity_hasComponent(OCT_local entity, eOCT_componentKey component, bool* enabledOut) {
-	iOCT_entityMeta* entityMeta = eOCT_entity_getComponent(entity, component);
+	iOCT_entityContext* context = iOCT_entityContext_get(entity.contextHandle.objectID);
+	OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
+
+	iOCT_entityMeta* entityMeta = iOCT_entity_getComponent(context, entityIndex, iOCT_ECS_inst.entityMetaKey.componentTypeIndex);
 
 	bool attached;
 	if (iOCT_entity_readAttachedMask(entityMeta, component.componentTypeIndex)) {
@@ -218,18 +240,6 @@ bool eOCT_entity_hasComponent(OCT_local entity, eOCT_componentKey component, boo
 
 bool eOCT_entity_hasExternalComponent(OCT_local entity);
 #pragma endregion
-// OCT_index eOCT_entity_getComponentIndex(OCT_handle entity, eOCT_componentDescription component) {
-// 	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, entity.containerID);
-// 	if (!context) {
-// 		OCT_ERROR_LOG(OCT_EXIT_REFERENCE_DOES_NOT_EXIST, "Bad context ID");
-// 	}
-// 	OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
-//
-// 	OCT_index* entityBase = iOCT_entity_get(context, entityIndex);
-// 	OCT_index componentIndex = *(entityBase + component.componentTypeIndex_reg);
-//
-// 	return componentIndex;
-// }
 
 #pragma region statics
 static OCT_index* iOCT_entity_get(iOCT_entityContext* context, OCT_index entityIndex) {
@@ -264,6 +274,8 @@ static void iOCT_entity_resolveIndices(iOCT_entityContext* context, eOCT_pool* c
 }
 
 void iOCT_entity_updateAttachedMask(iOCT_entityMeta* entityMeta, OCT_index componentIndex, OCT_AorB attachOrDetach) {
+	assert(componentIndex >= 0 && componentIndex < 64);
+
 	if (!OCT_AorB_one(attachOrDetach)) {
 		OCT_ERROR_LOG(OCT_EXIT_INVALID_ARGUMENT, "Choose attach or detach");
 	}
@@ -275,6 +287,8 @@ void iOCT_entity_updateAttachedMask(iOCT_entityMeta* entityMeta, OCT_index compo
 	}
 }
 void iOCT_entity_updateEnabledMask(iOCT_entityMeta* entityMeta, OCT_index componentIndex, OCT_AorB enableOrDisable) {
+	assert(componentIndex >= 0 && componentIndex < 64);
+
 	if (!OCT_AorB_one(enableOrDisable)) {
 		OCT_ERROR_LOG(OCT_EXIT_INVALID_ARGUMENT, "Choose enable or disable");
 	}

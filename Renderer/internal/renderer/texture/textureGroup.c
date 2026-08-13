@@ -13,14 +13,14 @@
 #define TEXTURE_BASE_LEVEL 0
 #define TEMP_MIPMAPS 1
 
-OCT_global OCT_textureGroup_open(OCT_vec2 dimensions, OCT_index maxCount) {
+OCT_global OCT_textureGroup_open(OCT_vec2 pixelDimensions, OCT_index maxCount) {
     OCT_ID systemID = iOCT_renderer_inst.systemID;
     eOCT_IDMap texMap = eOCT_IDMap_open(systemID, maxCount);
 
     GLuint texArray;
     glGenTextures(1, &texArray);
     glBindTexture(GL_TEXTURE_2D_ARRAY, texArray);
-    glTexImage3D(GL_TEXTURE_2D_ARRAY, TEXTURE_BASE_LEVEL, GL_RGBA8, (GLsizei)dimensions.x, (GLsizei)dimensions.y, (GLsizei)maxCount, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexImage3D(GL_TEXTURE_2D_ARRAY, TEXTURE_BASE_LEVEL, GL_RGBA8, (GLsizei)pixelDimensions.x, (GLsizei)pixelDimensions.y, (GLsizei)maxCount, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     // params in opengl wiki example
     glTexParameteri(GL_TEXTURE_2D_ARRAY,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D_ARRAY,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
@@ -28,7 +28,7 @@ OCT_global OCT_textureGroup_open(OCT_vec2 dimensions, OCT_index maxCount) {
     glTexParameteri(GL_TEXTURE_2D_ARRAY,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
     // add to texture group pool
     iOCT_textureGroup newTexGroup = {
-        .dimensions = dimensions,
+        .dimensions = pixelDimensions,
         .glTexArray = texArray,
         .textureMap = texMap,
         .textureCount = 0

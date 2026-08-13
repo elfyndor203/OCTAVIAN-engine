@@ -1,5 +1,7 @@
 #pragma once
 
+void init_system_register_CORE();
+
 void init_OCT_registry_init();
 void init_OCT_registry_distributeTickets();
 void init_OCT_ECS_init();

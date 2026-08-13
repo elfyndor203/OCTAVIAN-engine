@@ -1,6 +1,8 @@
 #include "../internal/system/systems_build.h"
 
 #include "systemDescription_sysEx.h"
+#include "Core_init.h"
+
 #include "systemDescription_platform.h"
 #include "systemDescription_world.h"
 #include "systemDescription_renderer.h"
@@ -8,7 +10,7 @@
 #include "systemDescription_physics.h"
 
 void init_OCT_registerAllSystems() {
-	//system_register_systemEx();
+	init_system_register_CORE();		// REQUIRED
 
 	system_register_PLATFORM();
 	system_register_WORLD();

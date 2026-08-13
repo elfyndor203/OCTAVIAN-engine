@@ -102,8 +102,8 @@ void system_init_RENDERER() {
 
 #pragma region shaders
     GLuint spriteShader = iOCT_shader_createProgram(
-        "../OCTAVIAN/OCTAVIANEngine/Renderer/internal/renderer/shader/sprite/sprite.vert",
-        "..//OCTAVIAN/OCTAVIANEngine/Renderer/internal/renderer/shader/sprite/sprite.frag"); //__NOTE__ MAKE PATH SYSTEM / MOVE SHADERS
+        "OCTAVIANEngine/Renderer/internal/renderer/shader/sprite/sprite.vert",
+        "OCTAVIANEngine/Renderer/internal/renderer/shader/sprite/sprite.frag");
     glUseProgram(spriteShader);
     glUniform1i(glGetUniformLocation(spriteShader, "spriteTexArray"), 0); // read from texture slot 0
     GLint cameraUniform = glGetUniformLocation(spriteShader, "cameraProj");
@@ -203,6 +203,10 @@ void iOCT_renderer_drawAll(OCT_global contextHandle) {
         glUseProgram(iOCT_renderer_inst.spriteShaderProgram);
 
         // camera
+        if (OCT_local_isEqual(window.activeCameraSourceEntity, OCT_LOCAL_NULL)) {
+            printf("Window %zu has no active camera\n", windowCtr);
+            continue;
+        }
         OCT_mat3 cameraProj = iOCT_window_worldToNDC(window);
         glUniformMatrix3fv(window.cameraUniformLocation, 1, GL_FALSE, (float*)&cameraProj);
 

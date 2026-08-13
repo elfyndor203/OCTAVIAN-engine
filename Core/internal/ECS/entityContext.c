@@ -102,6 +102,8 @@ static eOCT_pool iOCT_entityContext_initSingles() {
 static OCT_local iOCT_entityContext_initRootEntity(iOCT_entityContext* context) {
 	OCT_local rootEntity = iOCT_entity_new(context);
 
+	iOCT_entity_attachMeta(rootEntity);
+
 	const OCT_index componentsTotal = iOCT_registry_inst.components.count;
 	for (OCT_index componentCtr = 0; componentCtr < componentsTotal; componentCtr++) {
 		eOCT_componentDescription* component = (eOCT_componentDescription*)eOCT_pool_access(&iOCT_registry_inst.components, componentCtr, 0);

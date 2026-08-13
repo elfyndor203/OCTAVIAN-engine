@@ -5,6 +5,8 @@ add_library(Platform STATIC
         internal/platformSystem_int.h
         internal/timer/timer.c
         internal/timer/timer_int.h
+        internal/directories/directories.c
+        include/directories/directories.h
 )
 
 target_include_directories(Platform
