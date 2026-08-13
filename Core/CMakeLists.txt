@@ -55,6 +55,7 @@ add_library(Core STATIC
         include/math/lines/line2.c
         include/utilities/sets.c
         include/utilities/config.h
+        system/systemDescription.c
 )
 
 target_include_directories(Core

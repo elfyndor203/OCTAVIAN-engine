@@ -22,7 +22,7 @@ void OCT_camera2D_attach(OCT_local entity, OCT_vec2 position, float rotation, OC
         .viewFrameSize = viewFrameSize,
         .cameraMatrix = OCT_mat3_generate(position, viewFrameSize, rotation)
     };
-    eOCT_entity_attachComponentOnce(entity, iOCT_renderer_inst.camera2DKey, &newCamera, NULL);
+    eOCT_entity_attachComponent(entity, iOCT_renderer_inst.camera2DKey, &newCamera, NULL);
     // iOCT_camera2D* newCamera = eOCT_entity_attachComponent(entity, iOCT_renderer_inst.camera2DKey);
     // assert(newCamera && "Camera creation failed");
     //
@@ -41,7 +41,7 @@ void OCT_camera2D_zoomBy(OCT_local entity, float factor) {
         iOCT_window* focusedWindow = eOCT_mappedPool_getByID(&iOCT_windowSystem_inst.windowMPool, iOCT_windowSystem_inst.focusedWindowID);
         entity = focusedWindow->activeCameraSourceEntity;
     }
-    iOCT_camera2D* camera = eOCT_entity_getComponentOnce(entity, iOCT_renderer_inst.camera2DKey);
+    iOCT_camera2D* camera = eOCT_entity_getComponent(entity, iOCT_renderer_inst.camera2DKey);
 
     camera->zoom = factor;
     camera->cameraMatrix = OCT_mat3_scale(camera->cameraMatrix, (OCT_vec2){factor, factor});

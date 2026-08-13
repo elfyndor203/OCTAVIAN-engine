@@ -98,7 +98,7 @@ OCT_mat3 iOCT_window_screenToWorld(iOCT_window window) {
     if (OCT_local_isNULL(window.activeCameraSourceEntity)) {
         return OCT_mat3_identity;
     }
-    iOCT_camera2D camera = *(iOCT_camera2D*)eOCT_entity_getComponentOnce(window.activeCameraSourceEntity, iOCT_renderer_inst.camera2DKey);
+    iOCT_camera2D camera = *(iOCT_camera2D*)eOCT_entity_getComponent(window.activeCameraSourceEntity, iOCT_renderer_inst.camera2DKey);
     OCT_mat3 entityGlobalTransform = *(OCT_mat3*)eOCT_entity_getFieldOnce(window.activeCameraSourceEntity, iOCT_renderer_inst.transform2DTicket);
     OCT_vec2 windowRes = window.currentResolution;
 
@@ -115,7 +115,7 @@ OCT_mat3 iOCT_window_screenToWorld(iOCT_window window) {
 
 OCT_mat3 iOCT_window_worldToNDC(iOCT_window window) {
     OCT_mat3 entityGlobalTransform = *(OCT_mat3*)eOCT_entity_getFieldOnce(window.activeCameraSourceEntity, iOCT_renderer_inst.transform2DTicket);
-    iOCT_camera2D camera = *(iOCT_camera2D*)(eOCT_entity_getComponentOnce(window.activeCameraSourceEntity, iOCT_renderer_inst.camera2DKey));
+    iOCT_camera2D camera = *(iOCT_camera2D*)(eOCT_entity_getComponent(window.activeCameraSourceEntity, iOCT_renderer_inst.camera2DKey));
 
     OCT_mat3 cameraGlobal = OCT_mat3_mul(entityGlobalTransform, camera.cameraMatrix);
     OCT_mat3 worldToCamera = OCT_mat3_inverse(cameraGlobal);

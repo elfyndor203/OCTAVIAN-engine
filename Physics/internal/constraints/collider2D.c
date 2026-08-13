@@ -13,7 +13,7 @@ OCT_local OCT_collider2D_new(OCT_local entity, OCT_shapeType shape, OCT_vec2 dim
     OCT_mat3 globalTransform = *(OCT_mat3*)eOCT_entity_getFieldOnce(entity, iOCT_physicsSystem_inst.transform2DTicket);
     printf("Origin in world space: %f %f\n", origin.x, origin.y);
 
-    iOCT_physics2D_b2* physics = eOCT_entity_getComponentOnce(entity, iOCT_physicsSystem_inst.physics2DKey);
+    iOCT_physics2D_b2* physics = eOCT_entity_getComponent(entity, iOCT_physicsSystem_inst.physics2DKey);
     b2BodyId entityBodyID = physics->b2dBodyID;
 
     OCT_vec2 dimensionsMeters = OCT_vec2_div(dimensions, iOCT_physicsSystem_inst.unitsPerB2Meter);
@@ -22,6 +22,7 @@ OCT_local OCT_collider2D_new(OCT_local entity, OCT_shapeType shape, OCT_vec2 dim
     b2ShapeId newShapeID;
     switch (shape) {
     case OCT_shapeType_rect2:
+        ;
         b2Polygon newPolygon = b2MakeOffsetBox(dimensionsMeters.x / 2, dimensionsMeters.y / 2, (b2Vec2){originMeters.x, originMeters.y}, b2MakeRot(radians));
         newShapeID = b2CreatePolygonShape(entityBodyID, &newShape, &newPolygon);
         break;
@@ -31,14 +32,15 @@ OCT_local OCT_collider2D_new(OCT_local entity, OCT_shapeType shape, OCT_vec2 dim
         }
         b2Circle newCircle = {
         .center = (b2Vec2){originMeters.x, originMeters.y},
-        .radius = dimensionsMeters.x
+        .radius = dimensionsMeters.x / 2
         };
         newShapeID = b2CreateCircleShape(entityBodyID, &newShape, &newCircle);
         break;
     case OCT_shapeType_caps2:
-        float toCentersDist = dimensionsMeters.y / 2 + dimensionsMeters.x / 2;
-        OCT_vec2 toCenter1 = OCT_vec2_rotate((OCT_vec2){0, toCentersDist}, radians);
-        OCT_vec2 toCenter2 = OCT_vec2_rotate((OCT_vec2){0, -toCentersDist}, radians);
+        ;
+        float toCentersDist = (dimensionsMeters.y - dimensionsMeters.x) / 2;
+        OCT_vec2 toCenter1 = OCT_vec2_add(OCT_vec2_rotate((OCT_vec2){0, toCentersDist}, radians), originMeters);
+        OCT_vec2 toCenter2 = OCT_vec2_add(OCT_vec2_rotate((OCT_vec2){0, -toCentersDist}, radians), originMeters);
 
         b2Capsule newCapsule = {
         .radius = dimensionsMeters.x / 2,
@@ -53,13 +55,18 @@ OCT_local OCT_collider2D_new(OCT_local entity, OCT_shapeType shape, OCT_vec2 dim
 
 
     iOCT_collider2D newCollider = {
-        // do later
+        .b2ShapeID = newShapeID,
+        .dimensions = dimensions,
+        .origin = origin,
+        .rotation = radians,
+        .shape = shape
     };
-
     OCT_local colliderHandle = {
         .contextHandle = entity.contextHandle,
-        .containerID = OCT_ID_NULL,
-        .objectID = OCT_ID_NULL
+        .containerID = OCT_ID_NULL
     };
+    eOCT_mappedPool* colliderPool = eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.hitbox2DKey, entity.contextHandle);
+    eOCT_mappedPool_addEntry(colliderPool, &newCollider, &colliderHandle.objectID, NULL);
+
     return colliderHandle;
 }

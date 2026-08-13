@@ -31,7 +31,7 @@ void OCT_sprite2D_attach(OCT_local entity, OCT_global texture, OCT_vec4 uv, OCT_
             .dimensions = dimensions,
         }
     };
-    eOCT_entity_attachComponentOnce(entity, iOCT_renderer_inst.sprite2DKey, &newSprite, NULL);
+    eOCT_entity_attachComponent(entity, iOCT_renderer_inst.sprite2DKey, &newSprite, NULL);
     // iOCT_sprite2D* newSprite = eOCT_entity_attachComponent(entity, iOCT_renderer_inst.sprite2DKey);
     // newSprite->entityHandle = entity;
     // newSprite->texGroupID = texture.containerID;

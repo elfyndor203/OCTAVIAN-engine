@@ -1,9 +1,11 @@
 #pragma once
 
 #include "entityContext_int.h"
+#include <inttypes.h>
 
 struct iOCT_entityMeta {
-    bool valid;
+    uint64_t componentsAttached;
+    uint64_t componentsEnabled;
 };
 
 OCT_local iOCT_entity_new(iOCT_entityContext* context);

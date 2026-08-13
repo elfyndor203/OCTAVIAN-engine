@@ -5,16 +5,9 @@
 
 struct iOCT_ECS {
 	size_t entitySize;
-
-	// eOCT_IDMap contextMap;
-	// eOCT_pool contextPool;
 	eOCT_mappedPool contextMPool;
 
-	// eOCT_pool dataPoolSizeAndOrderList;
-
-	// global data
-	// eOCT_IDMap globalDataMap;
-	// eOCT_pool globalDataPools;
+	eOCT_componentKey entityMetaKey;
 };
 
 extern iOCT_ECS iOCT_ECS_inst;

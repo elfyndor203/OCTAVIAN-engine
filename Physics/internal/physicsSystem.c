@@ -57,7 +57,6 @@ void eOCT_PHYSICS_update(OCT_global context) {
         b2Vec2 newPos = b2Body_GetPosition(physics->b2dBodyID);
         float newRot = b2Rot_GetAngle(b2Body_GetRotation(physics->b2dBodyID));
 
-        printf("new position: %f %f\n", newPos.x, newPos.y);
         *position = OCT_vec2_mul((OCT_vec2){newPos.x, newPos.y}, iOCT_physicsSystem_inst.unitsPerB2Meter);
         *rotation = newRot;
     }
