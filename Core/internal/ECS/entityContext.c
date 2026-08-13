@@ -102,7 +102,13 @@ static eOCT_pool iOCT_entityContext_initSingles() {
 static OCT_local iOCT_entityContext_initRootEntity(iOCT_entityContext* context) {
 	OCT_local rootEntity = iOCT_entity_new(context);
 
-	iOCT_entity_attachMeta(rootEntity);
+	iOCT_entityMeta metadata = {
+		.componentsAttached = 0,
+		.componentsEnabled = 0,
+		.isRoot = true,
+		.entity = rootEntity
+	};
+	eOCT_entity_attachComponent(rootEntity, iOCT_ECS_inst.entityMetaKey, &metadata, NULL);
 
 	const OCT_index componentsTotal = iOCT_registry_inst.components.count;
 	for (OCT_index componentCtr = 0; componentCtr < componentsTotal; componentCtr++) {
@@ -155,6 +161,16 @@ eOCT_pool* eOCT_context_getComponentPool(OCT_local contextHandle, eOCT_component
 eOCT_pool* iOCT_context_getComponentPool(iOCT_entityContext* context, OCT_index componentIndex) {
 	eOCT_pool* poolsArray = (eOCT_pool*)context->components.array;
 	return &poolsArray[componentIndex];
+}
+
+void iOCT_entity_attachRootMeta(OCT_local entity) {
+	iOCT_entityMeta metadata = {
+		.componentsAttached = 0,
+		.componentsEnabled = 0,
+		.isRoot = true,
+		.entity = entity
+	};
+	eOCT_entity_attachComponent(entity, iOCT_ECS_inst.entityMetaKey, &metadata, NULL);
 }
 // eOCT_pool* eOCT_getFieldSourcePool(OCT_handle contextHandle, eOCT_fieldRequest field) {
 // 	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, contextHandle.objectID);

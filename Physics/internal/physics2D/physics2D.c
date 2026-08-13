@@ -28,6 +28,10 @@ void OCT_physics2D_attachOld(OCT_local entity, float mass, bool fixed) {
 }
 
 void OCT_physics2D_attachNew(OCT_local entity, float mass, bool dynamic) {
+    OCT_local* parentEntity = eOCT_entity_getFieldOnce(entity, iOCT_physicsSystem_inst.transformParentTicket);
+    if (!eOCT_entity_isRoot(*parentEntity)) {
+        OCT_ERROR_LOG(OCT_EXIT_INVALID_ARGUMENT, "Physics can only be applied to children of the ROOT. Further children are treated as part of the same rigid body.");
+    }
     OCT_mat3 transform = *(OCT_mat3*)eOCT_entity_getFieldOnce(entity, iOCT_physicsSystem_inst.transform2DTicket);
     OCT_vec2 position = OCT_mat3_getTranslation(transform);
     float rotation = OCT_mat3_getRotation(transform);

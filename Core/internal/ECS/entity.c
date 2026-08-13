@@ -96,6 +96,7 @@ void iOCT_entity_attachMeta(OCT_local entity) {
 	iOCT_entityMeta metadata = {
 		.componentsAttached = 0,
 		.componentsEnabled = 0,
+		.isRoot = false,
 		.entity = entity
 	};
 	eOCT_entity_attachComponent(entity, iOCT_ECS_inst.entityMetaKey, &metadata, NULL);
@@ -236,6 +237,12 @@ bool eOCT_entity_hasComponent(OCT_local entity, eOCT_componentKey component, boo
 		*enabledOut = enabled;
 	}
 	return attached;
+}
+
+bool eOCT_entity_isRoot(OCT_local entity) {
+	iOCT_entityMeta* entityMeta = eOCT_entity_getComponent(entity, iOCT_ECS_inst.entityMetaKey);
+
+	return entityMeta->isRoot;
 }
 
 bool eOCT_entity_hasExternalComponent(OCT_local entity);

@@ -14,6 +14,7 @@ struct iOCT_physicsSystem {
     eOCT_fieldTicket transform2DTicket;
     eOCT_fieldTicket position2DTicket;
     eOCT_fieldTicket rotationTicket;
+    eOCT_fieldTicket transformParentTicket;
 
     eOCT_singleKey box2DWorldKey;
 

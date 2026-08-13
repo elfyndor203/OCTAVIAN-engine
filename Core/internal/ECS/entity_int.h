@@ -2,12 +2,14 @@
 
 #include "entityContext_int.h"
 #include <inttypes.h>
+#include <stdbool.h>
 
 struct iOCT_entityMeta {
     OCT_local entity;
 
     uint64_t componentsAttached;
     uint64_t componentsEnabled;
+    bool isRoot;
 };
 
 OCT_local iOCT_entity_new(iOCT_entityContext* context);

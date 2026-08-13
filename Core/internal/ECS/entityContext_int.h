@@ -28,6 +28,7 @@ iOCT_entityContext* iOCT_entityContext_get(OCT_ID contextID);
 
 eOCT_pool* iOCT_context_getComponentPool(iOCT_entityContext* context, OCT_index componentIndex);
 eOCT_pool* iOCT_getDataPool(iOCT_entityContext* context, OCT_index dataPoolTypeIndex);
+void iOCT_entity_attachRootMeta(OCT_local entity);
 
 //void iOCT_entityContext_close(iOCT_entityContext* context);
 //void* iOCT_getByID(iOCT_entityContext* context, OCT_ID ID, OCT_ECSTypes componentType);

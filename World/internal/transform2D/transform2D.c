@@ -108,15 +108,7 @@ void iOCT_transform2D_generateRoot(OCT_local rootEntity) {
 		.depth = iOCT_TRANSFORM_ROOT_DEPTH
 	};
 	eOCT_entity_attachComponent(rootEntity, iOCT_world_inst.transform2DKey, &rootTransform, NULL);
-// 	iOCT_transform2D* rootTransform = (iOCT_transform2D*)eOCT_entity_attachComponent(rootEntity, iOCT_world_inst.transform2DKey);
-// 	rootTransform->entityHandle = rootEntity;
-// 	rootTransform->parentEntityHandle = rootEntity;
-// 	rootTransform->position = OCT_vec2_zero;
-// 	rootTransform->rotation = 0.0f;
-// 	rootTransform->scale = (OCT_vec2){1.0f, 1.0f};
-// 	rootTransform->localMatrix = OCT_mat3_identity;
-// 	rootTransform->globalMatrix = OCT_mat3_identity;
-// 	rootTransform->depth = iOCT_TRANSFORM_ROOT_DEPTH;
+
 }
 
 // resolves local and global matrices

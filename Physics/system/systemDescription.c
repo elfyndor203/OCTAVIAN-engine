@@ -65,6 +65,12 @@ void system_register_PHYSICS() {
         .ticketCache = &iOCT_physicsSystem_inst.rotationTicket,
         .type = eOCT_DATATYPE_FLOAT32,
     };
+    eOCT_fieldRequest transformParent = {
+        .name = "transformParent",
+        .optional = false,
+        .ticketCache = &iOCT_physicsSystem_inst.transformParentTicket,
+        .type = eOCT_DATATYPE_HANDLE_LOCAL
+    };
 
     eOCT_systemDescription physicsSystem = {
         .name = "Physics",
@@ -72,7 +78,7 @@ void system_register_PHYSICS() {
         .providedDataPools = eOCT_generateDataPoolDescriptionPool(2, rope2D, hitbox2D),
         .providedEvents = eOCT_POOL_EMPTY,
         .providedSingles = eOCT_generateSingleDescriptionPool(1, box2DWorldSingle),
-        .requestedFields = eOCT_generateFieldRequestPool(3, transform2D, position2D, rotation2D),
+        .requestedFields = eOCT_generateFieldRequestPool(4, transform2D, position2D, rotation2D, transformParent),
         .contextInitFx = iOCT_physicsSystem_contextSetup,
         .initFx = iOCT_physicsSystem_init
     };

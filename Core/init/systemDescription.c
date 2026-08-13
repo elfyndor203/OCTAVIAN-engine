@@ -9,7 +9,7 @@ void init_system_register_CORE() {
         .entityHandleValueOffset = offsetof(iOCT_entityMeta, entity),
         .keyCacheLocation = &iOCT_ECS_inst.entityMetaKey,
         .providedFields = eOCT_POOL_EMPTY,
-        .rootAttachmentFx = NULL,   // done inside of entityContext creation already __NOTE__ unsure
+        .rootAttachmentFx = NULL,
         .sort = false,
         .stride = sizeof(iOCT_entityMeta)
     };
