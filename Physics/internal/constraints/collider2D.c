@@ -72,7 +72,6 @@ OCT_local OCT_collider2D_new(OCT_local entity, OCT_shapeType shape, OCT_vec2 dim
         OCT_ERROR_LOG(OCT_EXIT_INVALID_ARGUMENT, "No valid shape provided");
     }
 
-
     iOCT_collider2D newCollider = {
         .b2ShapeID = newShapeID,
         .dimensions = dimensions,

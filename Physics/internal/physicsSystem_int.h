@@ -31,3 +31,4 @@ void iOCT_physicsSystem_init();
 void iOCT_physicsSystem_contextSetup(OCT_global context);
 
 b2Vec2 iOCT_toB2Vec2(OCT_vec2);
+OCT_vec2 iOCT_toOCTVec2(b2Vec2 b2Vec2);

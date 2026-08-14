@@ -32,15 +32,15 @@ void OCT_rope2D_length_OLD(OCT_local rope2D, float newLength) {
     eOCT_mappedPool* ropeMPool = eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.rope2DKey, rope2D.contextHandle);
     iOCT_rope2D* rope = (iOCT_rope2D*)eOCT_mappedPool_getByID(ropeMPool, rope2D.objectID);
 
-    iOCT_physics2D* physA = eOCT_entity_getComponent(rope->entityA, iOCT_physicsSystem_inst.physics2DKey);
-    iOCT_physics2D* physB = eOCT_entity_getComponent(rope->entityB, iOCT_physicsSystem_inst.physics2DKey);
+    iOCT_physics2D_oct* physA = eOCT_entity_getComponent(rope->entityA, iOCT_physicsSystem_inst.physics2DKey);
+    iOCT_physics2D_oct* physB = eOCT_entity_getComponent(rope->entityB, iOCT_physicsSystem_inst.physics2DKey);
     OCT_vec2* posA = (OCT_vec2*)eOCT_entity_getFieldOnce(rope->entityA, iOCT_physicsSystem_inst.position2DTicket);
     OCT_vec2* posB = (OCT_vec2*)eOCT_entity_getFieldOnce(rope->entityB, iOCT_physicsSystem_inst.position2DTicket);
 
     OCT_vec2 toMovePos;
     OCT_vec2 centerPos;
-    iOCT_physics2D* toMovePhys;
-    iOCT_physics2D* centerPhys;
+    iOCT_physics2D_oct* toMovePhys;
+    iOCT_physics2D_oct* centerPhys;
     if (physA->fixed) {
         centerPos = *posA;
         centerPhys = physA;
@@ -101,8 +101,8 @@ void iOCT_rope2D_solve(iOCT_rope2D rope, eOCT_contextToken contextToken) {
     }
     // iOCT_physics2D* physA = eOCT_entity_getComponent(contextToken, constraint.entityA, iOCT_physicsSystem_inst.physics2DKey);
     // iOCT_physics2D* physB = eOCT_entity_getComponent(contextToken, constraint.entityB, iOCT_physicsSystem_inst.physics2DKey);
-    iOCT_physics2D* physA = eOCT_entity_getComponent(rope.entityA, iOCT_physicsSystem_inst.physics2DKey);
-    iOCT_physics2D* physB = eOCT_entity_getComponent(rope.entityB, iOCT_physicsSystem_inst.physics2DKey);
+    iOCT_physics2D_oct* physA = eOCT_entity_getComponent(rope.entityA, iOCT_physicsSystem_inst.physics2DKey);
+    iOCT_physics2D_oct* physB = eOCT_entity_getComponent(rope.entityB, iOCT_physicsSystem_inst.physics2DKey);
 
     OCT_vec2* posA = (OCT_vec2*)eOCT_entity_getField(contextToken, rope.entityA, iOCT_physicsSystem_inst.position2DTicket);
     OCT_vec2* posB = (OCT_vec2*)eOCT_entity_getField(contextToken, rope.entityB, iOCT_physicsSystem_inst.position2DTicket);
@@ -123,8 +123,8 @@ void iOCT_rope2D_solve(iOCT_rope2D rope, eOCT_contextToken contextToken) {
 
     OCT_vec2* toMovePos;
     OCT_vec2* centerPos;
-    iOCT_physics2D* toMovePhys;
-    iOCT_physics2D* centerPhys;
+    iOCT_physics2D_oct* toMovePhys;
+    iOCT_physics2D_oct* centerPhys;
     if (physA->fixed) {
         centerPos = posA;
         centerPhys = physA;

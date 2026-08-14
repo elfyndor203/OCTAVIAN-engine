@@ -10,12 +10,19 @@
 
 iOCT_physicsSystem iOCT_physicsSystem_inst = {0};
 
-void OCT_physicsSystem_config(OCT_index worldUnitsPerMeter) {
-    if (worldUnitsPerMeter == OCT_CONFIG_DEFAULT) {
+void OCT_physicsSystem_config(OCT_config_physics config) {
+    if (config.unitsPerMeter == OCT_CONFIG_DEFAULT_INT) {
         iOCT_physicsSystem_inst.unitsPerB2Meter = 1.0f;
     }
     else {
-        iOCT_physicsSystem_inst.unitsPerB2Meter = (float)worldUnitsPerMeter;
+        iOCT_physicsSystem_inst.unitsPerB2Meter = (float)config.unitsPerMeter;
+    }
+
+    if (OCT_vec2_equal(config.gravity, OCT_VEC2_NULL, 0)) {
+        iOCT_physicsSystem_inst.worldGravity = OCT_GRAVITY_DEFAULT;
+    }
+    else {
+        iOCT_physicsSystem_inst.worldGravity = config.gravity;
     }
 }
 void iOCT_physicsSystem_init() {
@@ -64,10 +71,10 @@ void eOCT_PHYSICS_update(OCT_global context) {
 
 void eOCT_PHYSICS_updateCustomLoop(OCT_global context) {
     eOCT_pool* physicsPool = eOCT_component_getPool(context, iOCT_physicsSystem_inst.physics2DKey);
-    iOCT_physics2D* physicsArray = (iOCT_physics2D*)physicsPool->array;
+    iOCT_physics2D_oct* physicsArray = (iOCT_physics2D_oct*)physicsPool->array;
     eOCT_contextToken contextToken = eOCT_context_getToken(context);
     for (OCT_index physCtr = 0; physCtr < physicsPool->count; physCtr++) {
-        iOCT_physics2D* physics = &physicsArray[physCtr];
+        iOCT_physics2D_oct* physics = &physicsArray[physCtr];
 
         if (physics->fixed) {
             continue;
@@ -101,4 +108,8 @@ void eOCT_PHYSICS_updateCustomLoop(OCT_global context) {
 
 b2Vec2 iOCT_toB2Vec2(OCT_vec2 octVec2) {
     return (b2Vec2){octVec2.x, octVec2.y};
+}
+
+OCT_vec2 iOCT_toOCTVec2(b2Vec2 b2Vec2) {
+    return (OCT_vec2){b2Vec2.x, b2Vec2.y};
 }

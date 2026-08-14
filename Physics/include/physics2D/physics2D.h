@@ -5,6 +5,11 @@
 #define OCT_GRAVITY_DEFAULT ((OCT_vec2){0.0f, -1000.0f})
 #define OCT_PHYSICS_REFRESH_DEFAULT 60
 
+typedef struct OCT_config_physics {
+    OCT_vec2 gravity;
+    int unitsPerMeter;
+} OCT_config_physics;
+
 // void OCT_physics2D_attachOld(OCT_local entity, float mass, bool fixed);
 void OCT_physics2D_attachNew(OCT_local entity, float mass, bool dynamic);
 // OCT_vec2 OCT_physics2D_setVelocity(OCT_local entity, OCT_vec2 velocity);
@@ -27,3 +32,7 @@ OCT_vec2 OCT_physics2D_read(OCT_local entity, float* massOut, float* gravityOut,
  * @return calculated velocity from previous position
  */
 OCT_vec2 OCT_physics2D_readImplicit(OCT_local entity);
+
+OCT_vec2 OCT_physics2D_setVelocity(OCT_local entity, OCT_vec2 velocity);
+void OCT_physics2D_addImpulse(OCT_local entity, OCT_vec2 impulse);
+void OCT_physics2D_addForce(OCT_local entity, OCT_vec2 force);

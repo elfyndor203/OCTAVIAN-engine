@@ -23,7 +23,7 @@ OCT_local OCT_hitbox2D_new_OLD(OCT_local entity, OCT_vec2 dimensions, OCT_vec2 p
         .objectID = newBox.hitboxID
     };
 
-    iOCT_physics2D* phys = eOCT_entity_getComponent(newBox.entity, iOCT_physicsSystem_inst.physics2DKey);
+    iOCT_physics2D_oct* phys = eOCT_entity_getComponent(newBox.entity, iOCT_physicsSystem_inst.physics2DKey);
     phys->inertia += phys->mass + (dimensions.x * dimensions.x) + (dimensions.y * dimensions.y) / 12.0f;
 
     return newHandle;
@@ -34,8 +34,8 @@ bool iOCT_hitbox2D_solve(iOCT_hitbox2D hitboxA, iOCT_hitbox2D hitboxB) {
         return false;
     }
 
-    iOCT_physics2D* physA = eOCT_entity_getComponent(hitboxA.entity, iOCT_physicsSystem_inst.physics2DKey);
-    iOCT_physics2D* physB = eOCT_entity_getComponent(hitboxB.entity, iOCT_physicsSystem_inst.physics2DKey);
+    iOCT_physics2D_oct* physA = eOCT_entity_getComponent(hitboxA.entity, iOCT_physicsSystem_inst.physics2DKey);
+    iOCT_physics2D_oct* physB = eOCT_entity_getComponent(hitboxB.entity, iOCT_physicsSystem_inst.physics2DKey);
 
     OCT_vec2* posA = (OCT_vec2*)eOCT_entity_getFieldOnce(hitboxA.entity, iOCT_physicsSystem_inst.position2DTicket);
     OCT_vec2* posB = (OCT_vec2*)eOCT_entity_getFieldOnce(hitboxB.entity, iOCT_physicsSystem_inst.position2DTicket);

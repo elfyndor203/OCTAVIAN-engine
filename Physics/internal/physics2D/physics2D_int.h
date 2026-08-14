@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <box2d/box2d.h>
 
-struct iOCT_physics2D {
+struct iOCT_physics2D_oct {
     OCT_local entityHandle;
 
     float mass;
@@ -28,5 +28,5 @@ struct iOCT_physics2D_b2 {
     b2BodyId b2dBodyID;
 };
 
-void iOCT_physics2D_integrateEuler(iOCT_physics2D* physics2D, OCT_vec2* position, float* rotation, float dt);
-void iOCT_physics2D_conserveL(iOCT_physics2D* center, iOCT_physics2D* target, float originalDistance, float newDistance);
+void iOCT_physics2D_integrateEuler(iOCT_physics2D_oct* physics2D, OCT_vec2* position, float* rotation, float dt);
+void iOCT_physics2D_conserveL(iOCT_physics2D_oct* center, iOCT_physics2D_oct* target, float originalDistance, float newDistance);
