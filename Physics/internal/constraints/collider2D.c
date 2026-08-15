@@ -9,7 +9,7 @@
 
 OCT_local OCT_collider2D_new(OCT_local entity, OCT_shapeType shape, OCT_vec2 dimensions, OCT_vec2 origin, float radians, float density) {
     b2ShapeDef newShape = b2DefaultShapeDef();
-    newShape.density = density;
+    newShape.density = density; // not scaled
 
     OCT_mat3 globalTransform = *(OCT_mat3*)eOCT_entity_getFieldOnce(entity, iOCT_physicsSystem_inst.transform2DTicket);
 
