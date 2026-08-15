@@ -17,7 +17,7 @@ OCT_local OCT_rope2D_new_OLD(OCT_local entityA, OCT_local entityB, float length)
         .enabled = true
     };
 
-    eOCT_mappedPool* ropeMPool = eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.rope2DKey, entityA.contextHandle);
+    eOCT_mappedPool* ropeMPool = eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.distance2DKey, entityA.contextHandle);
     eOCT_mappedPool_addEntry(ropeMPool, &rope, &rope.ropeID, NULL);
 
     OCT_local ropeHandle = {
@@ -29,7 +29,7 @@ OCT_local OCT_rope2D_new_OLD(OCT_local entityA, OCT_local entityB, float length)
 }
 
 void OCT_rope2D_length_OLD(OCT_local rope2D, float newLength) {
-    eOCT_mappedPool* ropeMPool = eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.rope2DKey, rope2D.contextHandle);
+    eOCT_mappedPool* ropeMPool = eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.distance2DKey, rope2D.contextHandle);
     iOCT_rope2D* rope = (iOCT_rope2D*)eOCT_mappedPool_getByID(ropeMPool, rope2D.objectID);
 
     iOCT_physics2D_oct* physA = eOCT_entity_getComponent(rope->entityA, iOCT_physicsSystem_inst.physics2DKey);
@@ -67,7 +67,7 @@ void OCT_rope2D_length_OLD(OCT_local rope2D, float newLength) {
 }
 
 bool OCT_rope2D_disable_OLD(OCT_local rope2D) {
-    eOCT_mappedPool* ropeMPool = eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.rope2DKey, rope2D.contextHandle);
+    eOCT_mappedPool* ropeMPool = eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.distance2DKey, rope2D.contextHandle);
     iOCT_rope2D* rope = (iOCT_rope2D*)eOCT_mappedPool_getByID(ropeMPool, rope2D.objectID);
 
     bool changed;
@@ -81,7 +81,7 @@ bool OCT_rope2D_disable_OLD(OCT_local rope2D) {
     return changed;
 }
 bool OCT_rope2D_enable_OLD(OCT_local rope2D) {
-    eOCT_mappedPool* ropeMPool = eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.rope2DKey, rope2D.contextHandle);
+    eOCT_mappedPool* ropeMPool = eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.distance2DKey, rope2D.contextHandle);
     iOCT_rope2D* rope = (iOCT_rope2D*)eOCT_mappedPool_getByID(ropeMPool, rope2D.objectID);
 
     bool changed;

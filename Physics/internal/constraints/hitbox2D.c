@@ -16,7 +16,7 @@ OCT_local OCT_hitbox2D_new_OLD(OCT_local entity, OCT_vec2 dimensions, OCT_vec2 p
         .rotation = rotation,
         .enabled = true
     };
-    eOCT_mappedPool* boxMPool = eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.hitbox2DKey, entity.contextHandle);
+    eOCT_mappedPool* boxMPool = eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.collider2DKey, entity.contextHandle);
     eOCT_mappedPool_addEntry(boxMPool, &newBox, &newBox.hitboxID, NULL);
     OCT_local newHandle = {
         .contextHandle = entity.contextHandle,

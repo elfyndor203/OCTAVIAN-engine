@@ -26,7 +26,10 @@ struct iOCT_physics2D_b2 {
     OCT_local entityHandle;
 
     b2BodyId b2dBodyID;
+
+    float maxSpeedX;
+    float maxSpeedY;
 };
 
-void iOCT_physics2D_integrateEuler(iOCT_physics2D_oct* physics2D, OCT_vec2* position, float* rotation, float dt);
+void iOCT_physics2D_integrateEulerOld(iOCT_physics2D_oct* physics2D, OCT_vec2* position, float* rotation, float dt);
 void iOCT_physics2D_conserveL(iOCT_physics2D_oct* center, iOCT_physics2D_oct* target, float originalDistance, float newDistance);

@@ -4,6 +4,7 @@
 #include <box2d/box2d.h>
 
 #include "physicsSystem_int.h"
+#include "../../../../cmake-build-debug/_deps/box2d-src/src/joint.h"
 #include "physics2D/physics2D_int.h"
 
 OCT_local OCT_collider2D_new(OCT_local entity, OCT_shapeType shape, OCT_vec2 dimensions, OCT_vec2 origin, float radians, float density) {
@@ -83,7 +84,7 @@ OCT_local OCT_collider2D_new(OCT_local entity, OCT_shapeType shape, OCT_vec2 dim
         .contextHandle = entity.contextHandle,
         .containerID = OCT_ID_NULL
     };
-    eOCT_mappedPool* colliderPool = eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.hitbox2DKey, entity.contextHandle);
+    eOCT_mappedPool* colliderPool = eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.collider2DKey, entity.contextHandle);
     eOCT_mappedPool_addEntry(colliderPool, &newCollider, &colliderHandle.objectID, NULL);
 
     return colliderHandle;

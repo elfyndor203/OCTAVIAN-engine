@@ -11,7 +11,7 @@
 iOCT_physicsSystem iOCT_physicsSystem_inst = {0};
 
 void OCT_physicsSystem_config(OCT_config_physics config) {
-    if (config.unitsPerMeter == OCT_CONFIG_DEFAULT_INT) {
+    if (config.unitsPerMeter == OCT_CONFIG_DEFAULT_FLOAT) {
         iOCT_physicsSystem_inst.unitsPerB2Meter = 1.0f;
     }
     else {
@@ -35,7 +35,7 @@ void iOCT_physicsSystem_init() {
 
 void iOCT_physicsSystem_contextSetup(OCT_global context) {
     b2WorldDef worldDef = b2DefaultWorldDef();
-    worldDef.gravity = (b2Vec2){0.0f, -10.0f};
+    worldDef.gravity = iOCT_toB2Vec2(OCT_vec2_div(iOCT_physicsSystem_inst.worldGravity, iOCT_physicsSystem_inst.unitsPerB2Meter));
     b2WorldId worldID = b2CreateWorld(&worldDef);
     b2WorldId* worldSingle = (b2WorldId*)eOCT_single_getLocal(iOCT_physicsSystem_inst.box2DWorldKey, context);
     *worldSingle = worldID;
@@ -85,9 +85,9 @@ void eOCT_PHYSICS_updateCustomLoop(OCT_global context) {
         // iOCT_physics2D_integrateEuler(physics, position, rotation, iOCT_physicsSystem_inst.dt);
     }
 
-    eOCT_pool* ropePool = &eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.rope2DKey, context)->pool;
+    eOCT_pool* ropePool = &eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.distance2DKey, context)->pool;
     iOCT_rope2D* ropeArray = (iOCT_rope2D*)ropePool->array;
-    eOCT_pool* hitboxPool = &eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.hitbox2DKey, context)->pool;
+    eOCT_pool* hitboxPool = &eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.collider2DKey, context)->pool;
     iOCT_hitbox2D* hitboxArray = (iOCT_hitbox2D*)hitboxPool->array;
     for (OCT_index iteration = 0; iteration < iOCT_physicsSystem_inst.constraintSolveIterations; iteration++) {
         for (OCT_index ropeCtr = 0; ropeCtr < ropePool->count; ropeCtr++) {

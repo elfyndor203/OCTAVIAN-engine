@@ -34,7 +34,7 @@ void system_register_PHYSICS() {
         .stride = sizeof(iOCT_rope2D),
         .providedFields = eOCT_POOL_EMPTY,
         .elementIDValueOffset = offsetof(iOCT_rope2D, ropeID),
-        .keyCacheLocation = &iOCT_physicsSystem_inst.rope2DKey,
+        .keyCacheLocation = &iOCT_physicsSystem_inst.distance2DKey,
         .sort = false,
         .global = false
     };
@@ -43,7 +43,7 @@ void system_register_PHYSICS() {
         .stride = sizeof(iOCT_hitbox2D),
         .providedFields = eOCT_POOL_EMPTY,
         .elementIDValueOffset = offsetof(iOCT_hitbox2D, hitboxID),
-        .keyCacheLocation = &iOCT_physicsSystem_inst.hitbox2DKey,
+        .keyCacheLocation = &iOCT_physicsSystem_inst.collider2DKey,
         .sort = false,
         .global = false
     };

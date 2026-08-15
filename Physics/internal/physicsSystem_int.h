@@ -9,8 +9,8 @@ struct iOCT_physicsSystem {
     OCT_ID systemID;
 
     eOCT_componentKey physics2DKey;
-    eOCT_dataPoolKey rope2DKey;
-    eOCT_dataPoolKey hitbox2DKey;
+    eOCT_dataPoolKey distance2DKey;
+    eOCT_dataPoolKey collider2DKey;
     eOCT_fieldTicket transform2DTicket;
     eOCT_fieldTicket position2DTicket;
     eOCT_fieldTicket rotationTicket;
