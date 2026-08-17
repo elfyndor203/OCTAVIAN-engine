@@ -33,6 +33,8 @@ OCT_global OCT_window_open(const char* name, unsigned int sizeX, unsigned int si
     glfwGetFramebufferSize(windowPtr, &frameBufferX, &frameBufferY);
     glViewport(0, 0, frameBufferX, frameBufferY);
     glClearColor(color.x, color.y, color.z, color.a); // __NOTE__ PASS AS PARAM
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
 
     // init
     GLuint newVAO;
@@ -77,6 +79,12 @@ bool OCT_window_anyOpen() {
     return windowPool->count;
 }
 
+void OCT_window_setScreenSpaceZoom(OCT_global window, OCT_vec2 displayArea) {
+    iOCT_window* win = eOCT_mappedPool_getByID(&iOCT_windowSystem_inst.windowMPool, window.objectID);
+
+    win->screenSpaceZoom = displayArea;
+}
+
 void iOCT_window_close(iOCT_window* window) {
     glfwDestroyWindow(window->windowPtr);
     eOCT_mappedPool_deleteEntry(&iOCT_windowSystem_inst.windowMPool, window->windowID);
@@ -96,7 +104,7 @@ OCT_mat3 iOCT_window_screenToWorld(iOCT_window window) {
     if (OCT_local_isNULL(window.activeCameraSourceEntity)) {
         return OCT_mat3_identity;
     }
-    iOCT_camera2D camera = *(iOCT_camera2D*)eOCT_entity_getComponentOnce(window.activeCameraSourceEntity, iOCT_renderer_inst.camera2DKey);
+    iOCT_camera2D camera = *(iOCT_camera2D*)eOCT_entity_getComponent(window.activeCameraSourceEntity, iOCT_renderer_inst.camera2DKey);
     OCT_mat3 entityGlobalTransform = *(OCT_mat3*)eOCT_entity_getFieldOnce(window.activeCameraSourceEntity, iOCT_renderer_inst.transform2DTicket);
     OCT_vec2 windowRes = window.currentResolution;
 
@@ -113,10 +121,10 @@ OCT_mat3 iOCT_window_screenToWorld(iOCT_window window) {
 
 OCT_mat3 iOCT_window_worldToNDC(iOCT_window window) {
     OCT_mat3 entityGlobalTransform = *(OCT_mat3*)eOCT_entity_getFieldOnce(window.activeCameraSourceEntity, iOCT_renderer_inst.transform2DTicket);
-    iOCT_camera2D camera = *(iOCT_camera2D*)(eOCT_entity_getComponentOnce(window.activeCameraSourceEntity, iOCT_renderer_inst.camera2DKey));
+    iOCT_camera2D camera = *(iOCT_camera2D*)(eOCT_entity_getComponent(window.activeCameraSourceEntity, iOCT_renderer_inst.camera2DKey));
 
     OCT_mat3 cameraGlobal = OCT_mat3_mul(entityGlobalTransform, camera.cameraMatrix);
-    OCT_mat3 worldToCamera = OCT_mat3_inverse(cameraGlobal);
+    OCT_mat3 worldToCamera = OCT_mat3_inv(cameraGlobal);
     OCT_vec2 NDCScale = {2, 2};
 
     OCT_mat3 final = OCT_mat3_scale(worldToCamera, NDCScale);

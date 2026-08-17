@@ -14,6 +14,10 @@ add_library(Physics STATIC
         internal/constraints/types_int.h
         include/physics2D/constraints.h
         internal/constraints/hitbox2D.c
+        internal/constraints/collider2D.c
+        internal/constraints/collider2D_int.h
+        internal/constraints/distance2D.c
+        internal/constraints/distance2D_int.h
 )
 
 target_include_directories(Physics
@@ -30,7 +34,7 @@ set_target_properties(Physics PROPERTIES
         C_EXTENSIONS OFF
 )
 
-target_link_libraries(Physics PUBLIC Core)
+target_link_libraries(Physics PUBLIC Core PRIVATE box2d)
 
 add_library(PhysicsSystem INTERFACE)
 target_include_directories(PhysicsSystem INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/system)

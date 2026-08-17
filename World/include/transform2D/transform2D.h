@@ -15,8 +15,8 @@ OCT_vec2 OCT_transform2D_moveBy(OCT_local entity, OCT_vec2 deltaXY);
 /*!
  * Rotates to the given angle in degrees
  * @param entity
- * @param degrees
+ * @param radians
  * @return Delta rotation
  */
-float OCT_transform2D_rotateTo(OCT_local entity, float degrees);
+float OCT_transform2D_rotateTo(OCT_local entity, float radians);
 OCT_vec2 OCT_transform2D_read(OCT_local entity, float* rotationOut, OCT_vec2* scaleOut);

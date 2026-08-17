@@ -11,12 +11,13 @@
 #include "renderer/renderer_int.h"
 #include "renderer/texture/textureGroup_int.h"
 #include "window/windowSystem_int.h"
+#include "renderer/colors.h"
 
 #define iOCT_LAYER_MAX (UINT32_MAX - 1)
 
 uint64_t generateSortKey(OCT_index drawLayer, OCT_index texGroupIndex);
 
-void OCT_sprite2D_attach(OCT_local entity, OCT_global texture, OCT_vec4 uv, OCT_vec4 tintColor, OCT_vec2 dimensions, OCT_index drawLayer) {
+void OCT_sprite2D_attach(OCT_local entity, OCT_global texture, OCT_vec4 uv, OCT_vec2 dimensions, OCT_index drawLayer) {
     // OCT_index texGroupIndex = eOCT_IDMap_getIndex(&iOCT_renderer_inst.textureGroupMap, texture.containerID);
     OCT_index texGroupIndex = eOCT_IDMap_getIndex(&iOCT_renderer_inst.textureGroupMPool.IDMap, texture.containerID);
     iOCT_sprite2D newSprite = {
@@ -25,13 +26,14 @@ void OCT_sprite2D_attach(OCT_local entity, OCT_global texture, OCT_vec4 uv, OCT_
         .texID = texture.objectID,
         .spriteTransform = OCT_mat3_identity,
         .sortKey = generateSortKey(drawLayer, texGroupIndex),
+        .visible = true,
         .spriteData = {
             .uv = uv,
-            .color = tintColor,
+            .color = OCT_COLOR_WHITE,
             .dimensions = dimensions,
         }
     };
-    eOCT_entity_attachComponentOnce(entity, iOCT_renderer_inst.sprite2DKey, &newSprite, NULL);
+    eOCT_entity_attachComponent(entity, iOCT_renderer_inst.sprite2DKey, &newSprite, NULL);
     // iOCT_sprite2D* newSprite = eOCT_entity_attachComponent(entity, iOCT_renderer_inst.sprite2DKey);
     // newSprite->entityHandle = entity;
     // newSprite->texGroupID = texture.containerID;
@@ -48,6 +50,14 @@ void OCT_sprite2D_attach(OCT_local entity, OCT_global texture, OCT_vec4 uv, OCT_
     // iOCT_textureGroup* texGroup = (iOCT_textureGroup*)eOCT_getByID(&iOCT_renderer_inst.textureGroupMap, &iOCT_renderer_inst.textureGroupPool, texture.containerID);
 }
 
+void OCT_sprite2D_hide(OCT_local entity) {
+    iOCT_sprite2D* sprite = (iOCT_sprite2D*)eOCT_entity_getComponent(entity, iOCT_renderer_inst.sprite2DKey);
+    sprite->visible = false;
+}
+void OCT_sprite2D_show(OCT_local entity) {
+    iOCT_sprite2D* sprite = (iOCT_sprite2D*)eOCT_entity_getComponent(entity, iOCT_renderer_inst.sprite2DKey);
+    sprite->visible = true;
+}
 /// assumes layer and texGroup don't exceed 16 bit max, because it'd better not
 uint64_t generateSortKey(OCT_index drawLayer, OCT_index texGroupIndex) {
     assert(drawLayer <= UINT32_MAX);
@@ -60,6 +70,6 @@ uint64_t generateSortKey(OCT_index drawLayer, OCT_index texGroupIndex) {
 }
 
 void iOCT_sprite2D_root(OCT_local rootEntity) {
-    OCT_sprite2D_attach(rootEntity, iOCT_renderer_inst.gizmoTex, (OCT_vec4){0.0, 0.0, 1.0, 1.0}, OCT_TINT_COLOR_NONE, (OCT_vec2){100.0f, 100.0f}, 1); // skips layers in between
+    OCT_sprite2D_attach(rootEntity, iOCT_renderer_inst.gizmoTex, (OCT_vec4){0.0, 0.0, 1.0, 1.0}, (OCT_vec2){100.0f, 100.0f}, iOCT_LAYER_MAX); // skips layers in between
 }
 

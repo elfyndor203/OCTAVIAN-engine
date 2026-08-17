@@ -9,5 +9,3 @@ struct iOCT_scheduler {
 };
 
 extern iOCT_scheduler iOCT_scheduler_inst;
-
-void iOCT_scheduler_addUpdateFx(eOCT_systemUpdateFx updateFx);

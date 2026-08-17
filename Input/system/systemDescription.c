@@ -77,7 +77,7 @@ void system_register_INPUT() {
         .providedDataPools = eOCT_POOL_EMPTY,
         .providedEvents = eOCT_POOL_EMPTY,
         .requestedFields = eOCT_generateFieldRequestPool(11, key, keyPress, keyRelease, mouseButton, mouseButtonPress, mouseButtonRelease, mouseMoveX, mouseMoveY, mouseScroll, activeCamera, deltaTime),
-        .initFx = system_init_INPUT
+        .systemInitFx = system_init_INPUT
     };
 
     iOCT_inputSystem_inst.systemID = eOCT_registry_registerSystem(inputSystem);

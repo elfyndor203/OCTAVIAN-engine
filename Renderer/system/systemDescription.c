@@ -10,6 +10,30 @@
 #include "window/inputs/inputs_int.h"
 
 void system_register_RENDERER() {
+    eOCT_fieldDescription screenSpace = {
+        .name = "screenSpace",
+        .offset = 0,
+        .providerType = eOCT_DATAPATTERN_SINGLE,
+        .type = eOCT_DATATYPE_BOOL
+    };
+    eOCT_singleDescription screenSpaceSingle = {
+        .name = "screenSpace",
+        .providedField = screenSpace,
+        .global = false,
+        .keyCacheLocation = &iOCT_renderer_inst.screenSpaceKey
+    };
+    // eOCT_fieldDescription screenSpaceZoom = {
+    //     .name = "screenSpaceZoom",
+    //     .offset = 0,
+    //     .providerType = eOCT_DATAPATTERN_SINGLE,
+    //     .type = eOCT_DATATYPE_VEC2
+    // };
+    // eOCT_singleDescription screenSpaceZoomSingle = {
+    //     .name = "screenSpaceZoom",
+    //     .providedField = screenSpaceZoom,
+    //     .global = false,
+    //     .keyCacheLocation = &iOCT_renderer_inst.screenSpaceZoomKey
+    // };
     eOCT_componentDescription sprite2D = {
         .name = "sprite2D",
         .providedFields = eOCT_POOL_EMPTY,
@@ -40,8 +64,11 @@ void system_register_RENDERER() {
         .name = "Renderer",
         .providedComponents = eOCT_generateComponentDescriptionPool(2, sprite2D, camera2D),
         .providedDataPools = eOCT_POOL_EMPTY,
+        .providedSingles = eOCT_generateSingleDescriptionPool(1, screenSpaceSingle),
         .requestedFields = eOCT_generateFieldRequestPool(1, transform2D),
-        .initFx = system_init_RENDERER};
+        .systemInitFx = system_init_RENDERER,
+        .contextInitFx = iOCT_renderer_contextSetup
+    };
 
     iOCT_renderer_inst.systemID = eOCT_registry_registerSystem(rendererSystem);
 }
@@ -154,7 +181,7 @@ void system_register_WINDOW() {
         .providedEvents = eOCT_generateEventDescriptionPool(4, keyEvents, mouseButtonEvents, mouseMoveEvents, mouseScrollEvents),
         .providedSingles = eOCT_generateSingleDescriptionPool(1, screenToWorldMatrix),
         .requestedFields = eOCT_POOL_EMPTY,
-        .initFx = system_init_WINDOW
+        .systemInitFx = system_init_WINDOW
     };
 
     iOCT_windowSystem_inst.systemID = eOCT_registry_registerSystem(windowSystem);

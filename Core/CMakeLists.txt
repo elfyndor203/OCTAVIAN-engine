@@ -2,8 +2,8 @@
 add_library(Core STATIC
         internal/layout/layout.c
         internal/layout/dataAccess.c
-        engine/layout/layout_eng.h
-        engine/layout/types_eng.h
+        engine/data/data_eng.h
+        engine/data/types_eng.h
 
         internal/utilities/utilities_int.h
         internal/utilities/IDMap.c
@@ -54,6 +54,8 @@ add_library(Core STATIC
         include/math/lines/line2.h
         include/math/lines/line2.c
         include/utilities/sets.c
+        include/utilities/config.h
+        init/systemDescription.c
 )
 
 target_include_directories(Core

@@ -1,5 +1,6 @@
 #pragma once
 #include "layout/types.h"
+
 #include "math/definitions/aliases.h"
 typedef struct eOCT_pool eOCT_pool;
 typedef struct eOCT_IDMap eOCT_IDMap;

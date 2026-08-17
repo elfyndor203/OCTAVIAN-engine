@@ -6,7 +6,7 @@
 typedef struct {
 	OCT_vec2 center;
 	OCT_vec2 dimensions;
-	float rotationDeg;
+	float rotationRad;
 } OCT_rect2;
 
 /*!

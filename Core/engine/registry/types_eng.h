@@ -21,7 +21,8 @@ typedef struct eOCT_fieldDescription eOCT_fieldDescription;
 /// </summary>
 typedef struct eOCT_fieldRequest eOCT_fieldRequest;
 
-typedef struct eOCT_fieldTicket eOCT_fieldTicket;
+typedef struct eOCT_componentExistenceKey eOCT_componentExistenceKey;
+
 /// <summary>
 /// Describes one component provided by the system. 
 /// Leave all _reg fields blank.
@@ -37,5 +38,5 @@ typedef struct eOCT_singleDescription eOCT_singleDescription;
 typedef union eOCT_dataUnion eOCT_dataUnion;
 
 typedef void (*eOCT_systemInitFx)(void);
-typedef void (*eOCT_systemUpdateFx)(OCT_local);
+typedef void (*eOCT_contextInitFx)(OCT_global context);
 

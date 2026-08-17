@@ -19,6 +19,7 @@ struct iOCT_sprite2D {
     OCT_ID texGroupID;
     OCT_ID texID;
     OCT_index sortKey;
+    bool visible;
 
     OCT_mat3 spriteTransform;
     iOCT_spriteData spriteData;

@@ -21,6 +21,8 @@ struct iOCT_renderer {
     eOCT_fieldTicket windowVAOCache;
     eOCT_componentKey sprite2DKey;
     eOCT_componentKey camera2DKey;
+    eOCT_singleKey screenSpaceKey;
+    // eOCT_singleKey screenSpaceZoomKey;
 
     // texture storage
     // eOCT_IDMap textureGroupMap;
@@ -49,3 +51,4 @@ void system_init_RENDERER();
 
 void iOCT_renderer_drawLayer();
 void iOCT_setupNewSpriteVAO(GLuint VAO);
+void iOCT_renderer_contextSetup(OCT_global context);

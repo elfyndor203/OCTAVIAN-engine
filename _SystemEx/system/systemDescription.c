@@ -60,7 +60,7 @@ void system_register_systemEx() {
 		.providedEvents = eOCT_POOL_EMPTY,
 		.providedSingles = eOCT_generateSingleDescriptionPool(1, testSingle),
 		.providedDataPools = eOCT_POOL_EMPTY,
-		.initFx = system_init_systemEx
+		.systemInitFx = system_init_systemEx
 	};
 
 	iOCT_systemEx_inst.systemID = eOCT_registry_registerSystem(templateSystem);

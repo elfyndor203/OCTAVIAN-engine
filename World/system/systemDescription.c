@@ -36,11 +36,17 @@ void system_register_WORLD() {
 		.offset = offsetof(iOCT_transform2D, globalMatrix),
 		.providerType = eOCT_DATAPATTERN_COMPONENT
 	};
+	eOCT_fieldDescription transformParent = {
+		.name = "transformParent",
+		.type = eOCT_DATATYPE_HANDLE_LOCAL,
+		.providerType = eOCT_DATAPATTERN_COMPONENT,
+		.offset = offsetof(iOCT_transform2D, parentEntityHandle)
+	};
 
 	eOCT_componentDescription transform2D = {
 		.name = "transform2D",
 		.stride = sizeof(iOCT_transform2D),
-		.providedFields = eOCT_generateFieldDescriptionPool(5, position, rotation, scaleX, scaleY, matrix2D),
+		.providedFields = eOCT_generateFieldDescriptionPool(6, position, rotation, scaleX, scaleY, matrix2D, transformParent),
 		.keyCacheLocation = &iOCT_world_inst.transform2DKey,
 		.rootAttachmentFx = iOCT_transform2D_generateRoot,
 		.sortValueOffset = offsetof(iOCT_transform2D, depth),
@@ -52,7 +58,7 @@ void system_register_WORLD() {
 		.providedComponents = eOCT_generateComponentDescriptionPool(1, transform2D),
 		.providedDataPools = eOCT_POOL_EMPTY,
 		.requestedFields = eOCT_POOL_EMPTY,
-		.initFx = iOCT_world_init
+		.systemInitFx = iOCT_world_init
 	};
 
 	iOCT_world_inst.systemID = eOCT_registry_registerSystem(world);

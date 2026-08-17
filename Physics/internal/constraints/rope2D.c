@@ -1,7 +1,7 @@
 #include "constraints_int.h"
 
-OCT_local OCT_rope2D_new(OCT_local entityA, OCT_local entityB, float length) {
-    if (!eOCT_entity_hasComponentOnce(entityA, iOCT_physicsSystem_inst.physics2DKey) || !eOCT_entity_hasComponentOnce(entityB, iOCT_physicsSystem_inst.physics2DKey)) {
+OCT_local OCT_rope2D_new_OLD(OCT_local entityA, OCT_local entityB, float length) {
+    if (!eOCT_entity_hasComponent(entityA, iOCT_physicsSystem_inst.physics2DKey, NULL) || !eOCT_entity_hasComponent(entityB, iOCT_physicsSystem_inst.physics2DKey, NULL)) {
         OCT_ERROR_LOG(OCT_EXIT_REQUIREMENT_NOT_MET, "Entities must both have physics components attached");
         return OCT_LOCAL_NULL;
     }
@@ -17,7 +17,7 @@ OCT_local OCT_rope2D_new(OCT_local entityA, OCT_local entityB, float length) {
         .enabled = true
     };
 
-    eOCT_mappedPool* ropeMPool = eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.rope2DKey, entityA.contextHandle);
+    eOCT_mappedPool* ropeMPool = eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.distance2DKey, entityA.contextHandle);
     eOCT_mappedPool_addEntry(ropeMPool, &rope, &rope.ropeID, NULL);
 
     OCT_local ropeHandle = {
@@ -28,19 +28,19 @@ OCT_local OCT_rope2D_new(OCT_local entityA, OCT_local entityB, float length) {
     return ropeHandle;
 }
 
-void OCT_rope2D_length(OCT_local rope2D, float newLength) {
-    eOCT_mappedPool* ropeMPool = eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.rope2DKey, rope2D.contextHandle);
+void OCT_rope2D_length_OLD(OCT_local rope2D, float newLength) {
+    eOCT_mappedPool* ropeMPool = eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.distance2DKey, rope2D.contextHandle);
     iOCT_rope2D* rope = (iOCT_rope2D*)eOCT_mappedPool_getByID(ropeMPool, rope2D.objectID);
 
-    iOCT_physics2D* physA = eOCT_entity_getComponentOnce(rope->entityA, iOCT_physicsSystem_inst.physics2DKey);
-    iOCT_physics2D* physB = eOCT_entity_getComponentOnce(rope->entityB, iOCT_physicsSystem_inst.physics2DKey);
+    iOCT_physics2D_oct* physA = eOCT_entity_getComponent(rope->entityA, iOCT_physicsSystem_inst.physics2DKey);
+    iOCT_physics2D_oct* physB = eOCT_entity_getComponent(rope->entityB, iOCT_physicsSystem_inst.physics2DKey);
     OCT_vec2* posA = (OCT_vec2*)eOCT_entity_getFieldOnce(rope->entityA, iOCT_physicsSystem_inst.position2DTicket);
     OCT_vec2* posB = (OCT_vec2*)eOCT_entity_getFieldOnce(rope->entityB, iOCT_physicsSystem_inst.position2DTicket);
 
     OCT_vec2 toMovePos;
     OCT_vec2 centerPos;
-    iOCT_physics2D* toMovePhys;
-    iOCT_physics2D* centerPhys;
+    iOCT_physics2D_oct* toMovePhys;
+    iOCT_physics2D_oct* centerPhys;
     if (physA->fixed) {
         centerPos = *posA;
         centerPhys = physA;
@@ -56,7 +56,7 @@ void OCT_rope2D_length(OCT_local rope2D, float newLength) {
 
     OCT_vec2 toMoving = OCT_vec2_sub(toMovePos, centerPos);
     OCT_vec2 toMovingUnit = OCT_vec2_unit(toMoving);
-    OCT_vec2 tangentUnit = OCT_vec2_rotate(toMovingUnit, 90);
+    OCT_vec2 tangentUnit = OCT_vec2_rotate(toMovingUnit, OCT_deg2rad(90.0f));
 
     OCT_vec2 lin_momentum = OCT_vec2_mul(toMovePhys->velocity, toMovePhys->mass);
     float ang_momentum = OCT_vec2_cross(toMoving, lin_momentum);
@@ -66,8 +66,8 @@ void OCT_rope2D_length(OCT_local rope2D, float newLength) {
     rope->length = newLength;
 }
 
-bool OCT_rope2D_disable(OCT_local rope2D) {
-    eOCT_mappedPool* ropeMPool = eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.rope2DKey, rope2D.contextHandle);
+bool OCT_rope2D_disable_OLD(OCT_local rope2D) {
+    eOCT_mappedPool* ropeMPool = eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.distance2DKey, rope2D.contextHandle);
     iOCT_rope2D* rope = (iOCT_rope2D*)eOCT_mappedPool_getByID(ropeMPool, rope2D.objectID);
 
     bool changed;
@@ -80,8 +80,8 @@ bool OCT_rope2D_disable(OCT_local rope2D) {
     rope->enabled = false;
     return changed;
 }
-bool OCT_rope2D_enable(OCT_local rope2D) {
-    eOCT_mappedPool* ropeMPool = eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.rope2DKey, rope2D.contextHandle);
+bool OCT_rope2D_enable_OLD(OCT_local rope2D) {
+    eOCT_mappedPool* ropeMPool = eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.distance2DKey, rope2D.contextHandle);
     iOCT_rope2D* rope = (iOCT_rope2D*)eOCT_mappedPool_getByID(ropeMPool, rope2D.objectID);
 
     bool changed;
@@ -101,8 +101,8 @@ void iOCT_rope2D_solve(iOCT_rope2D rope, eOCT_contextToken contextToken) {
     }
     // iOCT_physics2D* physA = eOCT_entity_getComponent(contextToken, constraint.entityA, iOCT_physicsSystem_inst.physics2DKey);
     // iOCT_physics2D* physB = eOCT_entity_getComponent(contextToken, constraint.entityB, iOCT_physicsSystem_inst.physics2DKey);
-    iOCT_physics2D* physA = eOCT_entity_getComponentOnce(rope.entityA, iOCT_physicsSystem_inst.physics2DKey);
-    iOCT_physics2D* physB = eOCT_entity_getComponentOnce(rope.entityB, iOCT_physicsSystem_inst.physics2DKey);
+    iOCT_physics2D_oct* physA = eOCT_entity_getComponent(rope.entityA, iOCT_physicsSystem_inst.physics2DKey);
+    iOCT_physics2D_oct* physB = eOCT_entity_getComponent(rope.entityB, iOCT_physicsSystem_inst.physics2DKey);
 
     OCT_vec2* posA = (OCT_vec2*)eOCT_entity_getField(contextToken, rope.entityA, iOCT_physicsSystem_inst.position2DTicket);
     OCT_vec2* posB = (OCT_vec2*)eOCT_entity_getField(contextToken, rope.entityB, iOCT_physicsSystem_inst.position2DTicket);
@@ -123,8 +123,8 @@ void iOCT_rope2D_solve(iOCT_rope2D rope, eOCT_contextToken contextToken) {
 
     OCT_vec2* toMovePos;
     OCT_vec2* centerPos;
-    iOCT_physics2D* toMovePhys;
-    iOCT_physics2D* centerPhys;
+    iOCT_physics2D_oct* toMovePhys;
+    iOCT_physics2D_oct* centerPhys;
     if (physA->fixed) {
         centerPos = posA;
         centerPhys = physA;

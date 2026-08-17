@@ -3,6 +3,7 @@
 
 #include "OCT_Core_eng.h"
 #include <stdio.h>
+#include <assert.h>
 
 #include "ECS/ECS_int.h"
 #include "entityContext_int.h"
@@ -31,6 +32,11 @@ static OCT_index* iOCT_entity_getComponentIndexEntry(iOCT_entityContext* context
  */
 static void iOCT_entity_resolveIndices(iOCT_entityContext* context, eOCT_pool* componentPool, eOCT_componentKey component, OCT_index skip);
 
+void iOCT_entity_updateAttachedMask(iOCT_entityMeta* entityMeta, OCT_index componentIndex, OCT_AorB attachOrDetach);
+void iOCT_entity_updateEnabledMask(iOCT_entityMeta* entityMeta, OCT_index componentIndex, OCT_AorB enableOrDisable);
+bool iOCT_entity_readAttachedMask(iOCT_entityMeta* entityMeta, OCT_index componentIndex);
+bool iOCT_entity_readEnabledMask(iOCT_entityMeta* entityMeta, OCT_index componentIndex);
+
 #pragma region basics
 OCT_local OCT_entity_new(OCT_global contextHandle) {
 	//printf("Context ID: %zu\n", contextHandle.objectID);
@@ -39,6 +45,12 @@ OCT_local OCT_entity_new(OCT_global contextHandle) {
 	//printf("Context: %p\n", context);
 	OCT_local entityHandle = iOCT_entity_new(context);
 	entityHandle.contextHandle = contextHandle;
+
+	iOCT_entityMeta metadata = {
+		.componentsAttached = 0,
+		.componentsEnabled = 0
+	};
+	eOCT_entity_attachComponent(entityHandle, iOCT_ECS_inst.entityMetaKey, &metadata, NULL);
 	return entityHandle;
 }
 OCT_local iOCT_entity_new(iOCT_entityContext* context) {
@@ -56,7 +68,7 @@ OCT_local iOCT_entity_new(iOCT_entityContext* context) {
 	};
 }
 
-void* eOCT_entity_attachComponentOnce(OCT_local entity, eOCT_componentKey componentKey, void* source, OCT_index* outIndex) {
+void* eOCT_entity_attachComponent(OCT_local entity, eOCT_componentKey componentKey, void* source, OCT_index* outIndex) {
 	// iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, entity.containerID);
 	iOCT_entityContext* context = eOCT_mappedPool_getByID(&iOCT_ECS_inst.contextMPool, entity.containerID);
 	OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
@@ -72,14 +84,31 @@ void* eOCT_entity_attachComponentOnce(OCT_local entity, eOCT_componentKey compon
 	if (outIndex) {
 		*outIndex = destinationIndex;
 	}
+
+	iOCT_entityMeta* entityMeta = iOCT_entity_getComponent(context, entityIndex, iOCT_ECS_inst.entityMetaKey.componentTypeIndex);
+
+	iOCT_entity_updateAttachedMask(entityMeta, componentKey.componentTypeIndex, OCT_A);
+	iOCT_entity_updateEnabledMask(entityMeta, componentKey.componentTypeIndex, OCT_A);
 	return dataLoc;
+}
+
+void iOCT_entity_attachMeta(OCT_local entity) {
+	iOCT_entityMeta metadata = {
+		.componentsAttached = 0,
+		.componentsEnabled = 0,
+		.isRoot = false,
+		.entity = entity
+	};
+	eOCT_entity_attachComponent(entity, iOCT_ECS_inst.entityMetaKey, &metadata, NULL);
 }
 #pragma endregion
 
 #pragma region accessors
 
-void* eOCT_entity_getComponentOnce(OCT_local entity, eOCT_componentKey component) {
-	// iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, entity.containerID);
+void* eOCT_entity_getComponent(OCT_local entity, eOCT_componentKey component) {
+	if (!eOCT_entity_hasComponent(entity, component, NULL)) {
+		OCT_ERROR_LOG(OCT_EXIT_REFERENCE_DOES_NOT_EXIST, "Entity does not have this component attached");
+	}
 	iOCT_entityContext* context = eOCT_mappedPool_getByID(&iOCT_ECS_inst.contextMPool, entity.containerID);
 
 	if (!context) {
@@ -93,16 +122,16 @@ void* eOCT_entity_getComponentOnce(OCT_local entity, eOCT_componentKey component
 	}
 	return dataLoc;
 }
-void* eOCT_entity_getComponent(eOCT_contextToken contextToken, OCT_local entity, eOCT_componentKey component) {
-	iOCT_entityContext* context = contextToken.contextPtr;
-	OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
-	void* dataLoc = iOCT_entity_getComponent(context, entityIndex, component.componentTypeIndex);
-
-	if (!dataLoc) {
-		OCT_ERROR_LOG(OCT_EXIT_REFERENCE_DOES_NOT_EXIST, "Failed to get component");
-	}
-	return dataLoc;
-}
+// void* eOCT_entity_getComponent(eOCT_contextToken contextToken, OCT_local entity, eOCT_componentKey component) {
+// 	iOCT_entityContext* context = contextToken.contextPtr;
+// 	OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
+// 	void* dataLoc = iOCT_entity_getComponent(context, entityIndex, component.componentTypeIndex);
+//
+// 	if (!dataLoc) {
+// 		OCT_ERROR_LOG(OCT_EXIT_REFERENCE_DOES_NOT_EXIST, "Failed to get component");
+// 	}
+// 	return dataLoc;
+// }
 
 void* eOCT_entity_getField(eOCT_contextToken contextToken, OCT_local entity, eOCT_fieldTicket field) {
 	if (!contextToken.valid) {
@@ -148,6 +177,7 @@ void* iOCT_entity_getComponent(iOCT_entityContext* context, OCT_index entityInde
 	void* dataLoc = eOCT_pool_access(componentPool, componentIndex, 0);
 	return dataLoc;
 }
+
 #pragma endregion
 
 #pragma region utils
@@ -183,31 +213,40 @@ OCT_local eOCT_entity_getHandle(OCT_local context, OCT_ID entityID) {
 // 	return entity.contextHandle;
 // }
 
-bool eOCT_entity_hasComponentOnce(OCT_local entity, eOCT_componentKey component) {
-	iOCT_entityContext* context = iOCT_entityContext_get(entity.containerID);
+bool eOCT_entity_hasComponent(OCT_local entity, eOCT_componentKey component, bool* enabledOut) {
+	iOCT_entityContext* context = iOCT_entityContext_get(entity.contextHandle.objectID);
 	OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
 
-	OCT_index* entityBase = iOCT_entity_get(context, entityIndex);
-	OCT_index componentIndex = *(entityBase + component.componentTypeIndex);
+	iOCT_entityMeta* entityMeta = iOCT_entity_getComponent(context, entityIndex, iOCT_ECS_inst.entityMetaKey.componentTypeIndex);
 
-	if (componentIndex == OCT_INDEX_NULL) {
-		return false;
+	bool attached;
+	if (iOCT_entity_readAttachedMask(entityMeta, component.componentTypeIndex)) {
+		attached = true;
+	} else {
+		attached = false;
 	}
-	return true;
+
+	bool enabled;
+	if (iOCT_entity_readEnabledMask(entityMeta, component.componentTypeIndex)) {
+		enabled = true;
+	} else {
+		enabled = false;
+	}
+
+	if (enabledOut) {
+		*enabledOut = enabled;
+	}
+	return attached;
 }
+
+bool eOCT_entity_isRoot(OCT_local entity) {
+	iOCT_entityMeta* entityMeta = eOCT_entity_getComponent(entity, iOCT_ECS_inst.entityMetaKey);
+
+	return entityMeta->isRoot;
+}
+
+bool eOCT_entity_hasExternalComponent(OCT_local entity);
 #pragma endregion
-// OCT_index eOCT_entity_getComponentIndex(OCT_handle entity, eOCT_componentDescription component) {
-// 	iOCT_entityContext* context = (iOCT_entityContext*)eOCT_getByID(&iOCT_ECS_inst.contextMap, &iOCT_ECS_inst.contextPool, entity.containerID);
-// 	if (!context) {
-// 		OCT_ERROR_LOG(OCT_EXIT_REFERENCE_DOES_NOT_EXIST, "Bad context ID");
-// 	}
-// 	OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
-//
-// 	OCT_index* entityBase = iOCT_entity_get(context, entityIndex);
-// 	OCT_index componentIndex = *(entityBase + component.componentTypeIndex_reg);
-//
-// 	return componentIndex;
-// }
 
 #pragma region statics
 static OCT_index* iOCT_entity_get(iOCT_entityContext* context, OCT_index entityIndex) {
@@ -233,7 +272,70 @@ static void iOCT_entity_resolveIndices(iOCT_entityContext* context, eOCT_pool* c
 		OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
 		OCT_index* componentSlot = iOCT_entity_getComponentIndexEntry(context, entityIndex, component);
 
+		// if (*componentSlot != compIndex) {
+		// 	printf("Index updated. Old index: %zu\n", *componentSlot);
+		// }
+		// printf("Entity %zu now has component of type %zu at index %zu\n", entity.objectID, component.componentTypeIndex, compIndex);
 		*componentSlot = compIndex;
 	}
 }
+
+void iOCT_entity_updateAttachedMask(iOCT_entityMeta* entityMeta, OCT_index componentIndex, OCT_AorB attachOrDetach) {
+	assert(componentIndex >= 0 && componentIndex < 64);
+
+	if (!OCT_AorB_one(attachOrDetach)) {
+		OCT_ERROR_LOG(OCT_EXIT_INVALID_ARGUMENT, "Choose attach or detach");
+	}
+	uint64_t* mask = &entityMeta->componentsAttached;
+	if (attachOrDetach == OCT_A) {
+		*mask |= (1ULL << componentIndex);
+	} else {
+		*mask &= ~(1ULL << componentIndex);
+	}
+}
+void iOCT_entity_updateEnabledMask(iOCT_entityMeta* entityMeta, OCT_index componentIndex, OCT_AorB enableOrDisable) {
+	assert(componentIndex >= 0 && componentIndex < 64);
+
+	if (!OCT_AorB_one(enableOrDisable)) {
+		OCT_ERROR_LOG(OCT_EXIT_INVALID_ARGUMENT, "Choose enable or disable");
+	}
+	uint64_t* mask = &entityMeta->componentsEnabled;
+	if (enableOrDisable == OCT_A) {
+		*mask |= (1ULL << componentIndex);
+	} else {
+		*mask &= ~(1ULL << componentIndex);
+	}
+}
+
+bool iOCT_entity_readAttachedMask(iOCT_entityMeta* entityMeta, OCT_index componentIndex) {
+	uint64_t* mask = &entityMeta->componentsAttached;
+	if (*mask & (1ULL << componentIndex)) {
+		return true;
+	}
+	return false;
+}
+bool iOCT_entity_readEnabledMask(iOCT_entityMeta* entityMeta, OCT_index componentIndex) {
+	uint64_t* mask = &entityMeta->componentsEnabled;
+	if (*mask & (1ULL << componentIndex)) {
+		return true;
+	}
+	return false;
+}
+
 #pragma endregion
+
+void OCT_entity_printAllComponentLinks(OCT_global contextHandle) {
+	iOCT_entityContext* context = iOCT_entityContext_get(contextHandle.objectID);
+
+	OCT_index* entityArray = (OCT_index*)context->entities.array;
+
+	for (OCT_index entityCtr = 0; entityCtr < context->entities.count; entityCtr++) {
+		OCT_index* entityBase = entityArray + entityCtr * context->components.count;
+		printf("Entity #%zu:\n", entityCtr);
+		for (OCT_index componentTypeCtr = 0; componentTypeCtr < context->components.count; componentTypeCtr++) {
+			OCT_index* componentIndexBase = entityBase + componentTypeCtr;
+			printf("  Component type %zu: Index: %zu\n", componentTypeCtr, *componentIndexBase);
+		}
+
+	}
+}

@@ -3,7 +3,9 @@
 #include "ECS/types_eng.h"
 
 #include "utilities/utilities_eng.h"
-#include "layout/types_eng.h"
+#include "../data/types_eng.h"
+
+#define eOCT_DATAUNION_SIZE 36
 
 typedef enum eOCT_dataPattern {
 	eOCT_DATAPATTERN_COMPONENT = 1,
@@ -23,13 +25,17 @@ typedef enum eOCT_dataTypes { //__NOTE__ typedef all types? or no
 	eOCT_DATATYPE_STRING64,
 	eOCT_DATATYPE_BOOL, // size? include all sizes or just specific?
 
+	eOCT_DATATYPE_HANDLE_LOCAL,
+	eOCT_DATATYPE_HANDLE_GLOBAL,
 	eOCT_DATATYPE_ID,
 	eOCT_DATATYPE_INDEX,
 	eOCT_DATATYPE_VEC2,
 	eOCT_DATATYPE_VEC3,
 	eOCT_DATATYPE_VEC4,
 	eOCT_DATATYPE_MAT3,
-	eOCT_DATATYPE_MAT4
+	eOCT_DATATYPE_MAT4,
+
+	eOCT_DATATYPE_CUSTOM	// Must have a size of <= eOCT_DATAUNION_SIZE. Redefine if necessary. Won't be readable by other systems. Should be used for external API data that needs to be context-local.
 } eOCT_dataTypes;
 
 union eOCT_dataUnion {
@@ -40,12 +46,15 @@ union eOCT_dataUnion {
 	char char8;
 	void* ptr8;
 	char* string8;
+	bool boolean;
 	OCT_ID ID;
 	OCT_index index;
 	OCT_vec2 vec2;
 	OCT_vec3 vec3;
 	OCT_vec4 vec4;
 	OCT_mat3 mat3;
+
+	char opaque[eOCT_DATAUNION_SIZE];
 };
 
 struct eOCT_fieldRequest {
@@ -61,6 +70,12 @@ struct eOCT_fieldRequest {
 	size_t fieldOffset_reg;
 	bool global_reg;
 	bool fulfilled_reg;
+};
+
+struct eOCT_componentExistenceRequest {
+	const char* name;
+
+	eOCT_componentExistenceKey* keyCache;
 };
 struct eOCT_fieldDescription {
 	const char* name;
@@ -122,7 +137,9 @@ struct eOCT_systemDescription {
 	eOCT_pool providedEvents;
 	eOCT_pool providedSingles;
 	eOCT_pool requestedFields;
-	eOCT_systemInitFx initFx;
+
+	eOCT_contextInitFx contextInitFx;
+	eOCT_systemInitFx systemInitFx;
 	// eOCT_systemUpdateFx updateFx;
 
 	OCT_ID systemID_reg; // provided by the registry

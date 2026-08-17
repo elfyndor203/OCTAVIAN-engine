@@ -6,13 +6,25 @@
 #include "constraints/constraints_int.h"
 
 void system_register_PHYSICS() {
+    eOCT_fieldDescription box2DWorld = {
+        .name = "box2DWorld",
+        .offset = 0,
+        .providerType = eOCT_DATAPATTERN_SINGLE,
+        .type = eOCT_DATATYPE_CUSTOM
+    };
+    eOCT_singleDescription box2DWorldSingle = {
+        .name = "box2DWorld",
+        .providedField = box2DWorld,
+        .global = false,
+        .keyCacheLocation = &iOCT_physicsSystem_inst.box2DWorldKey
+    };
     eOCT_componentDescription physics2D = {
         .name = "physics2D",
-        .entityHandleValueOffset = offsetof(iOCT_physics2D, entityHandle),
+        .entityHandleValueOffset = offsetof(iOCT_physics2D_b2, entityHandle),
         .providedFields = eOCT_POOL_EMPTY,
         .sort = false,
         .sortValueOffset = eOCT_POOL_SORT_NONE,
-        .stride = sizeof(iOCT_physics2D),
+        .stride = sizeof(iOCT_physics2D_b2),
         .rootAttachmentFx = NULL,
         .keyCacheLocation = &iOCT_physicsSystem_inst.physics2DKey
     };
@@ -22,7 +34,7 @@ void system_register_PHYSICS() {
         .stride = sizeof(iOCT_rope2D),
         .providedFields = eOCT_POOL_EMPTY,
         .elementIDValueOffset = offsetof(iOCT_rope2D, ropeID),
-        .keyCacheLocation = &iOCT_physicsSystem_inst.rope2DKey,
+        .keyCacheLocation = &iOCT_physicsSystem_inst.distance2DKey,
         .sort = false,
         .global = false
     };
@@ -31,7 +43,7 @@ void system_register_PHYSICS() {
         .stride = sizeof(iOCT_hitbox2D),
         .providedFields = eOCT_POOL_EMPTY,
         .elementIDValueOffset = offsetof(iOCT_hitbox2D, hitboxID),
-        .keyCacheLocation = &iOCT_physicsSystem_inst.hitbox2DKey,
+        .keyCacheLocation = &iOCT_physicsSystem_inst.collider2DKey,
         .sort = false,
         .global = false
     };
@@ -53,15 +65,22 @@ void system_register_PHYSICS() {
         .ticketCache = &iOCT_physicsSystem_inst.rotationTicket,
         .type = eOCT_DATATYPE_FLOAT32,
     };
+    eOCT_fieldRequest transformParent = {
+        .name = "transformParent",
+        .optional = false,
+        .ticketCache = &iOCT_physicsSystem_inst.transformParentTicket,
+        .type = eOCT_DATATYPE_HANDLE_LOCAL
+    };
 
     eOCT_systemDescription physicsSystem = {
         .name = "Physics",
         .providedComponents = eOCT_generateComponentDescriptionPool(1, physics2D),
         .providedDataPools = eOCT_generateDataPoolDescriptionPool(2, rope2D, hitbox2D),
         .providedEvents = eOCT_POOL_EMPTY,
-        .providedSingles = eOCT_POOL_EMPTY,
-        .requestedFields = eOCT_generateFieldRequestPool(2, transform2D, position2D),
-        .initFx = iOCT_physicsSystem_init
+        .providedSingles = eOCT_generateSingleDescriptionPool(1, box2DWorldSingle),
+        .requestedFields = eOCT_generateFieldRequestPool(4, transform2D, position2D, rotation2D, transformParent),
+        .contextInitFx = iOCT_physicsSystem_contextSetup,
+        .systemInitFx = iOCT_physicsSystem_init
     };
 
     iOCT_physicsSystem_inst.systemID = eOCT_registry_registerSystem(physicsSystem);

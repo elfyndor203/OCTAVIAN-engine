@@ -3,9 +3,9 @@
 
 #include "physicsSystem_int.h"
 
-OCT_local OCT_hitbox2D_new(OCT_local entity, OCT_vec2 dimensions, OCT_vec2 position, float rotation) {
-    if (!eOCT_entity_hasComponentOnce(entity, iOCT_physicsSystem_inst.physics2DKey)) {
-        OCT_ERROR_LOG(OCT_EXIT_REQUIREMENT_NOT_MET, "Entities must both have physics components attached");
+OCT_local OCT_hitbox2D_new_OLD(OCT_local entity, OCT_vec2 dimensions, OCT_vec2 position, float rotation) {
+    if (!eOCT_entity_hasComponent(entity, iOCT_physicsSystem_inst.physics2DKey, NULL)) {
+        OCT_ERROR_LOG(OCT_EXIT_REQUIREMENT_NOT_MET, "Entities must have physics components attached");
         return OCT_LOCAL_NULL;
     }
 
@@ -16,14 +16,14 @@ OCT_local OCT_hitbox2D_new(OCT_local entity, OCT_vec2 dimensions, OCT_vec2 posit
         .rotation = rotation,
         .enabled = true
     };
-    eOCT_mappedPool* boxMPool = eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.hitbox2DKey, entity.contextHandle);
+    eOCT_mappedPool* boxMPool = eOCT_dataPool_getLocal(iOCT_physicsSystem_inst.collider2DKey, entity.contextHandle);
     eOCT_mappedPool_addEntry(boxMPool, &newBox, &newBox.hitboxID, NULL);
     OCT_local newHandle = {
         .contextHandle = entity.contextHandle,
         .objectID = newBox.hitboxID
     };
 
-    iOCT_physics2D* phys = eOCT_entity_getComponentOnce(newBox.entity, iOCT_physicsSystem_inst.physics2DKey);
+    iOCT_physics2D_oct* phys = eOCT_entity_getComponent(newBox.entity, iOCT_physicsSystem_inst.physics2DKey);
     phys->inertia += phys->mass + (dimensions.x * dimensions.x) + (dimensions.y * dimensions.y) / 12.0f;
 
     return newHandle;
@@ -34,8 +34,8 @@ bool iOCT_hitbox2D_solve(iOCT_hitbox2D hitboxA, iOCT_hitbox2D hitboxB) {
         return false;
     }
 
-    iOCT_physics2D* physA = eOCT_entity_getComponentOnce(hitboxA.entity, iOCT_physicsSystem_inst.physics2DKey);
-    iOCT_physics2D* physB = eOCT_entity_getComponentOnce(hitboxB.entity, iOCT_physicsSystem_inst.physics2DKey);
+    iOCT_physics2D_oct* physA = eOCT_entity_getComponent(hitboxA.entity, iOCT_physicsSystem_inst.physics2DKey);
+    iOCT_physics2D_oct* physB = eOCT_entity_getComponent(hitboxB.entity, iOCT_physicsSystem_inst.physics2DKey);
 
     OCT_vec2* posA = (OCT_vec2*)eOCT_entity_getFieldOnce(hitboxA.entity, iOCT_physicsSystem_inst.position2DTicket);
     OCT_vec2* posB = (OCT_vec2*)eOCT_entity_getFieldOnce(hitboxB.entity, iOCT_physicsSystem_inst.position2DTicket);
@@ -58,12 +58,12 @@ bool iOCT_hitbox2D_solve(iOCT_hitbox2D hitboxA, iOCT_hitbox2D hitboxB) {
     OCT_rect2 rectA = {
         .dimensions = OCT_vec2_mul_eleWise(hitboxA.dimensions, OCT_mat3_getScale(*transformA)),
         .center = hitboxAGlobal,
-        .rotationDeg = hitboxA.rotation + OCT_rad2deg(OCT_mat3_getRotation(*transformA))
+        .rotationRad = hitboxA.rotation + OCT_mat3_getRotation(*transformA)
     };
     OCT_rect2 rectB = {
         .dimensions = OCT_vec2_mul_eleWise(hitboxB.dimensions, OCT_mat3_getScale(*transformB)),
         .center = hitboxBGlobal,
-        .rotationDeg = hitboxB.rotation + OCT_rad2deg(OCT_mat3_getRotation(*transformB))
+        .rotationRad = hitboxB.rotation + OCT_mat3_getRotation(*transformB)
     };
     OCT_vec2 sourceAxis;
     float overlap;
