@@ -26,6 +26,7 @@ void OCT_sprite2D_attach(OCT_local entity, OCT_global texture, OCT_vec4 uv, OCT_
         .texID = texture.objectID,
         .spriteTransform = OCT_mat3_identity,
         .sortKey = generateSortKey(drawLayer, texGroupIndex),
+        .visible = true,
         .spriteData = {
             .uv = uv,
             .color = OCT_COLOR_WHITE,
@@ -49,6 +50,14 @@ void OCT_sprite2D_attach(OCT_local entity, OCT_global texture, OCT_vec4 uv, OCT_
     // iOCT_textureGroup* texGroup = (iOCT_textureGroup*)eOCT_getByID(&iOCT_renderer_inst.textureGroupMap, &iOCT_renderer_inst.textureGroupPool, texture.containerID);
 }
 
+void OCT_sprite2D_hide(OCT_local entity) {
+    iOCT_sprite2D* sprite = (iOCT_sprite2D*)eOCT_entity_getComponent(entity, iOCT_renderer_inst.sprite2DKey);
+    sprite->visible = false;
+}
+void OCT_sprite2D_show(OCT_local entity) {
+    iOCT_sprite2D* sprite = (iOCT_sprite2D*)eOCT_entity_getComponent(entity, iOCT_renderer_inst.sprite2DKey);
+    sprite->visible = true;
+}
 /// assumes layer and texGroup don't exceed 16 bit max, because it'd better not
 uint64_t generateSortKey(OCT_index drawLayer, OCT_index texGroupIndex) {
     assert(drawLayer <= UINT32_MAX);

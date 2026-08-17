@@ -125,6 +125,10 @@ void iOCT_renderer_contextSetup(OCT_global context) {
     *screenSpace = false;
 }
 
+/*!
+ * Uploads all sprite data to the sprite VBO. Skips uploading hidden sprites completely.
+ * @param contextHandle
+ */
 void iOCT_renderer_uploadAll(OCT_global contextHandle) {
     eOCT_pool_clear(&iOCT_renderer_inst.spriteFullDataBuffer);
 
@@ -141,6 +145,9 @@ void iOCT_renderer_uploadAll(OCT_global contextHandle) {
     eOCT_contextToken contextToken = eOCT_context_getToken(contextHandle);
     for (OCT_index spriteCtr = 0; spriteCtr < spritePool->count; spriteCtr++) {
         iOCT_sprite2D sprite = spriteArray[spriteCtr];
+        if (sprite.visible == false) {
+            continue;
+        }
         // iOCT_textureGroup texGroup = *(iOCT_textureGroup*)eOCT_getByID(&iOCT_renderer_inst.textureGroupMap, &iOCT_renderer_inst.textureGroupPool, sprite.texGroupID);
         iOCT_textureGroup texGroup = *(iOCT_textureGroup*)eOCT_mappedPool_getByID(&iOCT_renderer_inst.textureGroupMPool, sprite.texGroupID);
         OCT_index texArrayLayer = eOCT_IDMap_getIndex(&texGroup.textureMap, sprite.texID);
@@ -178,9 +185,15 @@ void iOCT_renderer_uploadAll(OCT_global contextHandle) {
 
     // expand buffer if necessary, then upload
     glBindBuffer(GL_ARRAY_BUFFER, iOCT_renderer_inst.spriteDataVBO);
-    if (spriteBufferPool->count > iOCT_renderer_inst.spriteDataVBOCapacity) {
-        glBufferData(GL_ARRAY_BUFFER, iOCT_SPRITES_EXPANSION_FACTOR * sizeof(iOCT_spriteFullData) * iOCT_renderer_inst.spriteDataVBOCapacity, spriteBufferPool->array, GL_DYNAMIC_DRAW);
+
+    bool resized = false;
+    while (spriteBufferPool->count > iOCT_renderer_inst.spriteDataVBOCapacity) {
+        assert(iOCT_SPRITES_EXPANSION_FACTOR > 1 && iOCT_renderer_inst.spriteDataVBOCapacity > 0);
         iOCT_renderer_inst.spriteDataVBOCapacity *= iOCT_SPRITES_EXPANSION_FACTOR;
+        resized = true;
+    }
+    if (resized) {
+        glBufferData(GL_ARRAY_BUFFER, sizeof(iOCT_spriteFullData) * iOCT_renderer_inst.spriteDataVBOCapacity, spriteBufferPool->array, GL_DYNAMIC_DRAW);
     }
     else {
         glBufferSubData(GL_ARRAY_BUFFER, 0, spriteBufferPool->count * spriteBufferPool->elementSize, spriteBufferPool->array);
@@ -188,6 +201,10 @@ void iOCT_renderer_uploadAll(OCT_global contextHandle) {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+/*!
+ * Draws all sprites from the sprite VBO. Batches by layer, then by textureGroup within each layer.
+ * @param contextHandle
+ */
 void iOCT_renderer_drawAll(OCT_global contextHandle) {
     eOCT_pool* windowPool = &iOCT_windowSystem_inst.windowMPool.pool;
     iOCT_window* windowArray = (iOCT_window*)windowPool->array;
@@ -227,21 +244,26 @@ void iOCT_renderer_drawAll(OCT_global contextHandle) {
         // draw all sprites batched
         while (spriteCtr < spritePool->count) {
             // note the current batch
-            OCT_index currentLayer = spriteArray[spriteCtr].drawLayer;
-            OCT_ID currentTexGroup = spriteArray[spriteCtr].texGroupID;
+            iOCT_sprite2D sprite = spriteArray[spriteCtr];  // first sprite of the batch
+            OCT_index currentLayer = sprite.drawLayer;
+            OCT_ID currentTexGroup = sprite.texGroupID;
             GLsizei batchCt = 0;
 
             // increment until a different batch is hit
             while (spriteCtr < spritePool->count &&
-                   spriteArray[spriteCtr].drawLayer == currentLayer &&
-                   spriteArray[spriteCtr].texGroupID == currentTexGroup) {
-                batchCt++;
+                   sprite.drawLayer == currentLayer &&
+                   sprite.texGroupID == currentTexGroup) {
+                if (sprite.visible) {
+                    batchCt++;
+                }
                 spriteCtr++;
-                   }
+                if (spriteCtr >= spritePool->count) {
+                    break;
+                }
+                sprite = spriteArray[spriteCtr];
+            }
 
             iOCT_textureGroup texGroup = *(iOCT_textureGroup*)eOCT_mappedPool_getByID(&iOCT_renderer_inst.textureGroupMPool, currentTexGroup);
-
-
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D_ARRAY, texGroup.glTexArray);
 
