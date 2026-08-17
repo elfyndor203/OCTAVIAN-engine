@@ -46,6 +46,7 @@ union eOCT_dataUnion {
 	char char8;
 	void* ptr8;
 	char* string8;
+	bool boolean;
 	OCT_ID ID;
 	OCT_index index;
 	OCT_vec2 vec2;
@@ -138,7 +139,7 @@ struct eOCT_systemDescription {
 	eOCT_pool requestedFields;
 
 	eOCT_contextInitFx contextInitFx;
-	eOCT_systemInitFx initFx;
+	eOCT_systemInitFx systemInitFx;
 	// eOCT_systemUpdateFx updateFx;
 
 	OCT_ID systemID_reg; // provided by the registry

@@ -55,7 +55,7 @@ void init_OCT_registry_initAllSystems() {
 	eOCT_systemInitFx initFx;
 	for (OCT_index systemCtr = 0; systemCtr < iOCT_registry_inst.systems.count; systemCtr++) {
 		system = *(eOCT_systemDescription*)eOCT_pool_access(&iOCT_registry_inst.systems, systemCtr, 0);
-		initFx = system.initFx;
+		initFx = system.systemInitFx;
 		if (initFx) {
 			printf("Init system %s with INIT fx %p\n", system.name, initFx);
 			initFx();

@@ -27,7 +27,7 @@ OCT_local OCT_collider2D_new(OCT_local entity, OCT_shapeType shape, OCT_vec2 dim
         }
     }
     OCT_mat3 physicsSourceTransform = *(OCT_mat3*)eOCT_entity_getFieldOnce(physicsSourceEntity, iOCT_physicsSystem_inst.transform2DTicket);
-    OCT_mat3 invPhysicsSourceTransform = OCT_mat3_inverse(physicsSourceTransform);
+    OCT_mat3 invPhysicsSourceTransform = OCT_mat3_inv(physicsSourceTransform);
     OCT_mat3 targetEntityTransform = *(OCT_mat3*)eOCT_entity_getFieldOnce(entity, iOCT_physicsSystem_inst.transform2DTicket);
     OCT_mat3 targetToPhysicsSourceTransform = OCT_mat3_mul(invPhysicsSourceTransform, targetEntityTransform);
     OCT_vec2 relativeOrigin = OCT_mat3_getTranslation(targetToPhysicsSourceTransform);

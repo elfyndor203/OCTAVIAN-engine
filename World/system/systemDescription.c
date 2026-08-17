@@ -58,7 +58,7 @@ void system_register_WORLD() {
 		.providedComponents = eOCT_generateComponentDescriptionPool(1, transform2D),
 		.providedDataPools = eOCT_POOL_EMPTY,
 		.requestedFields = eOCT_POOL_EMPTY,
-		.initFx = iOCT_world_init
+		.systemInitFx = iOCT_world_init
 	};
 
 	iOCT_world_inst.systemID = eOCT_registry_registerSystem(world);

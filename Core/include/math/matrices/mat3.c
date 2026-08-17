@@ -45,7 +45,7 @@ OCT_mat3 OCT_mat3_generate(OCT_vec2 translation, OCT_vec2 scale, float rotation)
 }
 
 // Claude generated
-OCT_mat3 OCT_mat3_inverse(OCT_mat3 m) {
+OCT_mat3 OCT_mat3_inv(OCT_mat3 m) {
     // Scale squared from each column
     float sx2 = m.c0r0 * m.c0r0 + m.c0r1 * m.c0r1;
     float sy2 = m.c1r0 * m.c1r0 + m.c1r1 * m.c1r1;

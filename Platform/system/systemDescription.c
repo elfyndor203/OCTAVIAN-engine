@@ -37,7 +37,7 @@ void system_register_PLATFORM() {
         .providedEvents = eOCT_POOL_EMPTY,
         .requestedFields = eOCT_POOL_EMPTY,
         .providedSingles = eOCT_generateSingleDescriptionPool(2, timeSingle, deltaTimeSingle),
-        .initFx = iOCT_platformSystem_init
+        .systemInitFx = iOCT_platformSystem_init
     };
 
     iOCT_platformSystem_inst.systemID = eOCT_registry_registerSystem(platformSystem);

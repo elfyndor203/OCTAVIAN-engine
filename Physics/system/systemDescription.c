@@ -80,7 +80,7 @@ void system_register_PHYSICS() {
         .providedSingles = eOCT_generateSingleDescriptionPool(1, box2DWorldSingle),
         .requestedFields = eOCT_generateFieldRequestPool(4, transform2D, position2D, rotation2D, transformParent),
         .contextInitFx = iOCT_physicsSystem_contextSetup,
-        .initFx = iOCT_physicsSystem_init
+        .systemInitFx = iOCT_physicsSystem_init
     };
 
     iOCT_physicsSystem_inst.systemID = eOCT_registry_registerSystem(physicsSystem);

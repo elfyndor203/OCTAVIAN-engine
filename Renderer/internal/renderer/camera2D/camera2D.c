@@ -43,3 +43,8 @@ void OCT_camera2D_zoomBy(OCT_local entity, float factor) {
     camera->zoom = factor;
     camera->cameraMatrix = OCT_mat3_scale(camera->cameraMatrix, (OCT_vec2){factor, factor});
 }
+
+void OCT_camera2D_makeContextScreenSpace(OCT_global context) {
+    bool* screenSpace = &eOCT_single_getLocal(iOCT_renderer_inst.screenSpaceKey, context)->boolean;
+    *screenSpace = true;
+}

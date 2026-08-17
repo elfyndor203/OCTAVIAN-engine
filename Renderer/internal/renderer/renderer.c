@@ -120,6 +120,11 @@ void system_init_RENDERER() {
     glBindVertexArray(0);
 }
 
+void iOCT_renderer_contextSetup(OCT_global context) {
+    bool* screenSpace = &eOCT_single_getLocal(iOCT_renderer_inst.screenSpaceKey, context)->boolean;
+    *screenSpace = false;
+}
+
 void iOCT_renderer_uploadAll(OCT_global contextHandle) {
     eOCT_pool_clear(&iOCT_renderer_inst.spriteFullDataBuffer);
 
@@ -188,6 +193,7 @@ void iOCT_renderer_drawAll(OCT_global contextHandle) {
     iOCT_window* windowArray = (iOCT_window*)windowPool->array;
     eOCT_pool* spritePool = eOCT_component_getPool(contextHandle, iOCT_renderer_inst.sprite2DKey);
     iOCT_sprite2D* spriteArray = (iOCT_sprite2D*)spritePool->array;
+    bool screenSpace = eOCT_single_getLocal(iOCT_renderer_inst.screenSpaceKey, contextHandle)->boolean;
 
     assert(windowPool && windowArray && spritePool && spriteArray && "Renderer data grab failed\n");
 
@@ -207,7 +213,13 @@ void iOCT_renderer_drawAll(OCT_global contextHandle) {
             printf("Window %zu has no active camera\n", windowCtr);
             continue;
         }
-        OCT_mat3 cameraProj = iOCT_window_worldToNDC(window);
+        OCT_mat3 cameraProj;
+        if (screenSpace) {
+            cameraProj = OCT_mat3_inv(OCT_mat3_scale(OCT_mat3_identity, OCT_vec2_mul(window.screenSpaceZoom, 0.5)));
+        } else {
+            cameraProj = iOCT_window_worldToNDC(window);
+        }
+
         glUniformMatrix3fv(window.cameraUniformLocation, 1, GL_FALSE, (float*)&cameraProj);
 
         OCT_index spriteCtr = 0;

@@ -79,6 +79,12 @@ bool OCT_window_anyOpen() {
     return windowPool->count;
 }
 
+void OCT_window_setScreenSpaceZoom(OCT_global window, OCT_vec2 displayArea) {
+    iOCT_window* win = eOCT_mappedPool_getByID(&iOCT_windowSystem_inst.windowMPool, window.objectID);
+
+    win->screenSpaceZoom = displayArea;
+}
+
 void iOCT_window_close(iOCT_window* window) {
     glfwDestroyWindow(window->windowPtr);
     eOCT_mappedPool_deleteEntry(&iOCT_windowSystem_inst.windowMPool, window->windowID);
@@ -118,7 +124,7 @@ OCT_mat3 iOCT_window_worldToNDC(iOCT_window window) {
     iOCT_camera2D camera = *(iOCT_camera2D*)(eOCT_entity_getComponent(window.activeCameraSourceEntity, iOCT_renderer_inst.camera2DKey));
 
     OCT_mat3 cameraGlobal = OCT_mat3_mul(entityGlobalTransform, camera.cameraMatrix);
-    OCT_mat3 worldToCamera = OCT_mat3_inverse(cameraGlobal);
+    OCT_mat3 worldToCamera = OCT_mat3_inv(cameraGlobal);
     OCT_vec2 NDCScale = {2, 2};
 
     OCT_mat3 final = OCT_mat3_scale(worldToCamera, NDCScale);

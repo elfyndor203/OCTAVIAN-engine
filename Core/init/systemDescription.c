@@ -17,7 +17,7 @@ void init_system_register_CORE() {
     eOCT_systemDescription systemDescription = {
         .name = "OCTAVIANEngine CORE",
         .contextInitFx = NULL,
-        .initFx = NULL,
+        .systemInitFx = NULL,
         .providedComponents = eOCT_generateComponentDescriptionPool(1, entityMeta),
         .providedDataPools = eOCT_POOL_EMPTY,
         .providedEvents = eOCT_POOL_EMPTY,

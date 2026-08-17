@@ -25,7 +25,7 @@ extern const OCT_mat3 OCT_mat3_identity;
 OCT_mat3 OCT_mat3_mul(OCT_mat3 parentMat, OCT_mat3 childMat);
 OCT_vec3 OCT_mat3_mulVec3(OCT_mat3 matrix, OCT_vec3 vector);
 OCT_mat3 OCT_mat3_generate(OCT_vec2 translation, OCT_vec2 scale, float rotation);
-OCT_mat3 OCT_mat3_inverse(OCT_mat3 matrix);
+OCT_mat3 OCT_mat3_inv(OCT_mat3 matrix);
 OCT_mat3 OCT_mat3_translate(OCT_mat3 matrix, OCT_vec2 translation);
 OCT_mat3 OCT_mat3_translateTo(OCT_mat3 m, OCT_vec2 translation);
 OCT_mat3 OCT_mat3_scale(OCT_mat3 matrix, OCT_vec2 scale);
