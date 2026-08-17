@@ -7,6 +7,7 @@
 #include <stdio.h>
 
 #include "utilities/pools_eng.h"
+#include "allocations_int.h"
 
 // Allocates initial memory for a single entityContext.
 eOCT_IDMap eOCT_IDMap_open(OCT_ID ownerID, OCT_index capacity) {
@@ -20,6 +21,11 @@ eOCT_IDMap eOCT_IDMap_open(OCT_ID ownerID, OCT_index capacity) {
 		OCT_ERROR_LOG(OCT_EXIT_FAILED_TO_ALLOCATE, "IDMap allocation failed");
 	}
 	//printf(">Init map of size %zu\n", capacity * sizeof(OCT_index));
+	if (ownerID != OCT_ID_MEMORY_MANAGER) {
+		map.allocationRefIndex = iOCT_memoryManager_logAlloc(ownerID, iOCT_ALLOCATION_MAP, sizeof(OCT_index));
+	} else {
+		map.allocationRefIndex = OCT_INDEX_NULL;
+	}
 	return map;
 }
 
@@ -93,4 +99,6 @@ OCT_index eOCT_IDMap_getIndex(eOCT_IDMap* map, OCT_ID ID) {
 void eOCT_IDMap_free(eOCT_IDMap* map) {
 	free(map->array);
 	map->array = NULL;
+
+	iOCT_memoryManager_logFree(map->allocationRefIndex);
 }

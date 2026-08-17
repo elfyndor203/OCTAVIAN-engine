@@ -12,6 +12,8 @@ struct eOCT_IDMap {
 	OCT_index count;
 	OCT_index capacity;
 	OCT_index* array;
+
+	OCT_index allocationRefIndex;
 };
 
 eOCT_IDMap eOCT_IDMap_open(OCT_ID ownerID, OCT_index capacity);
