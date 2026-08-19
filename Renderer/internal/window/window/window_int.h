@@ -15,6 +15,8 @@ struct iOCT_window {
     OCT_vec2 targetResolution;
     OCT_vec2 currentResolution;
 
+    OCT_vec2 cursorPos;
+
     OCT_vec2 cursorDelta;
     OCT_local activeCameraSourceEntity;
     GLint cameraUniformLocation;

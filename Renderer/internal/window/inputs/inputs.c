@@ -3,12 +3,18 @@
 
 #include "OCT_Core_eng.h"
 
+#include "window/windowSystem_int.h"
+
 OCT_BUTTON iOCT_glfwToOCTButtonKeyMap[GLFW_KEY_LAST + GLFW_MOUSE_BUTTON_LAST + 2];
 
 OCT_BUTTON iOCT_getOCTButtonFromGLFW(int glfwKeyCode, bool mouse) {
     return iOCT_glfwToOCTButtonKeyMap[glfwKeyCode + (mouse * iOCT_GLFW_MOUSE_BUTTONS_OFFSET)];
 }
 
+OCT_vec2 OCT_mouse_readPosDirectContextWorld(OCT_global context) {
+    iOCT_window* focusedWindow = eOCT_mappedPool_getByID(&iOCT_windowSystem_inst.windowMPool, iOCT_windowSystem_inst.focusedWindowID);
+
+}
 // Claude generated
 void iOCT_buttonList_init() {
     OCT_BUTTON* array = iOCT_glfwToOCTButtonKeyMap;

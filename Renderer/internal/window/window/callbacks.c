@@ -49,6 +49,8 @@ void iOCT_window_mouseMoveCallback(GLFWwindow* window, double xPos, double yPos)
         .yPos = (float)yPos
     };
 
+    iOCT_window* focusedWindow = eOCT_mappedPool_getByID(&iOCT_windowSystem_inst.windowMPool, iOCT_windowSystem_inst.focusedWindowID);
+    focusedWindow->cursorPos = (OCT_vec2){(float)xPos, (float)yPos};
     eOCT_event_broadcastGlobal(iOCT_windowSystem_inst.mouseMoveEventKey, &mouseMoveEvent);
 }
 
