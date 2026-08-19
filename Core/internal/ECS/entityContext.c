@@ -108,7 +108,7 @@ static OCT_local iOCT_entityContext_initRootEntity(iOCT_entityContext* context) 
 		.isRoot = true,
 		.entity = rootEntity
 	};
-	eOCT_entity_attachComponent(rootEntity, iOCT_ECS_inst.entityMetaKey, &metadata, NULL);
+	iOCT_entityMeta* dest = eOCT_entity_attachComponent(rootEntity, iOCT_ECS_inst.entityMetaKey, &metadata, NULL);
 
 	const OCT_index componentsTotal = iOCT_registry_inst.components.count;
 	for (OCT_index componentCtr = 0; componentCtr < componentsTotal; componentCtr++) {

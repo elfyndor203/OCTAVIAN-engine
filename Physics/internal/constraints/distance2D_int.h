@@ -4,6 +4,7 @@
 #include <box2d/box2d.h>
 
 struct iOCT_distance2D {
-    b2JointId jointID;
+    OCT_ID distanceID;
 
+    b2JointId jointID;
 };

@@ -5,6 +5,7 @@
 #include "constraints/types_int.h"
 #include "constraints/constraints_int.h"
 #include "constraints/collider2D_int.h"
+#include "constraints/distance2D_int.h"
 
 void system_register_PHYSICS() {
     eOCT_fieldDescription box2DWorld = {
@@ -30,11 +31,11 @@ void system_register_PHYSICS() {
         .keyCacheLocation = &iOCT_physicsSystem_inst.physics2DKey
     };
 
-    eOCT_dataPoolDescription rope2D = {
-        .name = "rope2D",
-        .stride = sizeof(iOCT_rope2D),
+    eOCT_dataPoolDescription distance2D = {
+        .name = "distance2D",
+        .stride = sizeof(iOCT_distance2D),
         .providedFields = eOCT_POOL_EMPTY,
-        .elementIDValueOffset = offsetof(iOCT_rope2D, ropeID),
+        .elementIDValueOffset = offsetof(iOCT_distance2D, distanceID),
         .keyCacheLocation = &iOCT_physicsSystem_inst.distance2DKey,
         .sort = false,
         .global = false
@@ -76,7 +77,7 @@ void system_register_PHYSICS() {
     eOCT_systemDescription physicsSystem = {
         .name = "Physics",
         .providedComponents = eOCT_generateComponentDescriptionPool(1, physics2D),
-        .providedDataPools = eOCT_generateDataPoolDescriptionPool(2, rope2D, collider2D),
+        .providedDataPools = eOCT_generateDataPoolDescriptionPool(2, distance2D, collider2D),
         .providedEvents = eOCT_POOL_EMPTY,
         .providedSingles = eOCT_generateSingleDescriptionPool(1, box2DWorldSingle),
         .requestedFields = eOCT_generateFieldRequestPool(4, transform2D, position2D, rotation2D, transformParent),
