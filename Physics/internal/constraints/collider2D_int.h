@@ -4,6 +4,8 @@
 #include <box2d/box2d.h>
 
 struct iOCT_collider2D {
+    OCT_ID colliderID;
+
     OCT_shapeType shape;
     OCT_vec2 origin;
     OCT_vec2 dimensions;

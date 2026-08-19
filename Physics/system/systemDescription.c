@@ -4,6 +4,7 @@
 #include "physicsSystem_int.h"
 #include "constraints/types_int.h"
 #include "constraints/constraints_int.h"
+#include "constraints/collider2D_int.h"
 
 void system_register_PHYSICS() {
     eOCT_fieldDescription box2DWorld = {
@@ -38,11 +39,11 @@ void system_register_PHYSICS() {
         .sort = false,
         .global = false
     };
-    eOCT_dataPoolDescription hitbox2D = {
-        .name = "hitbox2D",
-        .stride = sizeof(iOCT_hitbox2D),
+    eOCT_dataPoolDescription collider2D = {
+        .name = "collider2D",
+        .stride = sizeof(iOCT_collider2D),
         .providedFields = eOCT_POOL_EMPTY,
-        .elementIDValueOffset = offsetof(iOCT_hitbox2D, hitboxID),
+        .elementIDValueOffset = offsetof(iOCT_collider2D, colliderID),
         .keyCacheLocation = &iOCT_physicsSystem_inst.collider2DKey,
         .sort = false,
         .global = false
@@ -75,7 +76,7 @@ void system_register_PHYSICS() {
     eOCT_systemDescription physicsSystem = {
         .name = "Physics",
         .providedComponents = eOCT_generateComponentDescriptionPool(1, physics2D),
-        .providedDataPools = eOCT_generateDataPoolDescriptionPool(2, rope2D, hitbox2D),
+        .providedDataPools = eOCT_generateDataPoolDescriptionPool(2, rope2D, collider2D),
         .providedEvents = eOCT_POOL_EMPTY,
         .providedSingles = eOCT_generateSingleDescriptionPool(1, box2DWorldSingle),
         .requestedFields = eOCT_generateFieldRequestPool(4, transform2D, position2D, rotation2D, transformParent),
