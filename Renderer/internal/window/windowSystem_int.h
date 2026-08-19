@@ -13,6 +13,7 @@ struct iOCT_windowSystem {
 	eOCT_eventKey mouseMoveEventKey;
 	eOCT_eventKey mouseScrollEventKey;
 	eOCT_singleKey focusedCameraMatrixKey;
+	eOCT_fieldTicket transform2DTicket;
 
 	// eOCT_IDMap windowMap;
 	// eOCT_pool windowPool;

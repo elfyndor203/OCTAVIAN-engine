@@ -174,13 +174,19 @@ void system_register_WINDOW() {
         .global = true,
         .keyCacheLocation = &iOCT_windowSystem_inst.focusedCameraMatrixKey
     };
+    eOCT_fieldRequest transform2D = {
+        .name = "globalTransform2D",
+        .optional = false,
+        .ticketCache = &iOCT_windowSystem_inst.transform2DTicket,
+        .type = eOCT_DATATYPE_MAT3
+    };
     eOCT_systemDescription windowSystem = {
         .name = "Window",
         .providedDataPools = eOCT_POOL_EMPTY,
         .providedComponents = eOCT_POOL_EMPTY,
         .providedEvents = eOCT_generateEventDescriptionPool(4, keyEvents, mouseButtonEvents, mouseMoveEvents, mouseScrollEvents),
         .providedSingles = eOCT_generateSingleDescriptionPool(1, screenToWorldMatrix),
-        .requestedFields = eOCT_POOL_EMPTY,
+        .requestedFields = eOCT_generateFieldRequestPool(1, transform2D),
         .systemInitFx = system_init_WINDOW
     };
 
