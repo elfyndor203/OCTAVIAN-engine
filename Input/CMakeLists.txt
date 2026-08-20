@@ -10,6 +10,10 @@ add_library(Input STATIC
         include/OCT_Inputs.h
         include/inputs.h
         internal/input/types_int.h
+        internal/interact/interactBox2D_int.h
+        internal/interact/types_int.h
+        internal/interact/interactBox2D.c
+        include/interactBox2D.h
 )
 
 target_include_directories(Input

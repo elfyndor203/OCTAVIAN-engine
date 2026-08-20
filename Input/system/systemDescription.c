@@ -2,6 +2,7 @@
 #include "OCT_Core_eng.h"
 
 #include "inputSystem_int.h"
+#include "interact/interactBox2D_int.h"
 
 void system_register_INPUT() {
     eOCT_fieldRequest key = {
@@ -71,9 +72,19 @@ void system_register_INPUT() {
         .ticketCache = &iOCT_inputSystem_inst.deltaTimeTicket
     };
 
+    eOCT_componentDescription interactBox = {
+        .name = "interactBox",
+        .keyCacheLocation = &iOCT_inputSystem_inst.interactBoxKey,
+        .providedFields = eOCT_POOL_EMPTY,
+        .entityHandleValueOffset = offsetof(iOCT_interactBox2D, entity),
+        .sort = true,
+        .sortValueOffset = offsetof(iOCT_interactBox2D, layer),
+        .stride = sizeof(iOCT_interactBox2D)
+    };
+
     eOCT_systemDescription inputSystem = {
         .name = "INPUT",
-        .providedComponents = eOCT_POOL_EMPTY,
+        .providedComponents = eOCT_generateComponentDescriptionPool(1, interactBox),
         .providedDataPools = eOCT_POOL_EMPTY,
         .providedEvents = eOCT_POOL_EMPTY,
         .requestedFields = eOCT_generateFieldRequestPool(11, key, keyPress, keyRelease, mouseButton, mouseButtonPress, mouseButtonRelease, mouseMoveX, mouseMoveY, mouseScroll, activeCamera, deltaTime),
