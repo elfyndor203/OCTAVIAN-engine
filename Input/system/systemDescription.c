@@ -47,20 +47,20 @@ void system_register_INPUT() {
         .ticketCache = &iOCT_inputSystem_inst.mouseButtonReleaseTicket,
         .providerType = eOCT_DATAPATTERN_EVENT
     };
-    eOCT_fieldRequest mouseMoveX = {
-        .name = "glfwMouseXPos",
-        .type = eOCT_DATATYPE_FLOAT32,
-        .optional = false,
-        .ticketCache = &iOCT_inputSystem_inst.mousePositionXTicket,
-        .providerType = eOCT_DATAPATTERN_EVENT
-    };
-    eOCT_fieldRequest mouseMoveY = {
-        .name = "glfwMouseYPos",
-        .type = eOCT_DATATYPE_FLOAT32,
-        .optional = false,
-        .ticketCache = &iOCT_inputSystem_inst.mousePositionYTicket,
-        .providerType = eOCT_DATAPATTERN_EVENT
-    };
+    // eOCT_fieldRequest mouseMoveX = {
+    //     .name = "glfwMouseXPos",
+    //     .type = eOCT_DATATYPE_FLOAT32,
+    //     .optional = false,
+    //     .ticketCache = &iOCT_inputSystem_inst.mousePositionXTicket,
+    //     .providerType = eOCT_DATAPATTERN_EVENT
+    // };
+    // eOCT_fieldRequest mouseMoveY = {
+    //     .name = "glfwMouseYPos",
+    //     .type = eOCT_DATATYPE_FLOAT32,
+    //     .optional = false,
+    //     .ticketCache = &iOCT_inputSystem_inst.mousePositionYTicket,
+    //     .providerType = eOCT_DATAPATTERN_EVENT
+    // };
     eOCT_fieldRequest mouseScroll = {
         .name = "glfwMouseScrollDelta",
         .type = eOCT_DATATYPE_FLOAT32,
@@ -97,7 +97,7 @@ void system_register_INPUT() {
         .providedComponents = eOCT_generateComponentDescriptionPool(1, interactBox),
         .providedDataPools = eOCT_POOL_EMPTY,
         .providedEvents = eOCT_POOL_EMPTY,
-        .requestedFields = eOCT_generateFieldRequestPool(10, key, keyPress, keyRelease, mouseButton, mouseButtonPress, mouseButtonRelease, mouseMoveX, mouseMoveY, mouseScroll, deltaTime),
+        .requestedFields = eOCT_generateFieldRequestPool(8, key, keyPress, keyRelease, mouseButton, mouseButtonPress, mouseButtonRelease, mouseScroll, deltaTime),
         .systemInitFx = system_init_INPUT
     };
 

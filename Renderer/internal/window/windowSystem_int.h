@@ -10,7 +10,7 @@ struct iOCT_windowSystem {
 
 	eOCT_eventKey keyEventKey;
 	eOCT_eventKey mouseButtonEventKey;
-	eOCT_eventKey mouseMoveEventKey;
+	// eOCT_eventKey mouseMoveEventKey;
 	eOCT_eventKey mouseScrollEventKey;
 	// eOCT_singleKey focusedCameraMatrixKey;
 	eOCT_singleKey cursorPosKey;

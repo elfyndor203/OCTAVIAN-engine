@@ -129,25 +129,25 @@ void system_register_WINDOW() {
         .keyCacheLocation = &iOCT_windowSystem_inst.mouseButtonEventKey
     };
 
-    eOCT_fieldDescription mouseXPos = {
-        .name = "glfwMouseXPos",
-        .providerType = eOCT_DATAPATTERN_EVENT,
-        .offset = offsetof(iOCT_mouseMoveEvent, xPos),
-        .type = eOCT_DATATYPE_FLOAT32,
-    };
-    eOCT_fieldDescription mouseYPos = {
-        .name = "glfwMouseYPos",
-        .providerType = eOCT_DATAPATTERN_EVENT,
-        .offset = offsetof(iOCT_mouseMoveEvent, yPos),
-        .type = eOCT_DATATYPE_FLOAT32,
-    };
-    eOCT_eventDescription mouseMoveEvents = {
-        .name = "mouseMoveEvents",
-        .providedFields = eOCT_generateFieldDescriptionPool(2, mouseXPos, mouseYPos),
-        .stride = sizeof(iOCT_mouseMoveEvent),
-        .global = true,
-        .keyCacheLocation = &iOCT_windowSystem_inst.mouseMoveEventKey
-    };
+    // eOCT_fieldDescription mouseXPos = {
+    //     .name = "glfwMouseXPos",
+    //     .providerType = eOCT_DATAPATTERN_EVENT,
+    //     .offset = offsetof(iOCT_mouseMoveEvent, xPos),
+    //     .type = eOCT_DATATYPE_FLOAT32,
+    // };
+    // eOCT_fieldDescription mouseYPos = {
+    //     .name = "glfwMouseYPos",
+    //     .providerType = eOCT_DATAPATTERN_EVENT,
+    //     .offset = offsetof(iOCT_mouseMoveEvent, yPos),
+    //     .type = eOCT_DATATYPE_FLOAT32,
+    // };
+    // eOCT_eventDescription mouseMoveEvents = {
+    //     .name = "mouseMoveEvents",
+    //     .providedFields = eOCT_generateFieldDescriptionPool(2, mouseXPos, mouseYPos),
+    //     .stride = sizeof(iOCT_mouseMoveEvent),
+    //     .global = true,
+    //     .keyCacheLocation = &iOCT_windowSystem_inst.mouseMoveEventKey
+    // };
 
     eOCT_fieldDescription mouseScrollDelta = {
         .name = "glfwMouseScrollDelta",
@@ -198,7 +198,7 @@ void system_register_WINDOW() {
         .name = "Window",
         .providedDataPools = eOCT_POOL_EMPTY,
         .providedComponents = eOCT_POOL_EMPTY,
-        .providedEvents = eOCT_generateEventDescriptionPool(4, keyEvents, mouseButtonEvents, mouseMoveEvents, mouseScrollEvents),
+        .providedEvents = eOCT_generateEventDescriptionPool(3, keyEvents, mouseButtonEvents, mouseScrollEvents),
         .providedSingles = eOCT_generateSingleDescriptionPool(1, cursorPosSingle),
         .requestedFields = eOCT_generateFieldRequestPool(1, transform2D),
         .systemInitFx = system_init_WINDOW
