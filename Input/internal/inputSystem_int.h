@@ -15,7 +15,7 @@ struct iOCT_inputSystem {
     eOCT_fieldTicket mousePositionXTicket;
     eOCT_fieldTicket mousePositionYTicket;
     eOCT_fieldTicket mouseScrollTicket;
-    eOCT_fieldTicket cameraMatrixTicket;
+    // eOCT_fieldTicket cameraMatrixTicket;
     eOCT_fieldTicket deltaTimeTicket;
     eOCT_componentKey interactBoxKey;
 

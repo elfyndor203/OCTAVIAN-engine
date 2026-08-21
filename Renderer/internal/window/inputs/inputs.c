@@ -13,7 +13,12 @@ OCT_BUTTON iOCT_getOCTButtonFromGLFW(int glfwKeyCode, bool mouse) {
     return iOCT_glfwToOCTButtonKeyMap[glfwKeyCode + (mouse * iOCT_GLFW_MOUSE_BUTTONS_OFFSET)];
 }
 
-OCT_vec2 OCT_mouse_readPosDirectContextWorld(OCT_global context) {
+OCT_vec2 OCT_cursor_readPosContext(OCT_global context) {
+    OCT_vec2* cursorPos = &eOCT_single_getLocal(iOCT_windowSystem_inst.cursorPosKey, context)->vec2;
+    return *cursorPos;
+}
+
+OCT_vec2 iOCT_cursor_calcPosContext(OCT_global context) {
     if (iOCT_windowSystem_inst.focusedWindowID == OCT_ID_NULL) {
         return OCT_VEC2_NULL;
     }

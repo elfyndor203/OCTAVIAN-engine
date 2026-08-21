@@ -59,12 +59,12 @@ void system_register_INPUT() {
         .optional = false,
         .ticketCache = &iOCT_inputSystem_inst.mouseScrollTicket
     };
-    eOCT_fieldRequest activeCamera = {
-        .name = "screenToWorldMatrix",
-        .type = eOCT_DATATYPE_MAT3,
-        .optional = false,
-        .ticketCache = &iOCT_inputSystem_inst.cameraMatrixTicket
-    };
+    // eOCT_fieldRequest activeCamera = {
+    //     .name = "screenToWorldMatrix",
+    //     .type = eOCT_DATATYPE_MAT3,
+    //     .optional = false,
+    //     .ticketCache = &iOCT_inputSystem_inst.cameraMatrixTicket
+    // };
     eOCT_fieldRequest deltaTime = {
         .name = "deltaFrameTime",
         .type = eOCT_DATATYPE_DOUBLE64,
@@ -87,7 +87,7 @@ void system_register_INPUT() {
         .providedComponents = eOCT_generateComponentDescriptionPool(1, interactBox),
         .providedDataPools = eOCT_POOL_EMPTY,
         .providedEvents = eOCT_POOL_EMPTY,
-        .requestedFields = eOCT_generateFieldRequestPool(11, key, keyPress, keyRelease, mouseButton, mouseButtonPress, mouseButtonRelease, mouseMoveX, mouseMoveY, mouseScroll, activeCamera, deltaTime),
+        .requestedFields = eOCT_generateFieldRequestPool(10, key, keyPress, keyRelease, mouseButton, mouseButtonPress, mouseButtonRelease, mouseMoveX, mouseMoveY, mouseScroll, deltaTime),
         .systemInitFx = system_init_INPUT
     };
 

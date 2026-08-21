@@ -162,17 +162,29 @@ void system_register_WINDOW() {
         .keyCacheLocation = &iOCT_windowSystem_inst.mouseScrollEventKey
     };
 
-    eOCT_fieldDescription screenToWorld = {
-        .name = "screenToWorldMatrix",
+    // eOCT_fieldDescription screenToWorld = {
+    //     .name = "screenToWorldMatrix",
+    //     .providerType = eOCT_DATAPATTERN_SINGLE,
+    //     .offset = 0,
+    //     .type = eOCT_DATATYPE_MAT3
+    // };
+    // eOCT_singleDescription screenToWorldMatrix = {
+    //     .name = "focusedCamera",
+    //     .providedField = screenToWorld,
+    //     .global = true,
+    //     .keyCacheLocation = &iOCT_windowSystem_inst.focusedCameraMatrixKey
+    // };
+    eOCT_fieldDescription cursorPos = {
+        .name = "contextCursorPos",
         .providerType = eOCT_DATAPATTERN_SINGLE,
         .offset = 0,
-        .type = eOCT_DATATYPE_MAT3
+        .type = eOCT_DATATYPE_VEC2
     };
-    eOCT_singleDescription screenToWorldMatrix = {
-        .name = "focusedCamera",
-        .providedField = screenToWorld,
-        .global = true,
-        .keyCacheLocation = &iOCT_windowSystem_inst.focusedCameraMatrixKey
+    eOCT_singleDescription cursorPosSingle = {
+        .name = "contextCursorPosSingle",
+        .global = false,
+        .keyCacheLocation = &iOCT_windowSystem_inst.cursorPosKey,
+        .providedField = cursorPos
     };
     eOCT_fieldRequest transform2D = {
         .name = "globalTransform2D",
@@ -185,7 +197,7 @@ void system_register_WINDOW() {
         .providedDataPools = eOCT_POOL_EMPTY,
         .providedComponents = eOCT_POOL_EMPTY,
         .providedEvents = eOCT_generateEventDescriptionPool(4, keyEvents, mouseButtonEvents, mouseMoveEvents, mouseScrollEvents),
-        .providedSingles = eOCT_generateSingleDescriptionPool(1, screenToWorldMatrix),
+        .providedSingles = eOCT_generateSingleDescriptionPool(1, cursorPosSingle),
         .requestedFields = eOCT_generateFieldRequestPool(1, transform2D),
         .systemInitFx = system_init_WINDOW
     };

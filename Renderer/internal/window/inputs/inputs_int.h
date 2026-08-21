@@ -10,6 +10,7 @@
 
 void iOCT_buttonList_init();
 OCT_BUTTON iOCT_getOCTButtonFromGLFW(int glfwKeyCode, bool mouse);
+OCT_vec2 iOCT_cursor_calcPosContext(OCT_global context);
 
 // void iOCT_keyMap_init();
 // void iOCT_mouseMap_init();
