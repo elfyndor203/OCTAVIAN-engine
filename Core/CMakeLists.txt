@@ -2,7 +2,7 @@
 add_library(Core STATIC
         internal/layout/layout.c
         internal/layout/dataAccess.c
-        engine/data/data_eng.h
+        engine/registry/dataAccess_Eng.h
         engine/data/types_eng.h
 
         internal/utilities/utilities_int.h
@@ -60,6 +60,9 @@ add_library(Core STATIC
         internal/utilities/allocations.c
         include/utilities/memory.h
         init/Core_shutdown.h
+        engine/registry/fields_eng.h
+        engine/registry/dataTypes_eng.h
+        engine/registry/dataPatterns_eng.h
 )
 
 target_include_directories(Core
