@@ -344,15 +344,22 @@ eOCT_pool eOCT_generateSingleDescriptionPool(OCT_index count, ...) {
 
 	return pool;
 }
+
+eOCT_fieldRequest eOCT_fieldRequest_end = {
+	.name = "REQUEST_LIST_END"
+};
 eOCT_pool eOCT_generateFieldRequestPool(OCT_index count, ...) {
 	va_list args;
 	va_start(args, count);
 
 	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, count, sizeof(eOCT_fieldRequest));
 	for (OCT_index ctr = 0; ctr < count; ctr++) {
-		eOCT_fieldRequest* destination = (eOCT_fieldRequest*)eOCT_pool_addEntryOld(&pool, NULL);
-		*destination = va_arg(args, eOCT_fieldRequest);
+		eOCT_fieldRequest newRequest = va_arg(args, eOCT_fieldRequest);
+		eOCT_pool_addEntryNew(&pool, &newRequest, NULL);
+		// eOCT_fieldRequest* destination = (eOCT_fieldRequest*)eOCT_pool_addEntryOld(&pool, NULL);
+		// *destination = va_arg(args, eOCT_fieldRequest);
 	}
+	// eOCT_fieldRequest end = va_arg(args, eOCT_fieldRequest);
 	va_end(args);
 
 	return pool;

@@ -69,6 +69,7 @@ struct eOCT_fieldRequest {
 	bool global_reg;
 	bool fulfilled_reg;
 };
+extern eOCT_fieldRequest eOCT_fieldRequest_end;
 
 struct eOCT_componentExistenceRequest {
 	const char* name;
