@@ -6,6 +6,11 @@
 #include "../data/types_eng.h"
 
 #define eOCT_DATAUNION_SIZE 36
+#define eOCT_FIELD_LIST_END ((eOCT_fieldDescription){.name = "FIELD_DESCRIPTION_END"})
+#define eOCT_COMPONENT_LIST_END ((eOCT_componentDescription){.name = "COMPONENT_DESCRIPTION_END"})
+#define eOCT_DATAPOOL_LIST_END ((eOCT_dataPoolDescription){.name = "DATAPOOL_DESCRIPTION_END"})
+#define eOCT_SINGLE_LIST_END ((eOCT_singleDescription){.name = "SINGLE_DESCRIPTION_END"})
+#define eOCT_FIELDREQUEST_LIST_END ((eOCT_fieldRequest){.name = "FIELD_REQUEST_END"})
 
 typedef enum eOCT_dataPattern {
 	eOCT_DATAPATTERN_COMPONENT = 1,
@@ -69,7 +74,6 @@ struct eOCT_fieldRequest {
 	bool global_reg;
 	bool fulfilled_reg;
 };
-extern eOCT_fieldRequest eOCT_fieldRequest_end;
 
 struct eOCT_componentExistenceRequest {
 	const char* name;

@@ -345,20 +345,44 @@ eOCT_pool eOCT_generateSingleDescriptionPool(OCT_index count, ...) {
 	return pool;
 }
 
-eOCT_fieldRequest eOCT_fieldRequest_end = {
-	.name = "REQUEST_LIST_END"
-};
 eOCT_pool eOCT_generateFieldRequestPool(OCT_index count, ...) {
+	if (count < 1) {
+		OCT_ERROR_LOG(OCT_WARNING_IMPROPER, "Directly pass empty pool if no fields are requested");
+		return eOCT_POOL_EMPTY;
+	}
 	va_list args;
 	va_start(args, count);
 
 	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, count, sizeof(eOCT_fieldRequest));
-	for (OCT_index ctr = 0; ctr < count; ctr++) {
-		eOCT_fieldRequest newRequest = va_arg(args, eOCT_fieldRequest);
-		eOCT_pool_addEntryNew(&pool, &newRequest, NULL);
-		// eOCT_fieldRequest* destination = (eOCT_fieldRequest*)eOCT_pool_addEntryOld(&pool, NULL);
-		// *destination = va_arg(args, eOCT_fieldRequest);
+	bool end = false;
+	OCT_index processed = 0;
+	eOCT_fieldRequest expectedEnd;
+	while (!end) {
+		eOCT_fieldRequest newRequest = va_arg(args, eOCT_fieldRequest);		// checks for END flag
+		if (strcmp(newRequest.name, eOCT_FIELDREQUEST_LIST_END.name) == 0) {
+			end = true;
+			expectedEnd = newRequest;
+
+			if (processed != count) {										// END flag should be after all requests are processed
+				OCT_ERROR_LOG(OCT_EXIT_INVALID_ARGUMENT, "Less fields provided than expected");
+				return pool;
+			}
+		} else {
+			eOCT_pool_addEntryNew(&pool, &newRequest, NULL);
+			processed++;
+		}
 	}
+	if (strcmp(expectedEnd.name, eOCT_FIELDREQUEST_LIST_END.name) != 0) {
+		OCT_ERROR_LOG(OCT_EXIT_INVALID_ARGUMENT, "END flag not found");
+		return pool;
+	}
+	// for (OCT_index ctr = 0; ctr < count; ctr++) {
+	// 	eOCT_fieldRequest newRequest = va_arg(args, eOCT_fieldRequest);
+	// 	if (strcmp(newRequest.name, eOCT_FIELDREQUEST_END.name) != 0) {
+	// 		OCT_ERROR_LOG(OCT_EXIT_INVALID_ARGUMENT, "Less fields provided than expected");
+	// 	}
+	// 	eOCT_pool_addEntryNew(&pool, &newRequest, NULL);
+	// }
 	// eOCT_fieldRequest end = va_arg(args, eOCT_fieldRequest);
 	va_end(args);
 

@@ -59,7 +59,7 @@ void system_register_systemEx() {
 	eOCT_systemDescription templateSystem = {
 		.name = "_SystemEx",
 		.providedComponents = eOCT_generateComponentDescriptionPool(1, componentEx),
-		.requestedFields = eOCT_generateFieldRequestPool(6, heightReq, widthReq, mightNeed, keys, keyPress, keyRelease),
+		.requestedFields = eOCT_generateFieldRequestPool(6, heightReq, widthReq, mightNeed, keys, keyPress, keyRelease, eOCT_FIELDREQUEST_LIST_END),
 		.providedEvents = eOCT_POOL_EMPTY,
 		.providedSingles = eOCT_generateSingleDescriptionPool(1, testSingle),
 		.providedDataPools = eOCT_POOL_EMPTY,

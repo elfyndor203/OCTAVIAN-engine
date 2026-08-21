@@ -66,7 +66,7 @@ void system_register_RENDERER() {
         .providedComponents = eOCT_generateComponentDescriptionPool(2, sprite2D, camera2D),
         .providedDataPools = eOCT_POOL_EMPTY,
         .providedSingles = eOCT_generateSingleDescriptionPool(1, screenSpaceSingle),
-        .requestedFields = eOCT_generateFieldRequestPool(1, transform2D),
+        .requestedFields = eOCT_generateFieldRequestPool(1, transform2D, eOCT_FIELDREQUEST_LIST_END),
         .systemInitFx = system_init_RENDERER,
         .contextInitFx = iOCT_renderer_contextSetup
     };
@@ -200,7 +200,7 @@ void system_register_WINDOW() {
         .providedComponents = eOCT_POOL_EMPTY,
         .providedEvents = eOCT_generateEventDescriptionPool(3, keyEvents, mouseButtonEvents, mouseScrollEvents),
         .providedSingles = eOCT_generateSingleDescriptionPool(1, cursorPosSingle),
-        .requestedFields = eOCT_generateFieldRequestPool(1, transform2D),
+        .requestedFields = eOCT_generateFieldRequestPool(1, transform2D, eOCT_FIELDREQUEST_LIST_END),
         .systemInitFx = system_init_WINDOW
     };
 
