@@ -9,8 +9,8 @@ struct eOCT_fieldDescription {
     const char* name;
     eOCT_dataTypes type;	// standard field types defined in fields.h
     size_t offset;			// offset from the start of the component struct
-
     eOCT_dataPattern providerType;
+
     OCT_index providerIndex_reg;
     bool global_reg;
 };
@@ -21,11 +21,13 @@ struct eOCT_fieldRequest {
     eOCT_fieldTicket* ticketCache;
     eOCT_dataPattern providerType;
     bool optional;
+    const char* sourceGroup_opt;
 
     OCT_index providerIndex_reg;
     size_t fieldOffset_reg;
     bool global_reg;
     bool fulfilled_reg;
+    bool grouped_reg;
 };
 
 struct eOCT_fieldTicket {
