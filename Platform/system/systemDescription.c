@@ -36,7 +36,7 @@ void system_register_PLATFORM() {
         .providedDataPools = eOCT_POOL_EMPTY,
         .providedEvents = eOCT_POOL_EMPTY,
         .requestedFields = eOCT_POOL_EMPTY,
-        .providedSingles = eOCT_generateSingleDescriptionPool(2, timeSingle, deltaTimeSingle),
+        .providedSingles = eOCT_generateSingleDescriptionPool(2, timeSingle, deltaTimeSingle, eOCT_END_SINGLES),
         .systemInitFx = iOCT_platformSystem_init
     };
 

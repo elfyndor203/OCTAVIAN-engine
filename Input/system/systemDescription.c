@@ -97,7 +97,7 @@ void system_register_INPUT() {
         .providedComponents = eOCT_generateComponentDescriptionPool(1, interactBox),
         .providedDataPools = eOCT_POOL_EMPTY,
         .providedEvents = eOCT_POOL_EMPTY,
-        .requestedFields = eOCT_generateFieldRequestPool(8, key, keyPress, keyRelease, mouseButton, mouseButtonPress, mouseButtonRelease, mouseScroll, deltaTime, eOCT_FIELDREQUEST_LIST_END),
+        .requestedFields = eOCT_generateFieldRequestPool(8, key, keyPress, keyRelease, mouseButton, mouseButtonPress, mouseButtonRelease, mouseScroll, deltaTime, eOCT_END_REQUESTS),
         .systemInitFx = system_init_INPUT
     };
 

@@ -6,11 +6,11 @@
 #include "../data/types_eng.h"
 
 #define eOCT_DATAUNION_SIZE 36
-#define eOCT_FIELD_LIST_END ((eOCT_fieldDescription){.name = "FIELD_DESCRIPTION_END"})
-#define eOCT_COMPONENT_LIST_END ((eOCT_componentDescription){.name = "COMPONENT_DESCRIPTION_END"})
-#define eOCT_DATAPOOL_LIST_END ((eOCT_dataPoolDescription){.name = "DATAPOOL_DESCRIPTION_END"})
-#define eOCT_SINGLE_LIST_END ((eOCT_singleDescription){.name = "SINGLE_DESCRIPTION_END"})
-#define eOCT_FIELDREQUEST_LIST_END ((eOCT_fieldRequest){.name = "FIELD_REQUEST_END"})
+#define eOCT_END_FIELDS ((eOCT_fieldDescription){.name = "FIELD_DESCRIPTION_END"})
+#define eOCT_END_COMPONENTS ((eOCT_componentDescription){.name = "COMPONENT_DESCRIPTION_END"})
+#define eOCT_END_DATAPOOLS ((eOCT_dataPoolDescription){.name = "DATAPOOL_DESCRIPTION_END"})
+#define eOCT_END_SINGLES ((eOCT_singleDescription){.name = "SINGLE_DESCRIPTION_END"})
+#define eOCT_END_REQUESTS ((eOCT_fieldRequest){.name = "FIELD_REQUEST_END"})
 
 typedef enum eOCT_dataPattern {
 	eOCT_DATAPATTERN_COMPONENT = 1,
