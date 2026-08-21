@@ -94,7 +94,7 @@ void system_register_INPUT() {
 
     eOCT_systemDescription inputSystem = {
         .name = "INPUT",
-        .providedComponents = eOCT_generateComponentDescriptionPool(1, interactBox),
+        .providedComponents = eOCT_generateComponentDescriptionPool(1, interactBox, eOCT_END_COMPONENTS),
         .providedDataPools = eOCT_POOL_EMPTY,
         .providedEvents = eOCT_POOL_EMPTY,
         .requestedFields = eOCT_generateFieldRequestPool(8, key, keyPress, keyRelease, mouseButton, mouseButtonPress, mouseButtonRelease, mouseScroll, deltaTime, eOCT_END_REQUESTS),

@@ -11,7 +11,7 @@ void system_register_systemEx() {
 			eOCT_fieldDescription field1 = { "someField", eOCT_DATATYPE_INT64, offsetof(iOCT_componentEx, fieldA) };
 			eOCT_fieldDescription field2 = { "someOtherField", eOCT_DATATYPE_INT64, offsetof(iOCT_componentEx, fieldB) };
 		// Create a componentDescription
-		eOCT_componentDescription componentEx = { "componentEx", sizeof(componentEx), eOCT_generateFieldDescriptionPool(2, field1, field2)};
+		eOCT_componentDescription componentEx = { "componentEx", sizeof(componentEx), eOCT_generateFieldDescriptionPool(2, field1, field2, eOCT_END_FIELDS)};
 	//
 
 	// FOR EACH SYSTEM
@@ -58,7 +58,7 @@ void system_register_systemEx() {
 	// ensure the correct counts
 	eOCT_systemDescription templateSystem = {
 		.name = "_SystemEx",
-		.providedComponents = eOCT_generateComponentDescriptionPool(1, componentEx),
+		.providedComponents = eOCT_generateComponentDescriptionPool(1, componentEx, eOCT_END_COMPONENTS),
 		.requestedFields = eOCT_generateFieldRequestPool(6, heightReq, widthReq, mightNeed, keys, keyPress, keyRelease, eOCT_END_REQUESTS),
 		.providedEvents = eOCT_POOL_EMPTY,
 		.providedSingles = eOCT_generateSingleDescriptionPool(1, testSingle, eOCT_END_SINGLES),

@@ -46,7 +46,7 @@ void system_register_WORLD() {
 	eOCT_componentDescription transform2D = {
 		.name = "transform2D",
 		.stride = sizeof(iOCT_transform2D),
-		.providedFields = eOCT_generateFieldDescriptionPool(6, position, rotation, scaleX, scaleY, matrix2D, transformParent),
+		.providedFields = eOCT_generateFieldDescriptionPool(6, position, rotation, scaleX, scaleY, matrix2D, transformParent, eOCT_END_FIELDS),
 		.keyCacheLocation = &iOCT_world_inst.transform2DKey,
 		.rootAttachmentFx = iOCT_transform2D_generateRoot,
 		.sortValueOffset = offsetof(iOCT_transform2D, depth),
@@ -55,7 +55,7 @@ void system_register_WORLD() {
 
 	eOCT_systemDescription world = {
 		.name = "WORLD",
-		.providedComponents = eOCT_generateComponentDescriptionPool(1, transform2D),
+		.providedComponents = eOCT_generateComponentDescriptionPool(1, transform2D, eOCT_END_COMPONENTS),
 		.providedDataPools = eOCT_POOL_EMPTY,
 		.requestedFields = eOCT_POOL_EMPTY,
 		.systemInitFx = iOCT_world_init

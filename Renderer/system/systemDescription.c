@@ -63,7 +63,7 @@ void system_register_RENDERER() {
 
     eOCT_systemDescription rendererSystem = {
         .name = "Renderer",
-        .providedComponents = eOCT_generateComponentDescriptionPool(2, sprite2D, camera2D),
+        .providedComponents = eOCT_generateComponentDescriptionPool(2, sprite2D, camera2D, eOCT_END_COMPONENTS),
         .providedDataPools = eOCT_POOL_EMPTY,
         .providedSingles = eOCT_generateSingleDescriptionPool(1, screenSpaceSingle, eOCT_END_SINGLES),
         .requestedFields = eOCT_generateFieldRequestPool(1, transform2D, eOCT_END_REQUESTS),
@@ -96,7 +96,7 @@ void system_register_WINDOW() {
     eOCT_fieldDescription keyFields[3] = { glfwKeys, glfwKeyPress, glfwKeyRelease };
     eOCT_eventDescription keyEvents = {
         .name = "keysEvents",
-        .providedFields = eOCT_generateFieldDescriptionPool(3, glfwKeys, glfwKeyPress, glfwKeyRelease),
+        .providedFields = eOCT_generateFieldDescriptionPool(3, glfwKeys, glfwKeyPress, glfwKeyRelease, eOCT_END_FIELDS),
         .stride = sizeof(iOCT_keyEvent),
         .global = true,
         .keyCacheLocation = &iOCT_windowSystem_inst.keyEventKey,
@@ -123,7 +123,7 @@ void system_register_WINDOW() {
     eOCT_fieldDescription mouseButtonFields[3] = { mouseButton, mouseButtonPress, mouseButtonRelease };
     eOCT_eventDescription mouseButtonEvents = {
         .name = "mouseButtonEvents",
-        .providedFields = eOCT_generateFieldDescriptionPool(3, mouseButton, mouseButtonPress, mouseButtonRelease),
+        .providedFields = eOCT_generateFieldDescriptionPool(3, mouseButton, mouseButtonPress, mouseButtonRelease, eOCT_END_FIELDS),
         .stride = sizeof(iOCT_mouseButtonEvent),
         .global = true,
         .keyCacheLocation = &iOCT_windowSystem_inst.mouseButtonEventKey
@@ -157,7 +157,7 @@ void system_register_WINDOW() {
     };
     eOCT_eventDescription mouseScrollEvents = {
         .name = "mouseScrollEvents",
-        .providedFields = eOCT_generateFieldDescriptionPool(1, mouseScrollDelta),
+        .providedFields = eOCT_generateFieldDescriptionPool(1, mouseScrollDelta, eOCT_END_FIELDS),
         .stride = sizeof(iOCT_mouseScrollEvent),
         .global = true,
         .keyCacheLocation = &iOCT_windowSystem_inst.mouseScrollEventKey
@@ -198,7 +198,7 @@ void system_register_WINDOW() {
         .name = "Window",
         .providedDataPools = eOCT_POOL_EMPTY,
         .providedComponents = eOCT_POOL_EMPTY,
-        .providedEvents = eOCT_generateEventDescriptionPool(3, keyEvents, mouseButtonEvents, mouseScrollEvents),
+        .providedEvents = eOCT_generateEventDescriptionPool(3, keyEvents, mouseButtonEvents, mouseScrollEvents, eOCT_END_EVENTS),
         .providedSingles = eOCT_generateSingleDescriptionPool(1, cursorPosSingle, eOCT_END_SINGLES),
         .requestedFields = eOCT_generateFieldRequestPool(1, transform2D, eOCT_END_REQUESTS),
         .systemInitFx = system_init_WINDOW

@@ -80,8 +80,8 @@ void system_register_PHYSICS() {
 
     eOCT_systemDescription physicsSystem = {
         .name = "Physics",
-        .providedComponents = eOCT_generateComponentDescriptionPool(1, physics2D),
-        .providedDataPools = eOCT_generateDataPoolDescriptionPool(2, distance2D, collider2D),
+        .providedComponents = eOCT_generateComponentDescriptionPool(1, physics2D, eOCT_END_COMPONENTS),
+        .providedDataPools = eOCT_generateDataPoolDescriptionPool(2, distance2D, collider2D, eOCT_END_DATAPOOLS),
         .providedEvents = eOCT_POOL_EMPTY,
         .providedSingles = eOCT_generateSingleDescriptionPool(1, box2DWorldSingle, eOCT_END_SINGLES),
         .requestedFields = eOCT_generateFieldRequestPool(4, transform2D, position2D, rotation2D, transformParent, eOCT_END_REQUESTS),

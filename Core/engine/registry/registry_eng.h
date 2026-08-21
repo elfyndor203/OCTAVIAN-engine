@@ -9,6 +9,7 @@
 #define eOCT_END_FIELDS ((eOCT_fieldDescription){.name = "FIELD_DESCRIPTION_END"})
 #define eOCT_END_COMPONENTS ((eOCT_componentDescription){.name = "COMPONENT_DESCRIPTION_END"})
 #define eOCT_END_DATAPOOLS ((eOCT_dataPoolDescription){.name = "DATAPOOL_DESCRIPTION_END"})
+#define eOCT_END_EVENTS ((eOCT_eventDescription){.name = "EVENTS"})
 #define eOCT_END_SINGLES ((eOCT_singleDescription){.name = "SINGLE_DESCRIPTION_END"})
 #define eOCT_END_REQUESTS ((eOCT_fieldRequest){.name = "FIELD_REQUEST_END"})
 
@@ -155,9 +156,9 @@ struct eOCT_systemDescription {
 OCT_ID eOCT_registry_registerSystem(eOCT_systemDescription systemDescription);
 //void eOCT_registry_allocateComponents(eOCT_componentDescription* componentDescription);
 // eOCT_pool eOCT_generateFieldDescriptionPool(eOCT_fieldDescription* array, size_t count);
-eOCT_pool eOCT_generateFieldDescriptionPool(OCT_index count, ...);
-eOCT_pool eOCT_generateComponentDescriptionPool(OCT_index count, ...);
-eOCT_pool eOCT_generateDataPoolDescriptionPool(OCT_index count, ...);
-eOCT_pool eOCT_generateEventDescriptionPool(OCT_index count, ...);
-eOCT_pool eOCT_generateSingleDescriptionPool(OCT_index count, ...);
-eOCT_pool eOCT_generateFieldRequestPool(OCT_index count, ...);
+eOCT_pool eOCT_generateFieldDescriptionPool(OCT_index total, eOCT_fieldDescription description1, ...);
+eOCT_pool eOCT_generateComponentDescriptionPool(OCT_index total, eOCT_componentDescription description1, ...);
+eOCT_pool eOCT_generateDataPoolDescriptionPool(OCT_index total, eOCT_dataPoolDescription description1, ...);
+eOCT_pool eOCT_generateEventDescriptionPool(OCT_index total, eOCT_eventDescription description1, ...);
+eOCT_pool eOCT_generateSingleDescriptionPool(OCT_index total, eOCT_singleDescription description1, ...);
+eOCT_pool eOCT_generateFieldRequestPool(OCT_index total, eOCT_fieldRequest request1, ...);
