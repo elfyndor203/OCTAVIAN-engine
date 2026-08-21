@@ -76,11 +76,6 @@ struct eOCT_fieldRequest {
 	bool fulfilled_reg;
 };
 
-struct eOCT_componentExistenceRequest {
-	const char* name;
-
-	eOCT_componentExistenceKey* keyCache;
-};
 struct eOCT_fieldDescription {
 	const char* name;
 	eOCT_dataTypes type;	// standard field types defined in fields.h
@@ -117,6 +112,7 @@ struct eOCT_dataPoolDescription {
 
 	OCT_index dataPoolTypeIndex_reg;
 };
+
 struct eOCT_eventDescription { // for cross module communication, but what about for the user __NOTE__
 	const char* name;
 	size_t stride;

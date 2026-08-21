@@ -66,9 +66,11 @@ void eOCT_WINDOW_startFrame() {
 }
 
 void eOCT_WINDOW_update(OCT_global context) {
-	OCT_vec2* cursorPos = &eOCT_single_getLocal(iOCT_windowSystem_inst.cursorPosKey, context)->vec2;
+	OCT_vec2* cursorPosLoc = &eOCT_single_getLocal(iOCT_windowSystem_inst.cursorPosKey, context)->vec2;
 
-	*cursorPos = iOCT_cursor_calcPosContext(context);
+	OCT_vec2 cursorPos = iOCT_cursor_calcPosContext(context);
+	printf("Cursor pos calc: %f %f\n", cursorPos.x, cursorPos.y);
+	*cursorPosLoc = cursorPos;
 }
 
 void eOCT_WINDOW_finishFrame() {
