@@ -59,6 +59,7 @@ add_library(Core STATIC
         internal/utilities/allocations_int.h
         internal/utilities/allocations.c
         include/utilities/memory.h
+        init/Core_shutdown.h
 )
 
 target_include_directories(Core

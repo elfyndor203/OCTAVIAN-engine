@@ -76,6 +76,12 @@ struct eOCT_fieldRequest {
 	bool fulfilled_reg;
 };
 
+struct eOCT_requestGroup {
+	eOCT_pool fieldRequests;
+	eOCT_dataPattern providerType;
+	OCT_index providerIndex_reg;
+};
+
 struct eOCT_fieldDescription {
 	const char* name;
 	eOCT_dataTypes type;	// standard field types defined in fields.h

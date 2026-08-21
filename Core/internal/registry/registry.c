@@ -193,6 +193,43 @@ void init_OCT_registry_check() {
 	printf("-----------------------\n\n");
 
 }
+
+void iOCT_registry_cleanup() {
+	eOCT_pool* systemPool = &iOCT_registry_inst.systems;
+	for (OCT_index systemCtr = 0; systemCtr < systemPool->count; systemCtr++) {
+		eOCT_systemDescription* system = eOCT_pool_access(systemPool, systemCtr, 0);
+		eOCT_pool* componentsPool = &system->providedComponents;
+		eOCT_pool* dataPoolsPool = &system->providedDataPools;
+		eOCT_pool* eventsPool = &system->providedEvents;
+		eOCT_pool* singlesPool = &system->providedSingles;
+		eOCT_pool* requestsPool = &system->requestedFields;
+
+		eOCT_pool* providedFieldsPool;
+		for (OCT_index componentCtr = 0; componentCtr < componentsPool->count; componentCtr++) {
+			eOCT_componentDescription* component = eOCT_pool_access(componentsPool, componentCtr, 0);
+			providedFieldsPool = &component->providedFields;
+			eOCT_pool_free(providedFieldsPool);
+		}
+		for (OCT_index dataPoolCtr = 0; dataPoolCtr < dataPoolsPool->count; dataPoolCtr++) {
+			eOCT_dataPoolDescription* dataPool = eOCT_pool_access(dataPoolsPool, dataPoolCtr, 0);
+			providedFieldsPool = &dataPool->providedFields;
+			eOCT_pool_free(providedFieldsPool);
+		}
+		for (OCT_index eventsCtr = 0; eventsCtr < eventsPool->count; eventsCtr++) {
+			eOCT_eventDescription* event = eOCT_pool_access(eventsPool, eventsCtr, 0);
+			providedFieldsPool = &event->providedFields;
+			eOCT_pool_free(providedFieldsPool);
+		}
+		// singles and fieldRequests don't contain pools
+
+		eOCT_pool_free(componentsPool);
+		eOCT_pool_free(dataPoolsPool);
+		eOCT_pool_free(eventsPool);
+		eOCT_pool_free(singlesPool);
+		eOCT_pool_free(requestsPool);
+	}
+	eOCT_pool_free(systemPool);
+}
 #pragma endregion
 
 OCT_ID eOCT_registry_registerSystem(eOCT_systemDescription systemDescription) {

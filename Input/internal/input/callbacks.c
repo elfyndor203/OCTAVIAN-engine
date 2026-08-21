@@ -57,10 +57,10 @@ void iOCT_input_mouseScrollCallback(OCT_index eventIndex) {
     iOCT_inputSystem_inst.mouseScrollDelta += yDelta;
 
     if (yDelta > 0.0f) {
-        iOCT_button_updateState(OCT_BUTTON_SCROLL_UP, OCT_BUTTONSTATE_PRESSED);
+        iOCT_button_updateState(OCT_MOUSE_SCROLL_DOWN, OCT_BUTTONSTATE_PRESSED);
     }
     if (yDelta < 0.0f) {
-        iOCT_button_updateState(OCT_BUTTON_SCROLL_UP, OCT_BUTTONSTATE_PRESSED);
+        iOCT_button_updateState(OCT_MOUSE_SCROLL_UP, OCT_BUTTONSTATE_PRESSED);
     }
 }
 
