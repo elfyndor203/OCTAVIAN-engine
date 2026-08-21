@@ -9,55 +9,64 @@ void system_register_INPUT() {
         .name = "glfwKeys",
         .type = eOCT_DATATYPE_INT64,
         .optional = false,
-        .ticketCache = &iOCT_inputSystem_inst.keyTicket
+        .ticketCache = &iOCT_inputSystem_inst.keyTicket,
+        .providerType = eOCT_DATAPATTERN_EVENT
     };
     eOCT_fieldRequest keyPress = {
         .name = "glfwKeyPress",
         .type = eOCT_DATATYPE_BOOL,
         .optional = false,
-        .ticketCache = &iOCT_inputSystem_inst.keyPressTicket
+        .ticketCache = &iOCT_inputSystem_inst.keyPressTicket,
+        .providerType = eOCT_DATAPATTERN_EVENT
     };
     eOCT_fieldRequest keyRelease = {
         .name = "glfwKeyRelease",
         .type = eOCT_DATATYPE_BOOL,
         .optional = false,
-        .ticketCache = &iOCT_inputSystem_inst.keyReleaseTicket
+        .ticketCache = &iOCT_inputSystem_inst.keyReleaseTicket,
+        .providerType = eOCT_DATAPATTERN_EVENT
     };
     eOCT_fieldRequest mouseButton = {
         .name = "glfwMouseButton",
         .type = eOCT_DATATYPE_INT64,
         .optional = false,
-        .ticketCache = &iOCT_inputSystem_inst.mouseButtonTicket
+        .ticketCache = &iOCT_inputSystem_inst.mouseButtonTicket,
+        .providerType = eOCT_DATAPATTERN_EVENT
     };
     eOCT_fieldRequest mouseButtonPress = {
         .name = "glfwMouseButtonPress",
         .type = eOCT_DATATYPE_BOOL,
         .optional = false,
-        .ticketCache = &iOCT_inputSystem_inst.mouseButtonPressTicket
+        .ticketCache = &iOCT_inputSystem_inst.mouseButtonPressTicket,
+        .providerType = eOCT_DATAPATTERN_EVENT
     };
     eOCT_fieldRequest mouseButtonRelease = {
         .name = "glfwMouseButtonRelease",
         .type = eOCT_DATATYPE_BOOL,
         .optional = false,
-        .ticketCache = &iOCT_inputSystem_inst.mouseButtonReleaseTicket
+        .ticketCache = &iOCT_inputSystem_inst.mouseButtonReleaseTicket,
+        .providerType = eOCT_DATAPATTERN_EVENT
     };
     eOCT_fieldRequest mouseMoveX = {
         .name = "glfwMouseXPos",
         .type = eOCT_DATATYPE_FLOAT32,
         .optional = false,
-        .ticketCache = &iOCT_inputSystem_inst.mousePositionXTicket
+        .ticketCache = &iOCT_inputSystem_inst.mousePositionXTicket,
+        .providerType = eOCT_DATAPATTERN_EVENT
     };
     eOCT_fieldRequest mouseMoveY = {
         .name = "glfwMouseYPos",
         .type = eOCT_DATATYPE_FLOAT32,
         .optional = false,
-        .ticketCache = &iOCT_inputSystem_inst.mousePositionYTicket
+        .ticketCache = &iOCT_inputSystem_inst.mousePositionYTicket,
+        .providerType = eOCT_DATAPATTERN_EVENT
     };
     eOCT_fieldRequest mouseScroll = {
         .name = "glfwMouseScrollDelta",
         .type = eOCT_DATATYPE_FLOAT32,
         .optional = false,
-        .ticketCache = &iOCT_inputSystem_inst.mouseScrollTicket
+        .ticketCache = &iOCT_inputSystem_inst.mouseScrollTicket,
+        .providerType = eOCT_DATAPATTERN_EVENT
     };
     // eOCT_fieldRequest activeCamera = {
     //     .name = "screenToWorldMatrix",
@@ -69,7 +78,8 @@ void system_register_INPUT() {
         .name = "deltaFrameTime",
         .type = eOCT_DATATYPE_DOUBLE64,
         .optional = false,
-        .ticketCache = &iOCT_inputSystem_inst.deltaTimeTicket
+        .ticketCache = &iOCT_inputSystem_inst.deltaTimeTicket,
+        .providerType = eOCT_DATAPATTERN_SINGLE
     };
 
     eOCT_componentDescription interactBox = {

@@ -58,6 +58,7 @@ void system_register_RENDERER() {
         .type = eOCT_DATATYPE_MAT3,
         .ticketCache = &iOCT_renderer_inst.transform2DTicket,
         .optional = false,
+        .providerType = eOCT_DATAPATTERN_COMPONENT
     };
 
     eOCT_systemDescription rendererSystem = {
@@ -190,7 +191,8 @@ void system_register_WINDOW() {
         .name = "globalTransform2D",
         .optional = false,
         .ticketCache = &iOCT_windowSystem_inst.transform2DTicket,
-        .type = eOCT_DATATYPE_MAT3
+        .type = eOCT_DATATYPE_MAT3,
+        .providerType = eOCT_DATAPATTERN_COMPONENT
     };
     eOCT_systemDescription windowSystem = {
         .name = "Window",

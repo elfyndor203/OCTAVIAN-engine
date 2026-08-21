@@ -54,24 +54,28 @@ void system_register_PHYSICS() {
         .optional = false,
         .ticketCache = &iOCT_physicsSystem_inst.transform2DTicket,
         .type = eOCT_DATATYPE_MAT3,
+        .providerType = eOCT_DATAPATTERN_COMPONENT
     };
     eOCT_fieldRequest position2D = {
         .name = "position",
         .optional = false,
         .ticketCache = &iOCT_physicsSystem_inst.position2DTicket,
         .type = eOCT_DATATYPE_VEC2,
+        .providerType = eOCT_DATAPATTERN_COMPONENT
     };
     eOCT_fieldRequest rotation2D = {
         .name = "rotation",
         .optional = false,
         .ticketCache = &iOCT_physicsSystem_inst.rotationTicket,
         .type = eOCT_DATATYPE_FLOAT32,
+        .providerType = eOCT_DATAPATTERN_COMPONENT
     };
     eOCT_fieldRequest transformParent = {
         .name = "transformParent",
         .optional = false,
         .ticketCache = &iOCT_physicsSystem_inst.transformParentTicket,
-        .type = eOCT_DATATYPE_HANDLE_LOCAL
+        .type = eOCT_DATATYPE_HANDLE_LOCAL,
+        .providerType = eOCT_DATAPATTERN_COMPONENT
     };
 
     eOCT_systemDescription physicsSystem = {

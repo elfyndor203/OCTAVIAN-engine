@@ -61,11 +61,9 @@ struct eOCT_fieldRequest {
 	const char* name;
 	eOCT_dataTypes type;
 	eOCT_fieldTicket* ticketCache;
-	// eOCT_fieldTicket_global* ticketCache_ifGlobal;
-	//eOCT_fieldAccess access;
+	eOCT_dataPattern providerType;
 	bool optional;
 
-	eOCT_dataPattern providerType_reg;
 	OCT_index providerIndex_reg;
 	size_t fieldOffset_reg;
 	bool global_reg;

@@ -155,6 +155,22 @@ void init_OCT_registry_check() {
 		for (requestCtr = 0; requestCtr < requestPool.count; requestCtr++) {
 			request = requestArray[requestCtr];
 			if (request.fulfilled_reg) {
+				switch (request.providerType) {
+				case eOCT_DATAPATTERN_COMPONENT:
+					printf("C ");
+					break;
+				case eOCT_DATAPATTERN_DATAPOOL:
+					printf("D ");
+					break;
+				case eOCT_DATAPATTERN_EVENT:
+					printf("E ");
+					break;
+				case eOCT_DATAPATTERN_SINGLE:
+					printf("S ");
+					break;
+				default:
+					OCT_ERROR_LOG(OCT_EXIT_REGISTRATION_FAILED, "Unknown provider type");
+				}
 				printf("%02zu[%02zu]", request.providerIndex_reg, request.fieldOffset_reg);
 			}
 			else if (request.optional) {
@@ -438,7 +454,7 @@ static bool iOCT_registry_findField(const char* fieldName, eOCT_fieldDescription
 
 	for (fieldCtr = 0; fieldCtr < fields->count; fieldCtr++) {		// check every field in the registry
 		targetField = fieldArray[fieldCtr];
-		if (strcmp(targetField.name, fieldName) == 0) {
+		if (strcmp(targetField.name, fieldName) == 0 && targetField.providerType == targetField.providerType) {
 			if (fieldOut) {
 				*fieldOut = targetField;
 			}
@@ -548,7 +564,7 @@ static void iOCT_registry_distributeFields() {
 			eOCT_fieldDescription match;
 
 			eOCT_fieldTicket* ticket = request->ticketCache;
-			if (iOCT_registry_findField(request->name, &match)) {	// if there is a match
+			if (iOCT_registry_findField(request->name, &match) && request->providerType == match.providerType) {	// if there is a match
 				ticket->name = match.name;
 				ticket->type = match.type;
 				ticket->global = match.global_reg;
@@ -558,7 +574,6 @@ static void iOCT_registry_distributeFields() {
 				ticket->globalPool = iOCT_registry_findGlobalPool(match);
 
 				request->fulfilled_reg = true;
-				request->providerType_reg = match.providerType;
 				request->global_reg = match.global_reg;
 				request->fieldOffset_reg = match.offset;
 				request->providerIndex_reg = match.providerIndex_reg;
