@@ -28,11 +28,13 @@
  *      Init all external systems
  */
 void OCT_engine_init() {
+    init_OCT_memoryManager_init();
     init_OCT_registry_init();
     init_OCT_ECS_init();
     init_OCT_resources_init();
     init_OCT_globals_init();
 
+    init_system_register_CORE();
     init_OCT_registerAllSystems();
 
     init_OCT_ECS_build();

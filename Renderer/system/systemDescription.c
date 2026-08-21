@@ -58,14 +58,15 @@ void system_register_RENDERER() {
         .type = eOCT_DATATYPE_MAT3,
         .ticketCache = &iOCT_renderer_inst.transform2DTicket,
         .optional = false,
+        .providerType = eOCT_DATAPATTERN_COMPONENT
     };
 
     eOCT_systemDescription rendererSystem = {
         .name = "Renderer",
-        .providedComponents = eOCT_generateComponentDescriptionPool(2, sprite2D, camera2D),
+        .providedComponents = eOCT_generateComponentDescriptionPool(2, sprite2D, camera2D, eOCT_END_COMPONENTS),
         .providedDataPools = eOCT_POOL_EMPTY,
-        .providedSingles = eOCT_generateSingleDescriptionPool(1, screenSpaceSingle),
-        .requestedFields = eOCT_generateFieldRequestPool(1, transform2D),
+        .providedSingles = eOCT_generateSingleDescriptionPool(1, screenSpaceSingle, eOCT_END_SINGLES),
+        .requestedFields = eOCT_generateFieldRequestPool(1, transform2D, eOCT_END_REQUESTS),
         .systemInitFx = system_init_RENDERER,
         .contextInitFx = iOCT_renderer_contextSetup
     };
@@ -95,7 +96,7 @@ void system_register_WINDOW() {
     eOCT_fieldDescription keyFields[3] = { glfwKeys, glfwKeyPress, glfwKeyRelease };
     eOCT_eventDescription keyEvents = {
         .name = "keysEvents",
-        .providedFields = eOCT_generateFieldDescriptionPool(3, glfwKeys, glfwKeyPress, glfwKeyRelease),
+        .providedFields = eOCT_generateFieldDescriptionPool(3, glfwKeys, glfwKeyPress, glfwKeyRelease, eOCT_END_FIELDS),
         .stride = sizeof(iOCT_keyEvent),
         .global = true,
         .keyCacheLocation = &iOCT_windowSystem_inst.keyEventKey,
@@ -122,31 +123,31 @@ void system_register_WINDOW() {
     eOCT_fieldDescription mouseButtonFields[3] = { mouseButton, mouseButtonPress, mouseButtonRelease };
     eOCT_eventDescription mouseButtonEvents = {
         .name = "mouseButtonEvents",
-        .providedFields = eOCT_generateFieldDescriptionPool(3, mouseButton, mouseButtonPress, mouseButtonRelease),
+        .providedFields = eOCT_generateFieldDescriptionPool(3, mouseButton, mouseButtonPress, mouseButtonRelease, eOCT_END_FIELDS),
         .stride = sizeof(iOCT_mouseButtonEvent),
         .global = true,
         .keyCacheLocation = &iOCT_windowSystem_inst.mouseButtonEventKey
     };
 
-    eOCT_fieldDescription mouseXPos = {
-        .name = "glfwMouseXPos",
-        .providerType = eOCT_DATAPATTERN_EVENT,
-        .offset = offsetof(iOCT_mouseMoveEvent, xPos),
-        .type = eOCT_DATATYPE_FLOAT32,
-    };
-    eOCT_fieldDescription mouseYPos = {
-        .name = "glfwMouseYPos",
-        .providerType = eOCT_DATAPATTERN_EVENT,
-        .offset = offsetof(iOCT_mouseMoveEvent, yPos),
-        .type = eOCT_DATATYPE_FLOAT32,
-    };
-    eOCT_eventDescription mouseMoveEvents = {
-        .name = "mouseMoveEvents",
-        .providedFields = eOCT_generateFieldDescriptionPool(2, mouseXPos, mouseYPos),
-        .stride = sizeof(iOCT_mouseMoveEvent),
-        .global = true,
-        .keyCacheLocation = &iOCT_windowSystem_inst.mouseMoveEventKey
-    };
+    // eOCT_fieldDescription mouseXPos = {
+    //     .name = "glfwMouseXPos",
+    //     .providerType = eOCT_DATAPATTERN_EVENT,
+    //     .offset = offsetof(iOCT_mouseMoveEvent, xPos),
+    //     .type = eOCT_DATATYPE_FLOAT32,
+    // };
+    // eOCT_fieldDescription mouseYPos = {
+    //     .name = "glfwMouseYPos",
+    //     .providerType = eOCT_DATAPATTERN_EVENT,
+    //     .offset = offsetof(iOCT_mouseMoveEvent, yPos),
+    //     .type = eOCT_DATATYPE_FLOAT32,
+    // };
+    // eOCT_eventDescription mouseMoveEvents = {
+    //     .name = "mouseMoveEvents",
+    //     .providedFields = eOCT_generateFieldDescriptionPool(2, mouseXPos, mouseYPos),
+    //     .stride = sizeof(iOCT_mouseMoveEvent),
+    //     .global = true,
+    //     .keyCacheLocation = &iOCT_windowSystem_inst.mouseMoveEventKey
+    // };
 
     eOCT_fieldDescription mouseScrollDelta = {
         .name = "glfwMouseScrollDelta",
@@ -156,31 +157,50 @@ void system_register_WINDOW() {
     };
     eOCT_eventDescription mouseScrollEvents = {
         .name = "mouseScrollEvents",
-        .providedFields = eOCT_generateFieldDescriptionPool(1, mouseScrollDelta),
+        .providedFields = eOCT_generateFieldDescriptionPool(1, mouseScrollDelta, eOCT_END_FIELDS),
         .stride = sizeof(iOCT_mouseScrollEvent),
         .global = true,
         .keyCacheLocation = &iOCT_windowSystem_inst.mouseScrollEventKey
     };
 
-    eOCT_fieldDescription screenToWorld = {
-        .name = "screenToWorldMatrix",
+    // eOCT_fieldDescription screenToWorld = {
+    //     .name = "screenToWorldMatrix",
+    //     .providerType = eOCT_DATAPATTERN_SINGLE,
+    //     .offset = 0,
+    //     .type = eOCT_DATATYPE_MAT3
+    // };
+    // eOCT_singleDescription screenToWorldMatrix = {
+    //     .name = "focusedCamera",
+    //     .providedField = screenToWorld,
+    //     .global = true,
+    //     .keyCacheLocation = &iOCT_windowSystem_inst.focusedCameraMatrixKey
+    // };
+    eOCT_fieldDescription cursorPos = {
+        .name = "contextCursorPos",
         .providerType = eOCT_DATAPATTERN_SINGLE,
         .offset = 0,
-        .type = eOCT_DATATYPE_MAT3
+        .type = eOCT_DATATYPE_VEC2
     };
-    eOCT_singleDescription screenToWorldMatrix = {
-        .name = "focusedCamera",
-        .providedField = screenToWorld,
-        .global = true,
-        .keyCacheLocation = &iOCT_windowSystem_inst.focusedCameraMatrixKey
+    eOCT_singleDescription cursorPosSingle = {
+        .name = "contextCursorPosSingle",
+        .global = false,
+        .keyCacheLocation = &iOCT_windowSystem_inst.cursorPosKey,
+        .providedField = cursorPos
+    };
+    eOCT_fieldRequest transform2D = {
+        .name = "globalTransform2D",
+        .optional = false,
+        .ticketCache = &iOCT_windowSystem_inst.transform2DTicket,
+        .type = eOCT_DATATYPE_MAT3,
+        .providerType = eOCT_DATAPATTERN_COMPONENT
     };
     eOCT_systemDescription windowSystem = {
         .name = "Window",
         .providedDataPools = eOCT_POOL_EMPTY,
         .providedComponents = eOCT_POOL_EMPTY,
-        .providedEvents = eOCT_generateEventDescriptionPool(4, keyEvents, mouseButtonEvents, mouseMoveEvents, mouseScrollEvents),
-        .providedSingles = eOCT_generateSingleDescriptionPool(1, screenToWorldMatrix),
-        .requestedFields = eOCT_POOL_EMPTY,
+        .providedEvents = eOCT_generateEventDescriptionPool(3, keyEvents, mouseButtonEvents, mouseScrollEvents, eOCT_END_EVENTS),
+        .providedSingles = eOCT_generateSingleDescriptionPool(1, cursorPosSingle, eOCT_END_SINGLES),
+        .requestedFields = eOCT_generateFieldRequestPool(1, transform2D, eOCT_END_REQUESTS),
         .systemInitFx = system_init_WINDOW
     };
 

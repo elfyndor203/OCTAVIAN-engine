@@ -10,9 +10,11 @@ struct iOCT_windowSystem {
 
 	eOCT_eventKey keyEventKey;
 	eOCT_eventKey mouseButtonEventKey;
-	eOCT_eventKey mouseMoveEventKey;
+	// eOCT_eventKey mouseMoveEventKey;
 	eOCT_eventKey mouseScrollEventKey;
-	eOCT_singleKey focusedCameraMatrixKey;
+	// eOCT_singleKey focusedCameraMatrixKey;
+	eOCT_singleKey cursorPosKey;
+	eOCT_fieldTicket transform2DTicket;
 
 	// eOCT_IDMap windowMap;
 	// eOCT_pool windowPool;
@@ -32,6 +34,6 @@ struct iOCT_windowSystem {
 };
 
 extern iOCT_windowSystem iOCT_windowSystem_inst;
-extern OCT_BUTTON iOCT_glfwToOCTButtonKeyMap[OCT_BUTTONS_TOTAL];
+extern OCT_BUTTON iOCT_glfwToOCTButtonKeyMap[GLFW_KEY_LAST + GLFW_MOUSE_BUTTON_LAST + 2];
 
 void system_init_WINDOW();

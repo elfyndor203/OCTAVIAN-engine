@@ -10,6 +10,8 @@ void system_register_WINDOW();
  * Checks if any windows should close. Clears all windows.
  */
 void eOCT_WINDOW_startFrame();
+
+void eOCT_WINDOW_update(OCT_global context);
 /*!
  * Swaps all window buffers, displaying the new frame.
  */

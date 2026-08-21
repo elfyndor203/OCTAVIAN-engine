@@ -48,7 +48,9 @@ OCT_local OCT_entity_new(OCT_global contextHandle) {
 
 	iOCT_entityMeta metadata = {
 		.componentsAttached = 0,
-		.componentsEnabled = 0
+		.componentsEnabled = 0,
+		.entity = entityHandle,
+		.isRoot = false
 	};
 	eOCT_entity_attachComponent(entityHandle, iOCT_ECS_inst.entityMetaKey, &metadata, NULL);
 	return entityHandle;
@@ -268,8 +270,8 @@ static void iOCT_entity_resolveIndices(iOCT_entityContext* context, eOCT_pool* c
 		if (compIndex == skip) {	// for when creating a new entry, the ID will already be resolved by itself later
 			continue;
 		}
-		OCT_local entity = *(OCT_local*)eOCT_pool_access(componentPool, compIndex, component.entityHandleValueOffset);
-		OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity.objectID);
+		OCT_local* entity = (OCT_local*)eOCT_pool_access(componentPool, compIndex, component.entityHandleValueOffset);
+		OCT_index entityIndex = eOCT_IDMap_getIndex(&context->entityIDMap, entity->objectID);
 		OCT_index* componentSlot = iOCT_entity_getComponentIndexEntry(context, entityIndex, component);
 
 		// if (*componentSlot != compIndex) {

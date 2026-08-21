@@ -12,6 +12,7 @@
 #include "events/events_int.h"
 
 #define iOCT_COMPONENT_UNSET 0xFF
+#define iOCT_ENTITY_ROOT_ID 1
 
 static eOCT_pool iOCT_entityContext_initComponentPools();
 static eOCT_pool iOCT_entityContext_initDataPools();
@@ -52,6 +53,15 @@ OCT_global OCT_entityContext_open(OCT_local* rootOut) {
 	iOCT_entityContext_initSystems(contextHandle);
 	printf("Allocated entityContext %"PRIu64"\n", newID);
 	return contextHandle;
+}
+
+OCT_local OCT_entityContext_getRoot(OCT_global context) {
+	OCT_local rootHandle = {
+		.contextHandle = context,
+		.containerID = context.objectID,
+		.objectID = iOCT_ENTITY_ROOT_ID
+	};
+	return rootHandle;
 }
 
 static eOCT_pool iOCT_entityContext_initComponentPools() {
@@ -101,6 +111,7 @@ static eOCT_pool iOCT_entityContext_initSingles() {
 }
 static OCT_local iOCT_entityContext_initRootEntity(iOCT_entityContext* context) {
 	OCT_local rootEntity = iOCT_entity_new(context);
+	assert(rootEntity.objectID == iOCT_ENTITY_ROOT_ID);
 
 	iOCT_entityMeta metadata = {
 		.componentsAttached = 0,
@@ -108,7 +119,7 @@ static OCT_local iOCT_entityContext_initRootEntity(iOCT_entityContext* context) 
 		.isRoot = true,
 		.entity = rootEntity
 	};
-	eOCT_entity_attachComponent(rootEntity, iOCT_ECS_inst.entityMetaKey, &metadata, NULL);
+	iOCT_entityMeta* dest = eOCT_entity_attachComponent(rootEntity, iOCT_ECS_inst.entityMetaKey, &metadata, NULL);
 
 	const OCT_index componentsTotal = iOCT_registry_inst.components.count;
 	for (OCT_index componentCtr = 0; componentCtr < componentsTotal; componentCtr++) {

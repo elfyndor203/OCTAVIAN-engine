@@ -33,6 +33,7 @@ X(OCT_ERR_CREATION_FAILED,              iOCT_ERROR,       "Intended creation fai
 X(OCT_ERR_NOT_PROVIDED,				    iOCT_ERROR,		"Not provided") \
 \
 X(OCT_WARNING_UNINITIALIZED,			iOCT_WARNING,	"Accessing uninitialized object") \
+X(OCT_WARNING_IMPROPER,                 iOCT_WARNING,	"Improper use") \
 \
 X(OCT_NOTE_POOL_NOT_EMPTY,              iOCT_NOTE,      "Pool is not empty")
 

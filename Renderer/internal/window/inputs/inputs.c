@@ -3,12 +3,44 @@
 
 #include "OCT_Core_eng.h"
 
+#include "window/windowSystem_int.h"
+#include "window/window/window_int.h"
+#include "renderer/renderer_int.h"
+
 OCT_BUTTON iOCT_glfwToOCTButtonKeyMap[GLFW_KEY_LAST + GLFW_MOUSE_BUTTON_LAST + 2];
 
 OCT_BUTTON iOCT_getOCTButtonFromGLFW(int glfwKeyCode, bool mouse) {
     return iOCT_glfwToOCTButtonKeyMap[glfwKeyCode + (mouse * iOCT_GLFW_MOUSE_BUTTONS_OFFSET)];
 }
 
+OCT_vec2 OCT_cursor_readPosContext(OCT_global context) {
+    OCT_vec2* cursorPos = &eOCT_single_getLocal(iOCT_windowSystem_inst.cursorPosKey, context)->vec2;
+    return *cursorPos;
+}
+
+OCT_vec2 iOCT_cursor_calcPosContext(OCT_global context) {
+    if (iOCT_windowSystem_inst.focusedWindowID == OCT_ID_NULL) {
+        return OCT_VEC2_NULL;
+    }
+    iOCT_window* focusedWindow = eOCT_mappedPool_getByID(&iOCT_windowSystem_inst.windowMPool, iOCT_windowSystem_inst.focusedWindowID);
+    OCT_vec2 posWindow = focusedWindow->cursorPos;
+
+    OCT_local contextRoot = OCT_entityContext_getRoot(context);
+    OCT_mat3 rootTransform = *(OCT_mat3*)eOCT_entity_getFieldOnce(contextRoot, iOCT_windowSystem_inst.transform2DTicket);
+    OCT_mat3 invRootTransform = OCT_mat3_inv(rootTransform);
+    OCT_mat3 rootRelativeMat3;
+    if (eOCT_single_getLocal(iOCT_renderer_inst.screenSpaceKey, context)->boolean == false) {       // world space contexts
+        OCT_mat3 screenToWorldMatrix = iOCT_window_screenToWorld(*focusedWindow);
+        rootRelativeMat3 = OCT_mat3_mul(invRootTransform, screenToWorldMatrix);
+    } else {                                                                                        // screen space contexts
+        OCT_mat3 screenToScreenSpaceMatrix = iOCT_window_screenToScreenSpace(*focusedWindow);
+        rootRelativeMat3 = OCT_mat3_mul(invRootTransform, screenToScreenSpaceMatrix);
+    }
+
+    OCT_vec3 posVec3 = OCT_mat3_mulVec3(rootRelativeMat3, (OCT_vec3){posWindow.x, posWindow.y, 1.0f});
+    OCT_vec2 posVec2 = (OCT_vec2){posVec3.x, posVec3.y};
+    return posVec2;
+}
 // Claude generated
 void iOCT_buttonList_init() {
     OCT_BUTTON* array = iOCT_glfwToOCTButtonKeyMap;

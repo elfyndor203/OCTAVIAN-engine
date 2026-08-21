@@ -56,6 +56,9 @@ add_library(Core STATIC
         include/utilities/sets.c
         include/utilities/config.h
         init/systemDescription.c
+        internal/utilities/allocations_int.h
+        internal/utilities/allocations.c
+        include/utilities/memory.h
 )
 
 target_include_directories(Core

@@ -23,23 +23,6 @@ void system_init_WINDOW() {
 	glfwMakeContextCurrent(initWindow);
 	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 	glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
-	// GLFWwindow* window = glfwCreateWindow(width, height, name, NULL, NULL);
-	// glfwMakeContextCurrent(window);
-	// glfwSetFramebufferSizeCallback(window, iOCT_window_callback_resize);
-	// glfwSetKeyCallback(window, iOCT_window_callback_keyEvent);
-	// glfwSetMouseButtonCallback(window, iOCT_window_callback_mouseEvent);
-	// glfwSetCursorPosCallback(window, iOCT_window_callback_mouseMove);
-	// glfwSetScrollCallback(window, iOCT_window_callback_mouseScroll);
-
-	// glClearColor(color.x, color.y, color.z, color.a);
-
-	// glfwSwapInterval(0);
-	// iOCT_windowSystem_inst.windowPtr = window;
-	// iOCT_windowSystem_inst.targetResolution = (OCT_vec2){ width, height };
-	// iOCT_windowSystem_inst.currentResolution = iOCT_windowSystem_inst.targetResolution;
-	// iOCT_window_viewport(width, height);
-	// iOCT_keyMap_init();
-	// iOCT_mouseMap_init();
 
 	// happens after registry init so using systemID is safe
 	iOCT_windowSystem_inst.windowMPool = eOCT_mappedPool_open(iOCT_windowSystem_inst.systemID,
@@ -74,12 +57,18 @@ void eOCT_WINDOW_startFrame() {
 		iOCT_windowSystem_inst.focusedWindowID = OCT_ID_NULL;
 	}
 
-	if (iOCT_windowSystem_inst.focusedWindowID != OCT_ID_NULL) {
-		// iOCT_window focusedWindow = *(iOCT_window*)eOCT_getByID(&iOCT_windowSystem_inst.windowMPool.IDMap, &iOCT_windowSystem_inst.windowMPool.pool, iOCT_windowSystem_inst.focusedWindowID);
-		iOCT_window focusedWindow = *(iOCT_window*)eOCT_mappedPool_getByID(&iOCT_windowSystem_inst.windowMPool, iOCT_windowSystem_inst.focusedWindowID);
-		OCT_mat3* matrixSingle = &eOCT_single_getGlobal(iOCT_windowSystem_inst.focusedCameraMatrixKey)->mat3;
-		*matrixSingle = iOCT_window_screenToWorld(focusedWindow);
-	}
+	// if (iOCT_windowSystem_inst.focusedWindowID != OCT_ID_NULL) {
+	// 	// iOCT_window focusedWindow = *(iOCT_window*)eOCT_getByID(&iOCT_windowSystem_inst.windowMPool.IDMap, &iOCT_windowSystem_inst.windowMPool.pool, iOCT_windowSystem_inst.focusedWindowID);
+	// 	iOCT_window focusedWindow = *(iOCT_window*)eOCT_mappedPool_getByID(&iOCT_windowSystem_inst.windowMPool, iOCT_windowSystem_inst.focusedWindowID);
+	// 	OCT_mat3* matrixSingle = &eOCT_single_getGlobal(iOCT_windowSystem_inst.focusedCameraMatrixKey)->mat3;
+	// 	*matrixSingle = iOCT_window_screenToWorld(focusedWindow);
+	// }
+}
+
+void eOCT_WINDOW_update(OCT_global context) {
+	OCT_vec2* cursorPos = &eOCT_single_getLocal(iOCT_windowSystem_inst.cursorPosKey, context)->vec2;
+
+	*cursorPos = iOCT_cursor_calcPosContext(context);
 }
 
 void eOCT_WINDOW_finishFrame() {
@@ -92,6 +81,4 @@ void eOCT_WINDOW_finishFrame() {
 
 		glfwSwapBuffers(window.windowPtr);
 	}
-
-	OCT_mat3 cameraMatrix = (eOCT_single_getGlobal(iOCT_windowSystem_inst.focusedCameraMatrixKey))->mat3;
 }

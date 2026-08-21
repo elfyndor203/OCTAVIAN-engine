@@ -48,6 +48,8 @@ struct eOCT_pool {
 	// automation instructions
 	eOCT_pool_fillSetting fillSetting;
 	size_t sortValueOffset; // offset
+
+	OCT_index allocationRefIndex;
 	bool sort;
 };
 

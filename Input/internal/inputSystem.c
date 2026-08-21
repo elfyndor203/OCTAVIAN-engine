@@ -9,7 +9,7 @@ static void iOCT_buttonStates_init();
 void system_init_INPUT() {
     eOCT_event_subscribe(iOCT_inputSystem_inst.keyTicket, OCT_LOCAL_NULL, iOCT_input_keyCallback);
     eOCT_event_subscribe(iOCT_inputSystem_inst.mouseButtonTicket, OCT_LOCAL_NULL, iOCT_input_mouseButtonCallback);
-    eOCT_event_subscribe(iOCT_inputSystem_inst.mousePositionXTicket, OCT_LOCAL_NULL, iOCT_input_mouseMoveCallback); // __NOTE__ subscribing to two fields can result in double callbacks right now
+    // eOCT_event_subscribe(iOCT_inputSystem_inst.mousePositionXTicket, OCT_LOCAL_NULL, iOCT_input_mouseMoveCallback); // __NOTE__ subscribing to two fields can result in double callbacks right now
     eOCT_event_subscribe(iOCT_inputSystem_inst.mouseScrollTicket, OCT_LOCAL_NULL, iOCT_input_mouseScrollCallback);
 
     iOCT_inputSystem_inst.buttonStates = eOCT_pool_open(iOCT_inputSystem_inst.systemID, (OCT_index)OCT_BUTTONS_TOTAL, sizeof(iOCT_buttonState));

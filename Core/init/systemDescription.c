@@ -18,7 +18,7 @@ void init_system_register_CORE() {
         .name = "OCTAVIANEngine CORE",
         .contextInitFx = NULL,
         .systemInitFx = NULL,
-        .providedComponents = eOCT_generateComponentDescriptionPool(1, entityMeta),
+        .providedComponents = eOCT_generateComponentDescriptionPool(1, entityMeta, eOCT_END_COMPONENTS),
         .providedDataPools = eOCT_POOL_EMPTY,
         .providedEvents = eOCT_POOL_EMPTY,
         .providedSingles = eOCT_POOL_EMPTY,

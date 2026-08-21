@@ -10,7 +10,6 @@
 #include "systemDescription_physics.h"
 
 void init_OCT_registerAllSystems() {
-	init_system_register_CORE();		// REQUIRED
 
 	system_register_PLATFORM();
 	system_register_WORLD();

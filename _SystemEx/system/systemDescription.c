@@ -11,7 +11,7 @@ void system_register_systemEx() {
 			eOCT_fieldDescription field1 = { "someField", eOCT_DATATYPE_INT64, offsetof(iOCT_componentEx, fieldA) };
 			eOCT_fieldDescription field2 = { "someOtherField", eOCT_DATATYPE_INT64, offsetof(iOCT_componentEx, fieldB) };
 		// Create a componentDescription
-		eOCT_componentDescription componentEx = { "componentEx", sizeof(componentEx), eOCT_generateFieldDescriptionPool(2, field1, field2)};
+		eOCT_componentDescription componentEx = { "componentEx", sizeof(componentEx), eOCT_generateFieldDescriptionPool(2, field1, field2, eOCT_END_FIELDS)};
 	//
 
 	// FOR EACH SYSTEM
@@ -23,19 +23,22 @@ void system_register_systemEx() {
 				.name = "glfwKeys",
 				.type = eOCT_DATATYPE_INT64,
 				.optional = false,
-				.ticketCache = &iOCT_systemEx_inst.keyCache
+				.ticketCache = &iOCT_systemEx_inst.keyCache,
+				.providerType = eOCT_DATAPATTERN_EVENT
 			};
 			eOCT_fieldRequest keyPress = {
 				.name = "glfwKeyPress",
 				.type = eOCT_DATATYPE_BOOL,
 				.optional = false,
-				.ticketCache = &iOCT_systemEx_inst.keyPressCache
+				.ticketCache = &iOCT_systemEx_inst.keyPressCache,
+				.providerType = eOCT_DATAPATTERN_EVENT
 			};
 			eOCT_fieldRequest keyRelease = {
 				.name = "glfwKeyRelease",
 				.type = eOCT_DATATYPE_BOOL,
 				.optional = false,
-				.ticketCache = &iOCT_systemEx_inst.keyReleaseCache
+				.ticketCache = &iOCT_systemEx_inst.keyReleaseCache,
+				.providerType = eOCT_DATAPATTERN_EVENT
 			};
 	//
 
@@ -55,10 +58,10 @@ void system_register_systemEx() {
 	// ensure the correct counts
 	eOCT_systemDescription templateSystem = {
 		.name = "_SystemEx",
-		.providedComponents = eOCT_generateComponentDescriptionPool(1, componentEx),
-		.requestedFields = eOCT_generateFieldRequestPool(6, heightReq, widthReq, mightNeed, keys, keyPress, keyRelease),
+		.providedComponents = eOCT_generateComponentDescriptionPool(1, componentEx, eOCT_END_COMPONENTS),
+		.requestedFields = eOCT_generateFieldRequestPool(6, heightReq, widthReq, mightNeed, keys, keyPress, keyRelease, eOCT_END_REQUESTS),
 		.providedEvents = eOCT_POOL_EMPTY,
-		.providedSingles = eOCT_generateSingleDescriptionPool(1, testSingle),
+		.providedSingles = eOCT_generateSingleDescriptionPool(1, testSingle, eOCT_END_SINGLES),
 		.providedDataPools = eOCT_POOL_EMPTY,
 		.systemInitFx = system_init_systemEx
 	};

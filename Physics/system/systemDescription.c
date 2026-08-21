@@ -4,6 +4,8 @@
 #include "physicsSystem_int.h"
 #include "constraints/types_int.h"
 #include "constraints/constraints_int.h"
+#include "constraints/collider2D_int.h"
+#include "constraints/distance2D_int.h"
 
 void system_register_PHYSICS() {
     eOCT_fieldDescription box2DWorld = {
@@ -29,20 +31,20 @@ void system_register_PHYSICS() {
         .keyCacheLocation = &iOCT_physicsSystem_inst.physics2DKey
     };
 
-    eOCT_dataPoolDescription rope2D = {
-        .name = "rope2D",
-        .stride = sizeof(iOCT_rope2D),
+    eOCT_dataPoolDescription distance2D = {
+        .name = "distance2D",
+        .stride = sizeof(iOCT_distance2D),
         .providedFields = eOCT_POOL_EMPTY,
-        .elementIDValueOffset = offsetof(iOCT_rope2D, ropeID),
+        .elementIDValueOffset = offsetof(iOCT_distance2D, distanceID),
         .keyCacheLocation = &iOCT_physicsSystem_inst.distance2DKey,
         .sort = false,
         .global = false
     };
-    eOCT_dataPoolDescription hitbox2D = {
-        .name = "hitbox2D",
-        .stride = sizeof(iOCT_hitbox2D),
+    eOCT_dataPoolDescription collider2D = {
+        .name = "collider2D",
+        .stride = sizeof(iOCT_collider2D),
         .providedFields = eOCT_POOL_EMPTY,
-        .elementIDValueOffset = offsetof(iOCT_hitbox2D, hitboxID),
+        .elementIDValueOffset = offsetof(iOCT_collider2D, colliderID),
         .keyCacheLocation = &iOCT_physicsSystem_inst.collider2DKey,
         .sort = false,
         .global = false
@@ -52,33 +54,37 @@ void system_register_PHYSICS() {
         .optional = false,
         .ticketCache = &iOCT_physicsSystem_inst.transform2DTicket,
         .type = eOCT_DATATYPE_MAT3,
+        .providerType = eOCT_DATAPATTERN_COMPONENT
     };
     eOCT_fieldRequest position2D = {
         .name = "position",
         .optional = false,
         .ticketCache = &iOCT_physicsSystem_inst.position2DTicket,
         .type = eOCT_DATATYPE_VEC2,
+        .providerType = eOCT_DATAPATTERN_COMPONENT
     };
     eOCT_fieldRequest rotation2D = {
         .name = "rotation",
         .optional = false,
         .ticketCache = &iOCT_physicsSystem_inst.rotationTicket,
         .type = eOCT_DATATYPE_FLOAT32,
+        .providerType = eOCT_DATAPATTERN_COMPONENT
     };
     eOCT_fieldRequest transformParent = {
         .name = "transformParent",
         .optional = false,
         .ticketCache = &iOCT_physicsSystem_inst.transformParentTicket,
-        .type = eOCT_DATATYPE_HANDLE_LOCAL
+        .type = eOCT_DATATYPE_HANDLE_LOCAL,
+        .providerType = eOCT_DATAPATTERN_COMPONENT
     };
 
     eOCT_systemDescription physicsSystem = {
         .name = "Physics",
-        .providedComponents = eOCT_generateComponentDescriptionPool(1, physics2D),
-        .providedDataPools = eOCT_generateDataPoolDescriptionPool(2, rope2D, hitbox2D),
+        .providedComponents = eOCT_generateComponentDescriptionPool(1, physics2D, eOCT_END_COMPONENTS),
+        .providedDataPools = eOCT_generateDataPoolDescriptionPool(2, distance2D, collider2D, eOCT_END_DATAPOOLS),
         .providedEvents = eOCT_POOL_EMPTY,
-        .providedSingles = eOCT_generateSingleDescriptionPool(1, box2DWorldSingle),
-        .requestedFields = eOCT_generateFieldRequestPool(4, transform2D, position2D, rotation2D, transformParent),
+        .providedSingles = eOCT_generateSingleDescriptionPool(1, box2DWorldSingle, eOCT_END_SINGLES),
+        .requestedFields = eOCT_generateFieldRequestPool(4, transform2D, position2D, rotation2D, transformParent, eOCT_END_REQUESTS),
         .contextInitFx = iOCT_physicsSystem_contextSetup,
         .systemInitFx = iOCT_physicsSystem_init
     };

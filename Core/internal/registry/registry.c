@@ -155,6 +155,22 @@ void init_OCT_registry_check() {
 		for (requestCtr = 0; requestCtr < requestPool.count; requestCtr++) {
 			request = requestArray[requestCtr];
 			if (request.fulfilled_reg) {
+				switch (request.providerType) {
+				case eOCT_DATAPATTERN_COMPONENT:
+					printf("C ");
+					break;
+				case eOCT_DATAPATTERN_DATAPOOL:
+					printf("D ");
+					break;
+				case eOCT_DATAPATTERN_EVENT:
+					printf("E ");
+					break;
+				case eOCT_DATAPATTERN_SINGLE:
+					printf("S ");
+					break;
+				default:
+					OCT_ERROR_LOG(OCT_EXIT_REGISTRATION_FAILED, "Unknown provider type");
+				}
 				printf("%02zu[%02zu]", request.providerIndex_reg, request.fieldOffset_reg);
 			}
 			else if (request.optional) {
@@ -263,82 +279,215 @@ OCT_ID eOCT_registry_registerSystem(eOCT_systemDescription systemDescription) {
 }
 
 #pragma region generators
-eOCT_pool eOCT_generateFieldDescriptionPool(OCT_index count, ...) {
-	va_list args;
-	va_start(args, count);
-
-	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, count, sizeof(eOCT_fieldDescription));
-	for (OCT_index ctr = 0; ctr < count; ctr++) {
-		eOCT_fieldDescription* destination = (eOCT_fieldDescription*)eOCT_pool_addEntryOld(&pool, NULL);
-		*destination = va_arg(args, eOCT_fieldDescription);
+eOCT_pool eOCT_generateFieldDescriptionPool(OCT_index total, eOCT_fieldDescription description1, ...) {
+	if (total < 1) {
+		OCT_ERROR_LOG(OCT_WARNING_IMPROPER, "Directly pass empty pool if no fields are provided");
+		return eOCT_POOL_EMPTY;
 	}
-	va_end(args);
+	va_list args;
+	va_start(args, description1);
 
+	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, total, sizeof(eOCT_fieldDescription));
+	bool end = false;
+	OCT_index processed = 0;
+	eOCT_fieldDescription newRequest = description1;
+	while (!end && processed < total) {
+		if (strcmp(newRequest.name, eOCT_END_FIELDS.name) == 0) { // checks for END flag
+			end = true;
+
+			if (processed != total) {										// END flag should be after all requests are processed
+				OCT_ERROR_LOG(OCT_EXIT_INVALID_ARGUMENT, "Less fields provided than expected");
+				return pool;
+			}
+		} else {
+			eOCT_pool_addEntryNew(&pool, &newRequest, NULL);
+			processed++;
+			newRequest = va_arg(args, eOCT_fieldDescription);
+		}
+	}
+	eOCT_fieldDescription expectedEnd = newRequest;	// most recent: either the END flag or error
+	if (strcmp(expectedEnd.name, eOCT_END_FIELDS.name) != 0) {
+		OCT_ERROR_LOG(OCT_EXIT_INVALID_ARGUMENT, "END flag not found");
+		return pool;
+	}
+
+	va_end(args);
 	return pool;
 }
-eOCT_pool eOCT_generateComponentDescriptionPool(OCT_index count, ...) {
-	va_list args;
-	va_start(args, count);
-
-	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, count, sizeof(eOCT_componentDescription));
-	for (OCT_index ctr = 0; ctr < count; ctr++) {
-		eOCT_componentDescription* destination = (eOCT_componentDescription*)eOCT_pool_addEntryOld(&pool, NULL);
-		*destination = va_arg(args, eOCT_componentDescription);
+eOCT_pool eOCT_generateComponentDescriptionPool(OCT_index total, eOCT_componentDescription description1, ...) {
+	if (total < 1) {
+		OCT_ERROR_LOG(OCT_WARNING_IMPROPER, "Directly pass empty pool if no components are provided");
+		return eOCT_POOL_EMPTY;
 	}
-	va_end(args);
+	va_list args;
+	va_start(args, description1);
 
+	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, total, sizeof(eOCT_componentDescription));
+	bool end = false;
+	OCT_index processed = 0;
+	eOCT_componentDescription newRequest = description1;
+	while (!end && processed < total) {
+		if (strcmp(newRequest.name, eOCT_END_COMPONENTS.name) == 0) { // checks for END flag
+			end = true;
+
+			if (processed != total) {										// END flag should be after all requests are processed
+				OCT_ERROR_LOG(OCT_EXIT_INVALID_ARGUMENT, "Less components provided than expected");
+				return pool;
+			}
+		} else {
+			eOCT_pool_addEntryNew(&pool, &newRequest, NULL);
+			processed++;
+			newRequest = va_arg(args, eOCT_componentDescription);
+		}
+	}
+	eOCT_componentDescription expectedEnd = newRequest;	// most recent: either the END flag or error
+	if (strcmp(expectedEnd.name, eOCT_END_COMPONENTS.name) != 0) {
+		OCT_ERROR_LOG(OCT_EXIT_INVALID_ARGUMENT, "END flag not found");
+		return pool;
+	}
+
+	va_end(args);
 	return pool;
 }
-eOCT_pool eOCT_generateDataPoolDescriptionPool(OCT_index count, ...) {
-	va_list args;
-	va_start(args, count);
-
-	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, count, sizeof(eOCT_dataPoolDescription));
-	for (OCT_index ctr = 0; ctr < count; ctr++) {
-		eOCT_dataPoolDescription* destination = (eOCT_dataPoolDescription*)eOCT_pool_addEntryOld(&pool, NULL);
-		*destination = va_arg(args, eOCT_dataPoolDescription);
+eOCT_pool eOCT_generateDataPoolDescriptionPool(OCT_index total, eOCT_dataPoolDescription description1, ...) {
+	if (total < 1) {
+		OCT_ERROR_LOG(OCT_WARNING_IMPROPER, "Directly pass empty pool if no dataPools are provided");
+		return eOCT_POOL_EMPTY;
 	}
-	va_end(args);
+	va_list args;
+	va_start(args, description1);
 
+	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, total, sizeof(eOCT_dataPoolDescription));
+	bool end = false;
+	OCT_index processed = 0;
+	eOCT_dataPoolDescription newRequest = description1;
+	while (!end && processed < total) {
+		if (strcmp(newRequest.name, eOCT_END_DATAPOOLS.name) == 0) { // checks for END flag
+			end = true;
+
+			if (processed != total) {										// END flag should be after all requests are processed
+				OCT_ERROR_LOG(OCT_EXIT_INVALID_ARGUMENT, "Less dataPools provided than expected");
+				return pool;
+			}
+		} else {
+			eOCT_pool_addEntryNew(&pool, &newRequest, NULL);
+			processed++;
+			newRequest = va_arg(args, eOCT_dataPoolDescription);
+		}
+	}
+	eOCT_dataPoolDescription expectedEnd = newRequest;	// most recent: either the END flag or error
+	if (strcmp(expectedEnd.name, eOCT_END_DATAPOOLS.name) != 0) {
+		OCT_ERROR_LOG(OCT_EXIT_INVALID_ARGUMENT, "END flag not found");
+		return pool;
+	}
+
+	va_end(args);
 	return pool;
 }
-eOCT_pool eOCT_generateEventDescriptionPool(OCT_index count, ...) {
-	va_list args;
-	va_start(args, count);
-
-	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, count, sizeof(eOCT_eventDescription));
-	for (OCT_index ctr = 0; ctr < count; ctr++) {
-		eOCT_eventDescription* destination = (eOCT_eventDescription*)eOCT_pool_addEntryOld(&pool, NULL);
-		*destination = va_arg(args, eOCT_eventDescription);
+eOCT_pool eOCT_generateEventDescriptionPool(OCT_index total, eOCT_eventDescription description1, ...) {
+	if (total < 1) {
+		OCT_ERROR_LOG(OCT_WARNING_IMPROPER, "Directly pass empty pool if no events are provided");
+		return eOCT_POOL_EMPTY;
 	}
-	va_end(args);
+	va_list args;
+	va_start(args, description1);
 
+	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, total, sizeof(eOCT_eventDescription));
+	bool end = false;
+	OCT_index processed = 0;
+	eOCT_eventDescription newRequest = description1;
+	while (!end && processed < total) {
+		if (strcmp(newRequest.name, eOCT_END_EVENTS.name) == 0) { // checks for END flag
+			end = true;
+
+			if (processed != total) {										// END flag should be after all requests are processed
+				OCT_ERROR_LOG(OCT_EXIT_INVALID_ARGUMENT, "Less events provided than expected");
+				return pool;
+			}
+		} else {
+			eOCT_pool_addEntryNew(&pool, &newRequest, NULL);
+			processed++;
+			newRequest = va_arg(args, eOCT_eventDescription);
+		}
+	}
+	eOCT_eventDescription expectedEnd = newRequest;	// most recent: either the END flag or error
+	if (strcmp(expectedEnd.name, eOCT_END_EVENTS.name) != 0) {
+		OCT_ERROR_LOG(OCT_EXIT_INVALID_ARGUMENT, "END flag not found");
+		return pool;
+	}
+
+	va_end(args);
 	return pool;
 }
-eOCT_pool eOCT_generateSingleDescriptionPool(OCT_index count, ...) {
-	va_list args;
-	va_start(args, count);
-
-	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, count, sizeof(eOCT_singleDescription));
-	for (OCT_index ctr = 0; ctr < count; ctr++) {
-		eOCT_singleDescription* destination = (eOCT_singleDescription*)eOCT_pool_addEntryOld(&pool, NULL);
-		*destination = va_arg(args, eOCT_singleDescription);
+eOCT_pool eOCT_generateSingleDescriptionPool(OCT_index total, eOCT_singleDescription description1, ...) {
+	if (total < 1) {
+		OCT_ERROR_LOG(OCT_WARNING_IMPROPER, "Directly pass empty pool if no singles are provided");
+		return eOCT_POOL_EMPTY;
 	}
-	va_end(args);
+	va_list args;
+	va_start(args, description1);
 
+	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, total, sizeof(eOCT_singleDescription));
+	bool end = false;
+	OCT_index processed = 0;
+	eOCT_singleDescription newRequest = description1;
+	while (!end && processed < total) {
+		if (strcmp(newRequest.name, eOCT_END_SINGLES.name) == 0) { // checks for END flag
+			end = true;
+
+			if (processed != total) {										// END flag should be after all requests are processed
+				OCT_ERROR_LOG(OCT_EXIT_INVALID_ARGUMENT, "Less singles provided than expected");
+				return pool;
+			}
+		} else {
+			eOCT_pool_addEntryNew(&pool, &newRequest, NULL);
+			processed++;
+			newRequest = va_arg(args, eOCT_singleDescription);
+		}
+	}
+	eOCT_singleDescription expectedEnd = newRequest;	// most recent: either the END flag or error
+	if (strcmp(expectedEnd.name, eOCT_END_SINGLES.name) != 0) {
+		OCT_ERROR_LOG(OCT_EXIT_INVALID_ARGUMENT, "END flag not found");
+		return pool;
+	}
+
+	va_end(args);
 	return pool;
 }
-eOCT_pool eOCT_generateFieldRequestPool(OCT_index count, ...) {
-	va_list args;
-	va_start(args, count);
 
-	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, count, sizeof(eOCT_fieldRequest));
-	for (OCT_index ctr = 0; ctr < count; ctr++) {
-		eOCT_fieldRequest* destination = (eOCT_fieldRequest*)eOCT_pool_addEntryOld(&pool, NULL);
-		*destination = va_arg(args, eOCT_fieldRequest);
+eOCT_pool eOCT_generateFieldRequestPool(OCT_index total, eOCT_fieldRequest request1, ...) {
+	if (total < 1) {
+		OCT_ERROR_LOG(OCT_WARNING_IMPROPER, "Directly pass empty pool if no fields are requested");
+		return eOCT_POOL_EMPTY;
 	}
-	va_end(args);
+	va_list args;
+	va_start(args, request1);
 
+	eOCT_pool pool = eOCT_pool_open(OCT_ID_REGISTRY, total, sizeof(eOCT_fieldRequest));
+	bool end = false;
+	OCT_index processed = 0;
+	eOCT_fieldRequest newRequest = request1;
+	while (!end && processed < total) {
+		if (strcmp(newRequest.name, eOCT_END_REQUESTS.name) == 0) { // checks for END flag
+			end = true;
+
+			if (processed != total) {										// END flag should be after all requests are processed
+				OCT_ERROR_LOG(OCT_EXIT_INVALID_ARGUMENT, "Less fields provided than expected");
+				return pool;
+			}
+		} else {
+			eOCT_pool_addEntryNew(&pool, &newRequest, NULL);
+			processed++;
+			newRequest = va_arg(args, eOCT_fieldRequest);
+		}
+	}
+	eOCT_fieldRequest expectedEnd = newRequest;	// most recent: either the END flag or error
+	if (strcmp(expectedEnd.name, eOCT_END_REQUESTS.name) != 0) {
+		OCT_ERROR_LOG(OCT_EXIT_INVALID_ARGUMENT, "END flag not found");
+		return pool;
+	}
+
+	va_end(args);
 	return pool;
 }
 #pragma endregion
@@ -438,7 +587,7 @@ static bool iOCT_registry_findField(const char* fieldName, eOCT_fieldDescription
 
 	for (fieldCtr = 0; fieldCtr < fields->count; fieldCtr++) {		// check every field in the registry
 		targetField = fieldArray[fieldCtr];
-		if (strcmp(targetField.name, fieldName) == 0) {
+		if (strcmp(targetField.name, fieldName) == 0 && targetField.providerType == targetField.providerType) {
 			if (fieldOut) {
 				*fieldOut = targetField;
 			}
@@ -548,7 +697,7 @@ static void iOCT_registry_distributeFields() {
 			eOCT_fieldDescription match;
 
 			eOCT_fieldTicket* ticket = request->ticketCache;
-			if (iOCT_registry_findField(request->name, &match)) {	// if there is a match
+			if (iOCT_registry_findField(request->name, &match) && request->providerType == match.providerType) {	// if there is a match
 				ticket->name = match.name;
 				ticket->type = match.type;
 				ticket->global = match.global_reg;
@@ -558,7 +707,6 @@ static void iOCT_registry_distributeFields() {
 				ticket->globalPool = iOCT_registry_findGlobalPool(match);
 
 				request->fulfilled_reg = true;
-				request->providerType_reg = match.providerType;
 				request->global_reg = match.global_reg;
 				request->fieldOffset_reg = match.offset;
 				request->providerIndex_reg = match.providerIndex_reg;

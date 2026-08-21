@@ -6,6 +6,7 @@
 #include <GLFW/glfw3.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <assert.h>
 
 #include "window/windowSystem_int.h"
 #include "renderer/renderer_int.h"
@@ -24,7 +25,7 @@ OCT_global OCT_window_open(const char* name, unsigned int sizeX, unsigned int si
 
     glfwSetKeyCallback(windowPtr, iOCT_window_keyCallback);
     glfwSetMouseButtonCallback(windowPtr, iOCT_window_mouseButtonCallback);
-    glfwSetCursorPosCallback(windowPtr, iOCT_window_mouseMoveCallback);
+    // glfwSetCursorPosCallback(windowPtr, iOCT_window_mouseMoveCallback);
     glfwSetScrollCallback(windowPtr, iOCT_window_mouseScrollCallback);
     glfwSetWindowFocusCallback(windowPtr, iOCT_window_focusCallback);
     glfwSetWindowSizeCallback(windowPtr, iOCT_window_sizeCallback);
@@ -108,15 +109,28 @@ OCT_mat3 iOCT_window_screenToWorld(iOCT_window window) {
     OCT_mat3 entityGlobalTransform = *(OCT_mat3*)eOCT_entity_getFieldOnce(window.activeCameraSourceEntity, iOCT_renderer_inst.transform2DTicket);
     OCT_vec2 windowRes = window.currentResolution;
 
-    OCT_vec2 toCameraScale = { 1.0f / window.currentResolution.x, -1.0f / window.currentResolution.y };
-    OCT_vec2 toCameraTranslate = { -0.5f, 0.5f};
-    OCT_mat3 screenToNDC = OCT_mat3_scale(OCT_mat3_identity, toCameraScale);
-    screenToNDC = OCT_mat3_translate(screenToNDC, toCameraTranslate);
+    OCT_vec2 toCameraScale = { 1.0f / window.currentResolution.x, -1.0f / window.currentResolution.y }; // gets screen to 1x1
+    OCT_vec2 toCameraTranslate = { -0.5f, 0.5f};                                                        // centers
+    OCT_mat3 pixelsToNDC = OCT_mat3_scale(OCT_mat3_identity, toCameraScale);
+    pixelsToNDC = OCT_mat3_translate(pixelsToNDC, toCameraTranslate);
 
     OCT_mat3 cameraGlobal = OCT_mat3_mul(entityGlobalTransform, camera.cameraMatrix);
 
-    OCT_mat3 twiceWorld = OCT_mat3_mul(cameraGlobal, screenToNDC);
+    OCT_mat3 twiceWorld = OCT_mat3_mul(cameraGlobal, pixelsToNDC);
     return twiceWorld;
+}
+
+OCT_mat3 iOCT_window_screenToScreenSpace(iOCT_window window) {
+    OCT_vec2 screenSpaceZoom = window.screenSpaceZoom;
+    OCT_mat3 ndcToScreenSpace = OCT_mat3_generate(OCT_VEC2_ZERO, screenSpaceZoom, 0);
+
+    OCT_vec2 toPseudoCameraScale = {1.0f / window.currentResolution.x, -1.0f / window.currentResolution.y};
+    OCT_vec2 toPseudoCameraTranslate = {-0.5f, 0.5f};
+    OCT_mat3 pixelsToNDC = OCT_mat3_scale(OCT_mat3_identity, toPseudoCameraScale);
+    pixelsToNDC = OCT_mat3_translate(pixelsToNDC, toPseudoCameraTranslate);
+
+    OCT_mat3 finalMatrix = OCT_mat3_mul(ndcToScreenSpace, pixelsToNDC);
+    return finalMatrix;
 }
 
 OCT_mat3 iOCT_window_worldToNDC(iOCT_window window) {

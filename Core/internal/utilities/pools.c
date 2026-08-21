@@ -11,6 +11,7 @@
 #include <inttypes.h>
 
 #include "utilities/utilities_int.h"
+#include "allocations_int.h"
 // opt-outs and presets
 eOCT_pool eOCT_POOL_EMPTY = {
 	.array = NULL,
@@ -45,6 +46,11 @@ eOCT_pool eOCT_pool_open(OCT_ID ownerSystemID, OCT_index capacity, size_t elemen
 		OCT_ERROR_LOG(OCT_EXIT_FAILED_TO_ALLOCATE, "Failed to allocate pool array memory");
 	}
 	//printf(">Init pool of size: %zu\n", capacity * elementSize);
+	if (ownerSystemID != OCT_ID_MEMORY_MANAGER) {
+		pool.allocationRefIndex = iOCT_memoryManager_logAlloc(ownerSystemID, iOCT_ALLOCATION_POOL, elementSize);
+	} else {
+		pool.allocationRefIndex = OCT_INDEX_NULL;	// set by the memory manager
+	}
 	return pool;
 }
 void* eOCT_pool_addEntryOld(eOCT_pool* pool, OCT_index* outIndex) {
@@ -153,6 +159,8 @@ void eOCT_pool_clear(eOCT_pool* pool) {
 void eOCT_pool_free(eOCT_pool* pool) {
 	free(pool->array);
 	pool->array = NULL;
+
+	iOCT_memoryManager_logFree(pool->allocationRefIndex);
 }
 #pragma endregion
 

@@ -14,7 +14,7 @@ struct iOCT_buttonState {
 
 void iOCT_input_keyCallback(OCT_index eventIndex);
 void iOCT_input_mouseButtonCallback(OCT_index eventIndex);
-void iOCT_input_mouseMoveCallback(OCT_index eventIndex);
+// void iOCT_input_mouseMoveCallback(OCT_index eventIndex);
 void iOCT_input_mouseScrollCallback(OCT_index eventIndex);
 
 void iOCT_button_updateState(OCT_BUTTON button, OCT_buttonStates pressOrRelease);
