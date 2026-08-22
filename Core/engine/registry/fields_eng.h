@@ -21,13 +21,13 @@ struct eOCT_fieldRequest {
     eOCT_fieldTicket* ticketCache;
     eOCT_dataPattern providerType;
     bool optional;
-    const char* sourceGroup_opt;
+    const char* groupName_opt;
 
     OCT_index providerIndex_reg;
     size_t fieldOffset_reg;
     bool global_reg;
     bool fulfilled_reg;
-    bool grouped_reg;
+    int groupStatus_reg;
 };
 
 struct eOCT_fieldTicket {
