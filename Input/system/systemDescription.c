@@ -25,7 +25,6 @@ void system_register_INPUT() {
         .optional = false,
         .ticketCache = &iOCT_inputSystem_inst.keyReleaseTicket,
         .providerType = eOCT_DATAPATTERN_EVENT,
-        .groupName_opt = "mouseButtons"
     };
     eOCT_fieldRequest mouseButton = {
         .name = "glfwMouseButton",
